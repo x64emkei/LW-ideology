@@ -1,0 +1,37 @@
+# ==============================================================================
+# LAGUNAWISE — IDEOLOGY DIVISION APACHE CONFIGURATION
+# ==============================================================================
+
+Options -Indexes
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /LW-ideology/
+
+    # Security: Block sensitive directories and files
+    RewriteRule ^(\.git|\.agents|config|includes|database|documentation)/ - [F,L]
+    RewriteRule \.(sql|env|log|ini|md)$ - [F,L]
+
+    # Clean URLs for Articles
+    # /articles/slug-name -> pages/article.php?slug=slug-name
+    RewriteRule ^articles/([a-zA-Z0-9_-]+)/?$ pages/article.php?slug=$1 [L,QSA]
+
+    # Clean URLs for Topics
+    # /topics/slug-name -> pages/topic.php?slug=slug-name
+    RewriteRule ^topics/([a-zA-Z0-9_-]+)/?$ pages/topic.php?slug=$1 [L,QSA]
+</IfModule>
+
+# MIME type handling for modern assets
+<IfModule mod_mime.c>
+    AddType image/svg+xml .svg
+    AddType application/json .json
+</IfModule>
+
+# Security Headers (if headers module enabled)
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

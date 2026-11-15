@@ -1,0 +1,17 @@
+# Operating System Files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Log files
+*.log
+error_log
+
+# Local Environment Overrides
+.env
+.env.local
+
+# User uploads (keep directory structure)
+assets/uploads/*
+!assets/uploads/.htaccess
+!assets/uploads/.gitkeep

@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /config/
+Disallow: /includes/
+Disallow: /database/
+Disallow: /auth/
+
+Sitemap: http://localhost/LW-ideology/pages/sitemap.php

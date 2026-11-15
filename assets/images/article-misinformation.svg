@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#061638" />
+      <stop offset="60%" stop-color="#0B2252" />
+      <stop offset="100%" stop-color="#1557A6" />
+    </linearGradient>
+    <linearGradient id="accentG1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2799E8" />
+      <stop offset="100%" stop-color="#D9381E" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bgGrad1)" />
+  <circle cx="680" cy="80" r="140" fill="#2799E8" opacity="0.08" />
+  <circle cx="120" cy="380" r="180" fill="#1557A6" opacity="0.15" />
+  <g stroke="#2799E8" stroke-width="1.5" opacity="0.25" fill="none">
+    <path d="M 100 225 C 250 150, 350 300, 500 225 S 700 150, 750 200" />
+    <path d="M 80 180 C 220 280, 400 120, 550 240 S 720 180, 780 230" />
+  </g>
+  <g transform="translate(400, 210) scale(1.1)">
+    <circle cx="0" cy="0" r="85" fill="#0B2252" stroke="#2799E8" stroke-width="3" opacity="0.9" />
+    <!-- Shield / Alert Network -->
+    <path d="M 0 -45 L 35 -25 L 35 15 C 35 38, 0 52, 0 52 C 0 52, -35 38, -35 15 L -35 -25 Z" fill="none" stroke="#DCEEFF" stroke-width="4" stroke-linejoin="round" />
+    <path d="M 0 -22 L 0 5 M 0 18 L 0 22" stroke="#2799E8" stroke-width="5" stroke-linecap="round" />
+    <circle cx="-130" cy="-30" r="18" fill="#1557A6" stroke="#2799E8" stroke-width="2" />
+    <circle cx="130" cy="40" r="22" fill="#1557A6" stroke="#2799E8" stroke-width="2" />
+    <circle cx="110" cy="-60" r="14" fill="#0B2252" stroke="#DCEEFF" stroke-width="2" />
+    <line x1="-112" y1="-25" x2="-35" y2="-10" stroke="#2799E8" stroke-dasharray="4 4" stroke-width="2" />
+    <line x1="35" y1="15" x2="108" y2="35" stroke="#2799E8" stroke-dasharray="4 4" stroke-width="2" />
+    <line x1="25" y1="-25" x2="96" y2="-55" stroke="#2799E8" stroke-dasharray="4 4" stroke-width="2" />
+  </g>
+  <rect x="50" y="380" width="160" height="28" rx="6" fill="#D9381E" opacity="0.9" />
+  <text x="130" y="398" fill="#FFFFFF" font-family="system-ui, sans-serif" font-weight="bold" font-size="12" text-anchor="middle" letter-spacing="1">MISINFORMATION</text>
+  <text x="750" y="415" fill="#C5CEDB" font-family="system-ui, sans-serif" font-size="14" text-anchor="end" opacity="0.6">LagunaWISE Ideology Division</text>
+</svg>
