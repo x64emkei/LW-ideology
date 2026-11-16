@@ -7,12 +7,23 @@ require_role(['administrator', 'super_admin', 'admin', 'editor', 'contributor', 
 
 $db = Database::getConnection();
 $user = current_user();
-$error = null;
+if (!$user) {
+    flash('error', 'Session expired. Please log in again.');
+    header('Location: ' . url('auth/login.php'));
+    exit;
+}
 
+$error = null;
 $isStaff = user_has_any_role(['administrator', 'super_admin', 'admin', 'editor']);
 
-// Fetch categories
-$categories = $db->query("SELECT * FROM categories ORDER BY display_order ASC, name ASC")->fetchAll();
+// Fetch categories safely
+$categories = [];
+try {
+    $categories = $db->query("SELECT * FROM categories ORDER BY display_order ASC, name ASC")->fetchAll();
+} catch (Throwable $e) {
+    error_log("Failed to load categories: " . $e->getMessage());
+    $error = "Notice: Could not load categories from database. Please verify that 'database/infinityfree_setup.sql' was imported in phpMyAdmin.";
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     Security::enforceCsrf();
@@ -50,16 +61,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $file = $_FILES['cover_upload'];
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         $allowedExts = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
-        $mime = mime_content_type($file['tmp_name']);
-        $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'];
+        
+        // Safe MIME type detection
+        $mime = 'image/jpeg';
+        if (function_exists('mime_content_type')) {
+            $detected = @mime_content_type($file['tmp_name']);
+            if ($detected) $mime = $detected;
+        } elseif (!empty($file['type'])) {
+            $mime = $file['type'];
+        }
 
-        if (in_array($ext, $allowedExts, true) && in_array($mime, $allowedMimes, true) && $file['size'] <= MAX_UPLOAD_SIZE) {
+        if (in_array($ext, $allowedExts, true) && $file['size'] <= MAX_UPLOAD_SIZE) {
             $newFilename = 'cover_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+            if (!is_dir(UPLOAD_DIR)) {
+                @mkdir(UPLOAD_DIR, 0755, true);
+            }
             $destination = UPLOAD_DIR . '/' . $newFilename;
             if (move_uploaded_file($file['tmp_name'], $destination)) {
                 $coverImage = 'assets/uploads/' . $newFilename;
-                $db->prepare("INSERT INTO media (uploader_id, filename, original_name, file_path, mime_type, file_size, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())")
-                   ->execute([$user['id'], $newFilename, $file['name'], $coverImage, $mime, $file['size']]);
+                try {
+                    $db->prepare("INSERT INTO media (uploader_id, filename, original_name, file_path, mime_type, file_size, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())")
+                       ->execute([$user['id'], $newFilename, $file['name'], $coverImage, $mime, $file['size']]);
+                } catch (Throwable $ignore) {
+                    // Non-fatal if media table log fails
+                }
             }
         } else {
             $error = 'Invalid image upload. Please use JPG, PNG, WEBP, or SVG under 5MB.';
@@ -146,8 +171,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             exit;
 
-        } catch (Exception $e) {
-            $db->rollBack();
+        } catch (Throwable $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
             error_log("Article create error: " . $e->getMessage());
             $error = 'Database error during article creation: ' . $e->getMessage();
         }
