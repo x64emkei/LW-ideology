@@ -1,5 +1,6 @@
 # LagunaWISE — Ideology Division Website
 ### Digital Publication, Editorial, and Civic Advocacy Platform
+> **PROJECT DEMONSTRATION for LAGUNAWISE, developed by MICHAEL BENEDICT ORDENES, CSSWB**  
 > **⚠️ PROTOTYPE DEMONSTRATION NOTICE**: This website is an educational demonstration prototype developed for academic and civic research evaluation. All articles, editorial workflows, dispatches, and institutional designations featured herein are illustrative demonstrations.
 
 ![LagunaWISE Ideology Division](assets/images/lagunawise-banner.svg)
@@ -7,6 +8,8 @@
 ---
 
 ## 🏛️ Project Identity & Overview
+* **Project**: PROJECT DEMONSTRATION for LAGUNAWISE
+* **Developer**: Michael Benedict Ordenes, CSSWB
 * **Organization**: LagunaWISE
 * **Division**: Ideology Division
 * **Headquarters**: Barangay Barandal, Calamba City, Laguna 4027, Philippines

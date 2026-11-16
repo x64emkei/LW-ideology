@@ -202,8 +202,13 @@
 
             <!-- Bottom Legal & Compliance Strip -->
             <div class="pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400">
-                <div class="text-center md:text-left">
-                    <p><?= e(get_setting('footer_copyright', '© 2026 LagunaWISE Ideology Division. All rights reserved. Intellectual and educational nonpartisan publication.')) ?></p>
+                <div class="text-center md:text-left space-y-1">
+                    <p class="font-medium text-slate-300">
+                        &copy; <?= date('Y') ?> LagunaWISE Ideology Division. All rights reserved.
+                    </p>
+                    <p class="text-[11px] text-lwblue-light font-semibold tracking-wide">
+                        PROJECT DEMONSTRATION for LAGUNAWISE, developed by MICHAEL BENEDICT ORDENES, CSSWB
+                    </p>
                 </div>
                 <div class="flex flex-wrap items-center justify-center gap-5 text-[11px]">
                     <a href="<?= url('pages/about.php#editorial-charter') ?>" class="hover:text-slate-200 transition">Editorial Charter</a>
@@ -218,14 +223,14 @@
                 </div>
             </div>
 
-            <!-- Prominent Global Advisory Notice: Prototype Only -->
+            <!-- Prominent Global Advisory Notice: Prototype Only & Project Demonstration -->
             <div class="mt-6 pt-4 border-t border-navy-850 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-amber-300/90 font-mono">
                 <div class="flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
                     <span class="font-bold tracking-wide">NOTICE: THIS ENTIRE WEBSITE IS A PROTOTYPE ONLY</span>
                 </div>
-                <p class="text-[10px] text-slate-400 text-center sm:text-right font-sans">
-                    Constructed for academic research and educational demonstration &bull; Not for official commercial or legal reliance.
+                <p class="text-[11px] text-slate-300 text-center sm:text-right font-sans font-medium">
+                    PROJECT DEMONSTRATION for LAGUNAWISE &bull; Developed by <strong class="text-white">MICHAEL BENEDICT ORDENES, CSSWB</strong>
                 </p>
             </div>
 
