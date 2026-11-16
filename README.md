@@ -208,6 +208,15 @@ By design, the platform does not pre-seed fake users:
 
 ---
 
+## 📚 Technical Documentation & Specifications
+* **Full Technical Stack Specification**: [`TECH_STACK.md`](TECH_STACK.md) — Comprehensive architecture diagrams, security models, database schema entities, and runtime specifications.
+* **Database Schema & Data Dictionary**: [`documentation/DATABASE.md`](documentation/DATABASE.md)
+* **Installation & Deployment Guide**: [`documentation/INSTALLATION.md`](documentation/INSTALLATION.md)
+* **Platform User Manual**: [`documentation/USER_GUIDE.md`](documentation/USER_GUIDE.md)
+* **Antigravity Installed Skills Guide**: [`documentation/INSTALLED_SKILLS.md`](documentation/INSTALLED_SKILLS.md)
+
+---
+
 ## ⚖️ License & Intellectual Standards
 © 2026 LagunaWISE Ideology Division. Nonpartisan educational and intellectual digital publication.
 All articles and research toolkits may be cited and shared for educational purposes with attribution.
