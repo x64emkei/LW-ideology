@@ -245,6 +245,22 @@ require_once __DIR__ . '/includes/header.php';
         </div>
 
         <!-- Articles Grid -->
+        <?php if (empty($latestArticles)): ?>
+            <div class="bg-white rounded-3xl border border-slate-200/90 p-12 text-center max-w-xl mx-auto shadow-xs space-y-4">
+                <div class="w-16 h-16 rounded-2xl bg-blue-50 text-lwblue flex items-center justify-center text-2xl mx-auto">
+                    <i class="fa-regular fa-newspaper"></i>
+                </div>
+                <h3 class="text-lg font-bold text-navy-900">Forthcoming Publications Underway</h3>
+                <p class="text-xs text-editorial-muted leading-relaxed">
+                    Our editorial team is currently preparing upcoming monographs, analytical investigations, and research commentaries. Check back soon or visit our Announcements for the latest updates.
+                </p>
+                <div class="pt-2">
+                    <a href="<?= url('pages/news.php') ?>" class="inline-block px-5 py-2.5 bg-navy-900 text-white text-xs font-bold rounded-xl hover:bg-navy-800 transition">
+                        View Announcements
+                    </a>
+                </div>
+            </div>
+        <?php else: ?>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <?php foreach ($latestArticles as $article): ?>
                 <article class="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300 flex flex-col group">
@@ -298,6 +314,7 @@ require_once __DIR__ . '/includes/header.php';
                 </article>
             <?php endforeach; ?>
         </div>
+        <?php endif; ?>
 
         <div class="text-center mt-12">
             <a href="<?= url('pages/articles.php') ?>" 

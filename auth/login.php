@@ -138,31 +138,26 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 <p>New to the platform? <a href="<?= url('auth/register.php') ?>" class="font-bold text-lwblue hover:underline">Create a Reader Account</a></p>
             </div>
 
-            <!-- Local Demo Accounts Helper Box -->
+            <!-- Local Accounts Helper Box -->
             <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 text-[11px] text-slate-600 space-y-2">
                 <p class="font-bold text-navy-900 flex items-center gap-1.5 text-xs">
-                    <i class="fa-solid fa-key text-amber-500"></i> Local Demonstration Accounts:
+                    <i class="fa-solid fa-key text-amber-500"></i> Authorized Accounts:
                 </p>
-                <div class="grid grid-cols-2 gap-2">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <button type="button" onclick="document.getElementsByName('identifier')[0].value='admin'; document.getElementById('loginPassword').value='admin123!';" 
                             class="text-left p-2 rounded bg-white border border-slate-200 hover:border-lwblue hover:bg-blue-50/50 transition">
                         <span class="font-bold block text-slate-800">Super Admin</span>
                         <span class="text-slate-500 font-mono text-[10px]">admin / admin123!</span>
                     </button>
-                    <button type="button" onclick="document.getElementsByName('identifier')[0].value='elena.vance'; document.getElementById('loginPassword').value='editor123!';" 
+                    <button type="button" onclick="document.getElementsByName('identifier')[0].value='marla.adriano'; document.getElementById('loginPassword').value='marla123!';" 
                             class="text-left p-2 rounded bg-white border border-slate-200 hover:border-lwblue hover:bg-blue-50/50 transition">
-                        <span class="font-bold block text-slate-800">Editor</span>
-                        <span class="text-slate-500 font-mono text-[10px]">elena.vance / editor123!</span>
+                        <span class="font-bold block text-slate-800">Marla Adriano</span>
+                        <span class="text-slate-500 font-mono text-[10px]">marla.adriano / marla123!</span>
                     </button>
-                    <button type="button" onclick="document.getElementsByName('identifier')[0].value='marcus.reyes'; document.getElementById('loginPassword').value='writer123!';" 
+                    <button type="button" onclick="document.getElementsByName('identifier')[0].value='michael.ordenes'; document.getElementById('loginPassword').value='michael123!';" 
                             class="text-left p-2 rounded bg-white border border-slate-200 hover:border-lwblue hover:bg-blue-50/50 transition">
-                        <span class="font-bold block text-slate-800">Writer</span>
-                        <span class="text-slate-500 font-mono text-[10px]">marcus.reyes / writer123!</span>
-                    </button>
-                    <button type="button" onclick="document.getElementsByName('identifier')[0].value='juan.reader'; document.getElementById('loginPassword').value='reader123!';" 
-                            class="text-left p-2 rounded bg-white border border-slate-200 hover:border-lwblue hover:bg-blue-50/50 transition">
-                        <span class="font-bold block text-slate-800">Reader</span>
-                        <span class="text-slate-500 font-mono text-[10px]">juan.reader / reader123!</span>
+                        <span class="font-bold block text-slate-800">Michael Ordenes</span>
+                        <span class="text-slate-500 font-mono text-[10px]">michael.ordenes / michael123!</span>
                     </button>
                 </div>
             </div>

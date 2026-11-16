@@ -83,32 +83,23 @@ require_once dirname(__DIR__) . '/includes/header.php';
             <h2 class="text-2xl font-extrabold text-navy-900">
                 Editorial Board &amp; Research Fellows
             </h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2 max-w-2xl">
                 
-                <div class="bg-surface p-5 rounded-2xl border border-slate-200 text-center space-y-3">
-                    <img src="<?= asset('assets/images/avatar-editor.svg') ?>" alt="Elena Vance" class="w-16 h-16 mx-auto rounded-full object-cover shadow-sm">
+                <div class="bg-surface p-6 rounded-2xl border border-slate-200 text-center space-y-3">
+                    <img src="<?= asset('assets/images/avatar-editor.svg') ?>" alt="Marla Adriano" class="w-16 h-16 mx-auto rounded-full object-cover shadow-sm">
                     <div>
-                        <h4 class="text-sm font-bold text-navy-900">Elena Vance</h4>
-                        <p class="text-xs font-semibold text-lwblue">Senior Editorial Director</p>
-                        <p class="text-[11px] text-editorial-muted mt-2">Specializing in media ecosystem analysis and verification protocols.</p>
+                        <h4 class="text-sm font-bold text-navy-900">Marla Adriano</h4>
+                        <p class="text-xs font-semibold text-lwblue">Editorial Board &amp; Division Administrator</p>
+                        <p class="text-[11px] text-editorial-muted mt-2">Overseeing editorial governance, publications, and curriculum development.</p>
                     </div>
                 </div>
 
-                <div class="bg-surface p-5 rounded-2xl border border-slate-200 text-center space-y-3">
-                    <img src="<?= asset('assets/images/avatar-writer1.svg') ?>" alt="Marcus Reyes" class="w-16 h-16 mx-auto rounded-full object-cover shadow-sm">
+                <div class="bg-surface p-6 rounded-2xl border border-slate-200 text-center space-y-3">
+                    <img src="<?= asset('assets/images/avatar-writer1.svg') ?>" alt="Michael Ordenes" class="w-16 h-16 mx-auto rounded-full object-cover shadow-sm">
                     <div>
-                        <h4 class="text-sm font-bold text-navy-900">Marcus Reyes</h4>
-                        <p class="text-xs font-semibold text-lwblue">Senior Research Fellow</p>
-                        <p class="text-[11px] text-editorial-muted mt-2">Focusing on algorithmic polarization, AI ethics, and civic technology.</p>
-                    </div>
-                </div>
-
-                <div class="bg-surface p-5 rounded-2xl border border-slate-200 text-center space-y-3">
-                    <img src="<?= asset('assets/images/avatar-writer2.svg') ?>" alt="Sophia Dela Cruz" class="w-16 h-16 mx-auto rounded-full object-cover shadow-sm">
-                    <div>
-                        <h4 class="text-sm font-bold text-navy-900">Sophia Dela Cruz</h4>
-                        <p class="text-xs font-semibold text-lwblue">Digital Citizenship Specialist</p>
-                        <p class="text-[11px] text-editorial-muted mt-2">Leading community outreach, youth literacy workshops, and civic education.</p>
+                        <h4 class="text-sm font-bold text-navy-900">Michael Ordenes</h4>
+                        <p class="text-xs font-semibold text-lwblue">Editorial Board &amp; Research Director</p>
+                        <p class="text-[11px] text-editorial-muted mt-2">Leading investigative research on civic technology, media ecosystems, and digital literacy.</p>
                     </div>
                 </div>
 
