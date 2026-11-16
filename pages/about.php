@@ -43,6 +43,9 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 <a href="#editorial-charter" class="px-3 py-1.5 rounded-md hover:bg-slate-100 hover:text-navy-900 transition whitespace-nowrap">
                     Editorial Charter
                 </a>
+                <a href="#technology" class="px-3 py-1.5 rounded-md hover:bg-slate-100 hover:text-navy-900 transition whitespace-nowrap">
+                    Tech &amp; AI
+                </a>
                 <a href="#terms" class="px-3 py-1.5 rounded-md hover:bg-slate-100 hover:text-navy-900 transition whitespace-nowrap">
                     Ethics &amp; Terms
                 </a>
@@ -169,6 +172,86 @@ require_once dirname(__DIR__) . '/includes/header.php';
                         <div class="space-y-1 pt-2 border-t border-slate-200/80">
                             <h4 class="font-bold text-navy-900 text-sm font-heading">4. Civil Public Engagement</h4>
                             <p class="text-slate-600">Commentaries and community discussions that engage in ad hominem harassment, defamation, or bad-faith misrepresentation will not be permitted on our public forums.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technology Stack & AI Integration Section -->
+                <div id="technology" class="pt-8 border-t border-slate-200 space-y-6 scroll-mt-28">
+                    <div class="flex items-center justify-between gap-4 flex-wrap">
+                        <div>
+                            <span class="text-xs font-bold tracking-widest text-lwblue uppercase">Platform Engineering &amp; Innovation</span>
+                            <h2 class="text-2xl font-extrabold text-navy-900 font-heading mt-1">
+                                Technology Stack &amp; AI-Assisted Development
+                            </h2>
+                        </div>
+                        <a href="<?= url('TECH_STACK.md') ?>" class="inline-flex items-center gap-1.5 text-xs font-bold text-lwblue hover:text-lwblue-hover hover:underline" target="_blank">
+                            <span>Technical Specification</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <!-- Tech Stack Pillar -->
+                        <div class="p-5 bg-surface rounded-lg border border-slate-200 space-y-3">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-8 h-8 rounded-md bg-lwblue text-white flex items-center justify-center text-xs">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                </span>
+                                <h3 class="text-sm font-bold text-navy-900 font-heading">Core Technology Stack</h3>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Engineered on a modern, robust, and framework-free open-source foundation prioritizing speed, data integrity, and longevity:
+                            </p>
+                            <ul class="text-xs text-slate-700 space-y-2 pt-1">
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-check text-emerald-600 text-[11px] mt-0.5"></i>
+                                    <span><strong>PHP 8.2+ (Strict Types)</strong>: High-performance backend runtime enforcing type safety, CSRF tokens, and secure session state.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-check text-emerald-600 text-[11px] mt-0.5"></i>
+                                    <span><strong>MariaDB 10.4+ / MySQL</strong>: 14 normalized relational InnoDB tables with foreign key constraints and zero fake data.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-check text-emerald-600 text-[11px] mt-0.5"></i>
+                                    <span><strong>Tailwind CSS 3.4</strong>: Mobile-first utility styling utilizing custom LagunaWISE editorial palette tokens.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-check text-emerald-600 text-[11px] mt-0.5"></i>
+                                    <span><strong>Vanilla ES6+ JavaScript</strong>: Zero bloated runtime dependencies, ensuring instant interactive performance and accessibility.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Role of AI Pillar -->
+                        <div class="p-5 bg-surface rounded-lg border border-slate-200 space-y-3">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-8 h-8 rounded-md bg-navy-900 text-white flex items-center justify-center text-xs" style="background-color: #061638;">
+                                    <i class="fa-solid fa-microchip"></i>
+                                </span>
+                                <h3 class="text-sm font-bold text-navy-900 font-heading">How AI Became Vital</h3>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Artificial Intelligence functioned as a critical agentic engineering and quality assurance accelerator throughout platform development:
+                            </p>
+                            <ul class="text-xs text-slate-700 space-y-2 pt-1">
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-sparkles text-lwblue text-[11px] mt-0.5"></i>
+                                    <span><strong>Agentic Code Synthesis</strong>: Accelerated implementation of defensive security patterns, parameterized PDO queries, and multi-column grids.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-sparkles text-lwblue text-[11px] mt-0.5"></i>
+                                    <span><strong>Autonomous Test Automation</strong>: Generated and executed 32 live end-to-end acceptance assertions simulating multi-role editorial pipelines.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-sparkles text-lwblue text-[11px] mt-0.5"></i>
+                                    <span><strong>A11y &amp; Responsive Verification</strong>: Automated WCAG 2.2 color contrast audits and headless multi-device rendering across 9 viewports.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-sparkles text-lwblue text-[11px] mt-0.5"></i>
+                                    <span><strong>Human-in-the-Loop Governance</strong>: Ensuring the human editorial board retains exclusive authority over published scholarship and civic opinions.</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
