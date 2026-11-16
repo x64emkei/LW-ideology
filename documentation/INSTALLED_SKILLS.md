@@ -48,11 +48,29 @@ This document records the Agent Skills installed for the **LagunaWISE — Ideolo
 * **Local Path**: `.agents/skills/accessibility/SKILL.md`
 * **Core Capabilities**:
   - WCAG 2.2 Level AA compliance verification
-  - Keyboard navigation and visible focus states (`:focus-visible`)
-  - Color contrast ratios complying with 4.5:1 for normal text and 3:1 for large text
-  - Accessible interactive patterns (dialogs, dropdowns, navigation toggles, forms with aria attributes)
-  - Screen reader friendly semantic hierarchy (`<header>`, `<nav>`, `<main>`, `<article>`, `<aside>`, `<footer>`)
-  - Reduced-motion accessibility (`prefers-reduced-motion: reduce`)
+  - Keyboard focus indicators and logical navigation paths
+  - ARIA landmark roles and descriptive labels
+  - High-contrast color verification against LagunaWISE brand tokens
 
 ---
-*Verified and recognized in Antigravity workspace `.agents/skills/`.*
+
+## 5. Frontend Design (Anthropic) (`frontend-design`)
+* **Repository Source**: `https://github.com/anthropics/skills/tree/main/skills/frontend-design`
+* **Local Path**: `.agents/skills/frontend-design/SKILL.md`
+* **License**: Apache 2.0 (`LICENSE.txt`)
+* **Core Capabilities**:
+  - Distinctive, intentional visual design guidance when building new UI or reshaping existing layouts
+  - Avoidance of generic templates, generic corporate AI aesthetics, and predictable visual clichés
+  - Subject-grounded design, opinionated typography pairings, and deliberate whitespace distribution
+  - Responsive hero section craftsmanship tailored to specific brand identity and subject matter
+
+---
+
+## 6. Software Architecture (`architecture`)
+* **Repository Source**: `https://github.com/sickn33/agentic-awesome-skills/tree/main/skills/architecture`
+* **Local Path**: `.agents/skills/architecture/SKILL.md`
+* **Core Capabilities**:
+  - Architectural decision-making framework and Architecture Decision Records (ADRs)
+  - Context discovery: requirements analysis, project classification, and quality attribute trade-offs
+  - Pattern selection decision trees: modular monolith, tiered separation of concerns, and security layers
+  - Trade-off analysis: balancing simplicity, maintainability, performance, and operational constraints

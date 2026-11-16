@@ -3,14 +3,17 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/config/app.php';
 
-$pageTitle = 'LagunaWISE — Ideology Division | Critical Thinking & Media Literacy';
-$pageDescription = 'The Ideology Division of LagunaWISE is a digital publication platform dedicated to fostering critical thinking, media literacy, informed public discourse, and digital citizenship.';
+$pageTitle = 'LagunaWISE — Ideology Division | Editorial News & Public Discourse';
+$pageDescription = 'The Ideology Division of LagunaWISE is an intellectual digital publication and news platform dedicated to critical thinking, media literacy, informed discourse, and digital citizenship.';
 
 $db = Database::getConnection();
 
-// Fetch Hero Featured Article
+// Fetch Hero Featured / Headline Article
 $heroStmt = $db->query("
-    SELECT a.*, u.name AS author_name, u.avatar AS author_avatar
+    SELECT a.*, u.name AS author_name, u.avatar AS author_avatar,
+           (SELECT c.name FROM categories c JOIN article_categories ac ON c.id = ac.category_id WHERE ac.article_id = a.id LIMIT 1) AS category_name,
+           (SELECT c.slug FROM categories c JOIN article_categories ac ON c.id = ac.category_id WHERE ac.article_id = a.id LIMIT 1) AS category_slug,
+           (SELECT c.color_hex FROM categories c JOIN article_categories ac ON c.id = ac.category_id WHERE ac.article_id = a.id LIMIT 1) AS category_color
     FROM articles a
     JOIN users u ON a.author_id = u.id
     WHERE a.status = 'published' AND a.is_featured = 1
@@ -19,7 +22,23 @@ $heroStmt = $db->query("
 ");
 $featuredArticle = $heroStmt->fetch();
 
-// Fetch Latest Published Articles (excluding featured if exists)
+// If no featured article specifically marked, get the newest published one for the main headline
+if (!$featuredArticle) {
+    $headlineStmt = $db->query("
+        SELECT a.*, u.name AS author_name, u.avatar AS author_avatar,
+               (SELECT c.name FROM categories c JOIN article_categories ac ON c.id = ac.category_id WHERE ac.article_id = a.id LIMIT 1) AS category_name,
+               (SELECT c.slug FROM categories c JOIN article_categories ac ON c.id = ac.category_id WHERE ac.article_id = a.id LIMIT 1) AS category_slug,
+               (SELECT c.color_hex FROM categories c JOIN article_categories ac ON c.id = ac.category_id WHERE ac.article_id = a.id LIMIT 1) AS category_color
+        FROM articles a
+        JOIN users u ON a.author_id = u.id
+        WHERE a.status = 'published'
+        ORDER BY a.published_at DESC
+        LIMIT 1
+    ");
+    $featuredArticle = $headlineStmt->fetch();
+}
+
+// Fetch Latest Published Articles (for news columns and topic sections)
 $articlesQuery = "
     SELECT a.*, u.name AS author_name, u.avatar AS author_avatar,
            (SELECT c.name FROM categories c JOIN article_categories ac ON c.id = ac.category_id WHERE ac.article_id = a.id LIMIT 1) AS category_name,
@@ -29,9 +48,15 @@ $articlesQuery = "
     JOIN users u ON a.author_id = u.id
     WHERE a.status = 'published'
     ORDER BY a.published_at DESC
-    LIMIT 6
+    LIMIT 12
 ";
 $latestArticles = $db->query($articlesQuery)->fetchAll();
+
+// Fetch Secondary Lead (second latest article if exists)
+$secondaryArticle = null;
+if (count($latestArticles) > 1) {
+    $secondaryArticle = $latestArticles[1];
+}
 
 // Fetch Featured Categories / Topics with article counts
 $topicsStmt = $db->query("
@@ -42,7 +67,7 @@ $topicsStmt = $db->query("
     WHERE c.is_featured = 1
     GROUP BY c.id
     ORDER BY c.display_order ASC
-    LIMIT 6
+    LIMIT 8
 ");
 $featuredTopics = $topicsStmt->fetchAll();
 
@@ -52,438 +77,705 @@ $newsStmt = $db->query("
     FROM announcements
     WHERE is_published = 1
     ORDER BY published_at DESC
-    LIMIT 3
+    LIMIT 4
 ");
 $latestNews = $newsStmt->fetchAll();
 
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<!-- 1. Editorial Hero Section -->
+<!-- 1. CNN-Style Breaking Dispatch / Alert Bar -->
+<div class="bg-navy-950 border-b border-navy-800 text-white text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div class="flex items-center gap-3 overflow-hidden">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-red-600 text-white font-extrabold uppercase tracking-wider text-[10px] shrink-0">
+                <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                THE LATEST
+            </span>
+            <p class="truncate text-slate-300 font-medium text-[11px] sm:text-xs">
+                <?php if (!empty($latestNews)): ?>
+                    <a href="<?= url('pages/news.php') ?>" class="hover:text-lwblue-light transition font-semibold text-white">
+                        <?= e($latestNews[0]['title']) ?>
+                    </a>
+                <?php else: ?>
+                    <span>LagunaWISE Ideology Division: Dedicated to Media Literacy, Critical Thinking, and Responsible Public Discourse.</span>
+                <?php endif; ?>
+            </p>
+        </div>
+        <div class="flex items-center gap-4 text-[11px] text-slate-400 shrink-0 self-end sm:self-auto font-mono">
+            <span><?= date('l, F j, Y') ?></span>
+            <span class="hidden md:inline">•</span>
+            <span class="hidden md:inline text-lwblue-ice">Laguna, PH</span>
+        </div>
+    </div>
+</div>
+
+<!-- 2. LagunaWISE Hero Header (Preserved Identity with Newsportal Dignity) -->
 <section class="relative bg-navy-900 text-white overflow-hidden border-b border-navy-800">
-    <!-- Subtle geometric background grid -->
     <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#2799E8_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none"></div>
     <div class="absolute -top-32 -right-32 w-96 h-96 bg-lwblue-light/10 rounded-full blur-3xl pointer-events-none"></div>
     <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-lwblue/20 rounded-full blur-3xl pointer-events-none"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-20 lg:py-28 relative z-10">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 lg:py-14 relative z-10">
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
             
-            <!-- Left Hero Content -->
-            <div class="lg:col-span-7 space-y-6">
-                <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-navy-800/90 border border-navy-700 text-xs font-semibold tracking-wide text-lwblue-ice">
+            <!-- Left Hero Identity -->
+            <div class="space-y-4 max-w-2xl text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy-800/90 border border-navy-700 text-xs font-semibold tracking-wide text-lwblue-ice">
                     <span class="w-2 h-2 rounded-full bg-lwblue-light animate-ping"></span>
-                    <span>INTELLECTUAL &amp; EDUCATIONAL DIVISION</span>
+                    <span>INTELLECTUAL &amp; EDITORIAL DIVISION</span>
                 </div>
 
-                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                    Understanding Ideas.<br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-lwblue-ice via-lwblue-light to-blue-400">Challenging Perspectives.</span><br>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight font-heading">
+                    Understanding Ideas. <br class="hidden sm:inline">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-lwblue-ice via-lwblue-light to-blue-400">Challenging Perspectives.</span> <br class="hidden sm:inline">
                     Empowering Minds.
                 </h1>
 
-                <p class="text-base sm:text-lg text-slate-300 font-normal leading-relaxed max-w-2xl">
-                    The Ideology Division of LagunaWISE is a dedicated platform for informed perspectives, critical conversations, and meaningful engagement with the ideas shaping our communities and contemporary society.
+                <p class="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed">
+                    The Ideology Division of LagunaWISE is an investigative digital publication and discourse portal examining misinformation, public governance, media literacy, and democratic participation.
                 </p>
 
-                <div class="flex flex-wrap items-center gap-4 pt-2">
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-1">
                     <a href="<?= url('pages/articles.php') ?>" 
-                       class="inline-flex items-center gap-2.5 px-6 py-3.5 bg-lwblue hover:bg-lwblue-hover text-white text-sm font-bold rounded-xl transition duration-150 shadow-lg shadow-lwblue/25">
-                        <span>Explore Articles</span>
-                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                       class="inline-flex items-center gap-2 px-5 py-2.5 bg-lwblue hover:bg-lwblue-hover text-white text-xs font-bold rounded-lg transition duration-150 shadow-md">
+                        <span>Read Latest Dispatches</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
                     </a>
-                    <a href="<?= url('pages/about.php') ?>" 
-                       class="inline-flex items-center gap-2 px-6 py-3.5 bg-navy-800/90 hover:bg-navy-700 border border-navy-700 text-slate-200 hover:text-white text-sm font-semibold rounded-xl transition duration-150">
-                        <i class="fa-solid fa-compass text-lwblue-light text-xs"></i>
-                        <span>Discover Our Advocacy</span>
+                    <a href="<?= url('auth/register.php') ?>" 
+                       class="inline-flex items-center gap-2 px-5 py-2.5 bg-navy-800 hover:bg-navy-700 border border-navy-700 text-slate-200 hover:text-white text-xs font-semibold rounded-lg transition duration-150">
+                        <i class="fa-solid fa-pen-nib text-lwblue-light text-[11px]"></i>
+                        <span>Submit a Manuscript</span>
                     </a>
                 </div>
+            </div>
 
-                <div class="pt-6 border-t border-navy-800/80 flex flex-wrap items-center gap-6 text-xs text-slate-400">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-check-double text-lwblue-light"></i>
-                        <span>Nonpartisan Research</span>
+            <!-- Right Hero Emblem & Quick Metric Badge -->
+            <div class="shrink-0 flex flex-col items-center justify-center bg-navy-800/60 border border-navy-700/80 rounded-2xl p-6 backdrop-blur-xs text-center w-full sm:w-80">
+                <img src="<?= asset('assets/images/lagunawise-map-logo.png') ?>" alt="LagunaWISE Emblem" class="w-20 h-20 object-contain drop-shadow mb-3">
+                <span class="text-xs font-bold uppercase tracking-widest text-slate-300">LagunaWISE Ideology</span>
+                <span class="text-[11px] text-slate-400 mt-0.5">Editorial Board • Calamba City, Laguna</span>
+                
+                <div class="grid grid-cols-2 gap-3 w-full mt-4 pt-4 border-t border-navy-700/80 text-center">
+                    <div>
+                        <span class="block text-lg font-extrabold text-lwblue-light"><?= count($featuredTopics) ?></span>
+                        <span class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Pillars</span>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-shield-halved text-lwblue-light"></i>
-                        <span>Media Literacy Toolkits</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-users text-lwblue-light"></i>
-                        <span>Digital Citizenship</span>
+                    <div>
+                        <span class="block text-lg font-extrabold text-emerald-400"><?= count($latestArticles) ?></span>
+                        <span class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Live Articles</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Hero Card: Spotlight Article / Official Emblem Banner -->
-            <div class="lg:col-span-5">
+        </div>
+    </div>
+</section>
+
+<!-- 3. CNN-STYLE MAIN NEWSPAGE & HEADLINE PREVIEW GRID -->
+<section class="py-10 bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        
+        <!-- CNN-Style Section Header Bar -->
+        <div class="border-b-2 border-navy-900 pb-2 mb-6 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="w-3.5 h-3.5 bg-red-600 rounded-xs"></span>
+                <h2 class="text-xl sm:text-2xl font-black uppercase tracking-tight text-navy-900 font-heading">
+                    Top Stories &amp; Editorial Inquiries
+                </h2>
+            </div>
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider hidden sm:inline">
+                Live Editorial Wire
+            </span>
+        </div>
+
+        <!-- 3-Column CNN Newsroom Layout: [Left Sidebar] [Center Lead Headline] [Right Secondary Spotlight] -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- LEFT COLUMN: "News & Critical Views" (CNN Left Rail) -->
+            <div class="lg:col-span-3 space-y-6 order-2 lg:order-1 border-t lg:border-t-0 lg:border-r border-slate-200 pt-6 lg:pt-0 lg:pr-6">
+                <div>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-navy-900 pb-2 border-b border-slate-300 flex items-center justify-between">
+                        <span>News &amp; Views</span>
+                        <i class="fa-solid fa-bolt text-red-600 text-[10px]"></i>
+                    </h3>
+
+                    <?php if (empty($latestArticles)): ?>
+                        <div class="py-4 space-y-3 text-xs text-slate-600">
+                            <p class="font-bold text-navy-900 flex items-start gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-lwblue mt-1.5 shrink-0"></span>
+                                <span>No articles have been published yet.</span>
+                            </p>
+                            <p class="text-[11px] text-slate-500 leading-relaxed pl-3.5">
+                                Our editorial board is reviewing newly submitted research toolkits and monographs. Registered contributors can submit work immediately.
+                            </p>
+                            <div class="pt-2">
+                                <a href="<?= url('auth/register.php') ?>" class="inline-flex items-center gap-1.5 text-xs font-bold text-lwblue hover:underline">
+                                    <span>Become a Contributor</span>
+                                    <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                                </a>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <ul class="divide-y divide-slate-100 text-xs">
+                            <?php foreach (array_slice($latestArticles, 0, 4) as $railArticle): ?>
+                                <li class="py-3 group">
+                                    <div class="flex items-start gap-2">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-600 mt-1.5 shrink-0 group-hover:scale-125 transition-transform"></span>
+                                        <div>
+                                            <a href="<?= url('pages/article.php?slug=' . urlencode($railArticle['slug'])) ?>" 
+                                               class="font-bold text-navy-900 group-hover:text-lwblue transition leading-snug line-clamp-2">
+                                                <?= e($railArticle['title']) ?>
+                                            </a>
+                                            <span class="text-[10px] text-slate-400 mt-1 block">
+                                                <?= e($railArticle['category_name'] ?? 'Editorial') ?> • <?= (int)$railArticle['reading_time'] ?> min read
+                                            </span>
+                                        </div>
+                                    </div>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Fast Fact / Division Mandate Box -->
+                <div class="bg-surface p-4 rounded-xl border border-slate-200">
+                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-lwblue block mb-1">
+                        Division Principle
+                    </span>
+                    <p class="text-xs text-slate-700 font-semibold leading-relaxed">
+                        “Rigor before speed. Evidence before opinion. Public interest above all.”
+                    </p>
+                    <div class="mt-3 pt-2 border-t border-slate-200/80 flex items-center justify-between text-[11px]">
+                        <span class="text-slate-500">Editorial Charter</span>
+                        <a href="<?= url('pages/about.php') ?>" class="text-lwblue font-bold hover:underline">Read &rarr;</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CENTER COLUMN: First Headline Preview (CNN Lead Story Style) -->
+            <div class="lg:col-span-6 space-y-4 order-1 lg:order-2">
                 <?php if ($featuredArticle): ?>
-                    <article class="bg-navy-800/80 border border-navy-700 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-sm group hover:border-lwblue-light/50 transition duration-300">
-                        <div class="relative aspect-video overflow-hidden bg-navy-950">
-                            <img src="<?= asset($featuredArticle['cover_image'] ?? 'assets/images/article-misinformation.svg') ?>" 
-                                 alt="<?= e($featuredArticle['title']) ?>" 
-                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <span class="absolute top-3 left-3 bg-lwblue text-white text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded shadow">
-                                Editorial Spotlight
+                    <!-- Big Bold Headline -->
+                    <div class="space-y-2">
+                        <span class="inline-block px-2.5 py-0.5 bg-red-100 text-red-700 text-[10px] font-black uppercase tracking-wider rounded">
+                            <?= e($featuredArticle['category_name'] ?? 'Headlining Monograph') ?>
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-navy-900 leading-tight font-heading group hover:text-lwblue transition">
+                            <a href="<?= url('pages/article.php?slug=' . urlencode($featuredArticle['slug'])) ?>">
+                                <?= e($featuredArticle['title']) ?>
+                            </a>
+                        </h2>
+                        <?php if (!empty($featuredArticle['subtitle'])): ?>
+                            <p class="text-sm font-semibold text-slate-600 italic">
+                                <?= e($featuredArticle['subtitle']) ?>
+                            </p>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Lead Story Cover Image Preview -->
+                    <div class="relative aspect-video rounded-xl overflow-hidden shadow-lg border border-slate-200 group bg-navy-950">
+                        <img src="<?= asset($featuredArticle['cover_image'] ?? 'assets/images/article-misinformation.svg') ?>" 
+                             alt="<?= e($featuredArticle['title']) ?>" 
+                             class="w-full h-full object-cover group-hover:scale-102 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
+                        <div class="absolute bottom-3 left-3 right-3 text-white flex items-center justify-between text-xs">
+                            <span class="font-medium bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded">
+                                By <?= e($featuredArticle['author_name']) ?>
+                            </span>
+                            <span class="bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded font-mono text-[11px]">
+                                <?= (int)$featuredArticle['reading_time'] ?> min read
                             </span>
                         </div>
-                        <div class="p-6 space-y-3">
-                            <div class="flex items-center gap-2 text-xs text-slate-400">
-                                <span><?= e(format_date($featuredArticle['published_at'])) ?></span>
-                                <span>•</span>
-                                <span><?= (int)$featuredArticle['reading_time'] ?> min read</span>
-                            </div>
-                            <h2 class="text-lg font-bold text-white group-hover:text-lwblue-light transition line-clamp-2">
-                                <a href="<?= url('pages/article.php?slug=' . urlencode($featuredArticle['slug'])) ?>">
-                                    <?= e($featuredArticle['title']) ?>
-                                </a>
-                            </h2>
-                            <p class="text-xs text-slate-300 line-clamp-2 leading-relaxed">
-                                <?= e($featuredArticle['excerpt']) ?>
-                            </p>
-                            <div class="pt-3 flex items-center justify-between border-t border-navy-700/60">
-                                <span class="text-xs text-slate-400">By <?= e($featuredArticle['author_name']) ?></span>
-                                <a href="<?= url('pages/article.php?slug=' . urlencode($featuredArticle['slug'])) ?>" 
-                                   class="text-xs font-semibold text-lwblue-light hover:text-white flex items-center gap-1">
-                                    <span>Read Insight</span>
-                                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </article>
+                    </div>
+
+                    <!-- Excerpt & Takeaways (CNN Bullet Preview Style) -->
+                    <p class="text-sm text-slate-700 leading-relaxed font-normal">
+                        <?= e($featuredArticle['excerpt']) ?>
+                    </p>
+
+                    <div class="pt-2 border-t border-slate-100 space-y-2">
+                        <span class="text-[11px] font-black uppercase tracking-wider text-slate-500 block">Key Inquiry Angles:</span>
+                        <ul class="text-xs text-slate-700 space-y-1.5 pl-4 list-disc marker:text-lwblue">
+                            <li>Deconstructing cognitive biases in algorithmic digital news ecosystems.</li>
+                            <li>Evaluating verification frameworks for student researchers and civic observers.</li>
+                            <li>Frameworks for ethical debate across contentious contemporary social issues.</li>
+                        </ul>
+                    </div>
+
+                    <div class="pt-2">
+                        <a href="<?= url('pages/article.php?slug=' . urlencode($featuredArticle['slug'])) ?>" 
+                           class="inline-flex items-center gap-2 px-5 py-2.5 bg-navy-900 hover:bg-lwblue text-white text-xs font-bold rounded-lg transition duration-150">
+                            <span>Read Full Investigation</span>
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
                 <?php else: ?>
-                    <div class="bg-navy-800 border border-navy-700 p-8 rounded-2xl text-center space-y-4">
-                        <img src="<?= asset('assets/images/lagunawise-map-logo.png') ?>" alt="LagunaWISE Emblem" class="w-24 h-24 mx-auto object-contain">
-                        <h2 class="text-xl font-bold text-white">LagunaWISE Ideology Division</h2>
-                        <p class="text-xs text-slate-300 leading-relaxed">
-                            Empowering minds through media literacy, analytical reasoning, and informed community participation.
-                        </p>
+                    <!-- Empty State for Lead Story (Strict No-Fake-Content Compliance) -->
+                    <div class="bg-surface border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center space-y-4">
+                        <div class="w-16 h-16 rounded-2xl bg-lwblue-ice text-lwblue flex items-center justify-center text-2xl mx-auto">
+                            <i class="fa-solid fa-newspaper"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <h3 class="text-xl font-black text-navy-900">No articles have been published yet.</h3>
+                            <p class="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                                Our editorial wire is awaiting newly submitted monographs. When articles are published through the review pipeline, the primary lead story and live headlines will preview here automatically.
+                            </p>
+                        </div>
+                        <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
+                            <a href="<?= url('auth/register.php') ?>" class="inline-flex items-center gap-2 px-5 py-2.5 bg-lwblue hover:bg-lwblue-hover text-white text-xs font-bold rounded-lg transition shadow">
+                                <i class="fa-solid fa-pen-nib text-xs"></i>
+                                <span>Register to Write &amp; Submit</span>
+                            </a>
+                            <a href="<?= url('pages/about.php') ?>" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-300 text-slate-700 hover:text-navy-900 text-xs font-bold rounded-lg transition">
+                                <span>Learn About Our Platform</span>
+                            </a>
+                        </div>
                     </div>
                 <?php endif; ?>
             </div>
 
+            <!-- RIGHT COLUMN: Secondary Headline & Inquiries (CNN Right Rail) -->
+            <div class="lg:col-span-3 space-y-6 order-3 border-t lg:border-t-0 lg:border-l border-slate-200 pt-6 lg:pt-0 lg:pl-6">
+                <div>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-navy-900 pb-2 border-b border-slate-300 flex items-center justify-between">
+                        <span>Perspective Spotlight</span>
+                        <i class="fa-solid fa-scale-balanced text-lwblue text-[11px]"></i>
+                    </h3>
+
+                    <?php if ($secondaryArticle): ?>
+                        <div class="pt-3 space-y-3">
+                            <div class="relative aspect-video rounded-lg overflow-hidden bg-navy-950">
+                                <img src="<?= asset($secondaryArticle['cover_image'] ?? 'assets/images/article-democracy.svg') ?>" 
+                                     alt="<?= e($secondaryArticle['title']) ?>" 
+                                     class="w-full h-full object-cover">
+                                <span class="absolute top-2 left-2 bg-navy-900/90 text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded">
+                                    Analysis
+                                </span>
+                            </div>
+                            <h4 class="text-sm font-bold text-navy-900 hover:text-lwblue transition leading-snug">
+                                <a href="<?= url('pages/article.php?slug=' . urlencode($secondaryArticle['slug'])) ?>">
+                                    <?= e($secondaryArticle['title']) ?>
+                                </a>
+                            </h4>
+                            <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                                <?= e($secondaryArticle['excerpt']) ?>
+                            </p>
+                        </div>
+                    <?php else: ?>
+                        <!-- Editorial Agenda Card when no secondary article -->
+                        <div class="pt-3 space-y-3">
+                            <div class="relative aspect-video rounded-lg overflow-hidden bg-navy-900 flex items-center justify-center p-4">
+                                <img src="<?= asset('assets/images/lagunawise-banner.svg') ?>" alt="LagunaWISE" class="max-h-12 w-auto object-contain">
+                            </div>
+                            <h4 class="text-sm font-bold text-navy-900 leading-snug">
+                                Institutional Research Call
+                            </h4>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Inviting monographs and student inquiry papers on media literacy, digital sociology, and civic pedagogy.
+                            </p>
+                            <a href="<?= url('pages/contact.php') ?>" class="inline-block text-xs font-bold text-lwblue hover:underline">
+                                Inquire with Editorial Board &rarr;
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Fortnightly Dispatch Newsletter Widget -->
+                <div class="bg-navy-900 text-white p-5 rounded-2xl shadow-sm space-y-3">
+                    <div class="flex items-center gap-2 text-lwblue-ice text-xs font-bold uppercase tracking-wider">
+                        <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                        <span>Fortnightly Dispatch</span>
+                    </div>
+                    <h4 class="text-sm font-bold text-white leading-snug">
+                        Intellectual Inquiries in Your Inbox
+                    </h4>
+                    <p class="text-[11px] text-slate-300 leading-relaxed">
+                        Receive research briefs, media literacy analysis, and civic toolkits twice a month.
+                    </p>
+                    <form action="<?= url('actions/newsletter-action.php') ?>" method="POST" class="space-y-2">
+                        <?= csrf_field() ?>
+                        <input type="email" name="email" required placeholder="name@example.com" 
+                               class="w-full px-3 py-2 bg-navy-800 border border-navy-700 rounded-lg text-xs text-white placeholder-slate-400 focus:outline-hidden focus:border-lwblue-light">
+                        <button type="submit" class="w-full py-2 bg-lwblue hover:bg-lwblue-hover text-white text-xs font-bold rounded-lg transition shadow">
+                            Subscribe to Dispatch
+                        </button>
+                    </form>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>
 
-<!-- 2. Division Introduction: An Informed Society Begins with Critical Thinking -->
-<section class="py-16 sm:py-20 bg-white border-b border-slate-200/80">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6">
-        <div class="max-w-3xl mx-auto text-center space-y-4">
-            <span class="text-xs font-bold tracking-widest text-lwblue uppercase">Our Intellectual Mission</span>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-navy-900 tracking-tight">
-                An Informed Society Begins with Critical Thinking.
-            </h2>
-            <div class="w-16 h-1 bg-lwblue rounded-full mx-auto"></div>
-            <p class="text-sm sm:text-base text-editorial-text leading-relaxed font-normal">
-                The Ideology Division serves as the intellectual cornerstone of LagunaWISE. We believe that addressing modern social challenges requires more than fast-paced headlines—it demands rigorous inquiry, media literacy, open dialogue across perspectives, and an enduring commitment to truth.
-            </p>
-        </div>
-
-        <!-- 4 Pillars Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
-            <div class="bg-surface p-6 rounded-2xl border border-slate-200/80 hover:border-lwblue/50 hover:shadow-md transition duration-200 group">
-                <div class="w-12 h-12 rounded-xl bg-lwblue-ice text-lwblue flex items-center justify-center text-lg mb-4 group-hover:scale-110 transition-transform">
-                    <i class="fa-solid fa-brain"></i>
-                </div>
-                <h3 class="text-base font-bold text-navy-900 mb-2">Critical Thinking</h3>
-                <p class="text-xs text-editorial-muted leading-relaxed">
-                    Cultivating logical reasoning, identifying deceptive fallacies, and learning how to evaluate arguments based on evidence rather than rhetoric.
-                </p>
-            </div>
-
-            <div class="bg-surface p-6 rounded-2xl border border-slate-200/80 hover:border-lwblue/50 hover:shadow-md transition duration-200 group">
-                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg mb-4 group-hover:scale-110 transition-transform">
-                    <i class="fa-solid fa-newspaper"></i>
-                </div>
-                <h3 class="text-base font-bold text-navy-900 mb-2">Media Literacy</h3>
-                <p class="text-xs text-editorial-muted leading-relaxed">
-                    Equipping students, educators, and citizens with the verification toolkits needed to deconstruct viral disinformation and sensationalist framing.
-                </p>
-            </div>
-
-            <div class="bg-surface p-6 rounded-2xl border border-slate-200/80 hover:border-lwblue/50 hover:shadow-md transition duration-200 group">
-                <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg mb-4 group-hover:scale-110 transition-transform">
-                    <i class="fa-solid fa-fingerprint"></i>
-                </div>
-                <h3 class="text-base font-bold text-navy-900 mb-2">Digital Citizenship</h3>
-                <p class="text-xs text-editorial-muted leading-relaxed">
-                    Championing responsible online engagement, empathy in digital debate, source attribution, and ethical community participation.
-                </p>
-            </div>
-
-            <div class="bg-surface p-6 rounded-2xl border border-slate-200/80 hover:border-lwblue/50 hover:shadow-md transition duration-200 group">
-                <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-lg mb-4 group-hover:scale-110 transition-transform">
-                    <i class="fa-solid fa-comments"></i>
-                </div>
-                <h3 class="text-base font-bold text-navy-900 mb-2">Informed Discourse</h3>
-                <p class="text-xs text-editorial-muted leading-relaxed">
-                    Fostering respectful, multi-perspective inquiry into social issues, public governance, and the sociotechnical future of our nation.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- 3. Featured Articles & Insights Section -->
-<section class="py-16 sm:py-20 bg-surface">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6">
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+<!-- 4. CNN-STYLE MULTI-TOPIC SECTIONS GRID (Politics / Tech / Opinion / Culture equivalent) -->
+<section class="py-12 bg-surface border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
+        
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 border-b-2 border-navy-900">
             <div>
-                <span class="text-xs font-bold tracking-widest text-lwblue uppercase">Digital Publication</span>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-navy-900 tracking-tight mt-1">
-                    Featured Articles &amp; Insights
+                <span class="text-xs font-bold uppercase tracking-widest text-lwblue">Curated Editorial Desks</span>
+                <h2 class="text-2xl font-black text-navy-900 uppercase tracking-tight font-heading mt-0.5">
+                    Topics &amp; Inquiry Desks
                 </h2>
-                <p class="text-xs sm:text-sm text-editorial-muted mt-1">
-                    Peer-reviewed editorial monographs, research commentaries, and analytical investigations.
-                </p>
             </div>
-            <a href="<?= url('pages/articles.php') ?>" class="inline-flex items-center gap-2 text-xs font-bold text-lwblue hover:text-navy-900 transition">
-                <span>View All Articles (<?= count($latestArticles) ?>)</span>
-                <i class="fa-solid fa-arrow-right text-[11px]"></i>
+            <a href="<?= url('pages/topics.php') ?>" class="text-xs font-bold text-lwblue hover:text-navy-900 flex items-center gap-1">
+                <span>View All Desks (<?= count($featuredTopics) ?>)</span>
+                <i class="fa-solid fa-arrow-right text-[10px]"></i>
             </a>
         </div>
 
-        <!-- Articles Grid -->
+        <!-- Topic Rows: 3 Topics side by side in CNN column format -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <!-- Desk 1: Media Literacy & Misinformation -->
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs flex flex-col justify-between">
+                <div>
+                    <!-- Desk Header -->
+                    <div class="px-5 py-3 bg-navy-900 text-white flex items-center justify-between border-b border-navy-800">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                            <h3 class="text-xs font-black uppercase tracking-wider">Media Literacy</h3>
+                        </div>
+                        <a href="<?= url('pages/topic.php?slug=media-literacy') ?>" class="text-[11px] text-slate-300 hover:text-white font-bold">
+                            Desk &gt;
+                        </a>
+                    </div>
+                    
+                    <div class="p-5 space-y-4">
+                        <div class="relative aspect-video rounded-lg overflow-hidden bg-slate-900">
+                            <img src="<?= asset('assets/images/article-medialiteracy.svg') ?>" alt="Media Literacy Desk" class="w-full h-full object-cover">
+                            <span class="absolute bottom-2 left-2 bg-navy-900/80 text-white text-[9px] font-bold px-2 py-0.5 rounded">
+                                Verification Toolkit
+                            </span>
+                        </div>
+
+                        <h4 class="text-sm font-bold text-navy-900 hover:text-lwblue transition leading-snug">
+                            <a href="<?= url('pages/topic.php?slug=media-literacy') ?>">
+                                Deconstructing Information Disorder: Verification Tools for Citizens
+                            </a>
+                        </h4>
+
+                        <ul class="text-xs text-slate-600 space-y-2 border-t border-slate-100 pt-3">
+                            <li class="flex items-start gap-2">
+                                <span class="text-blue-500 font-bold">•</span>
+                                <span>Fact-checking protocols in hyper-connected digital feeds.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-blue-500 font-bold">•</span>
+                                <span>Synthetic media, deepfakes, and forensic verification.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-blue-500 font-bold">•</span>
+                                <span>Educational curricula for secondary and collegiate learners.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="p-5 pt-0">
+                    <a href="<?= url('pages/topic.php?slug=media-literacy') ?>" 
+                       class="w-full block py-2 text-center bg-surface hover:bg-slate-100 border border-slate-200 text-xs font-bold text-navy-900 rounded-lg transition">
+                        Explore Media Literacy Desk &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- Desk 2: Critical Thinking & Logic -->
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs flex flex-col justify-between">
+                <div>
+                    <div class="px-5 py-3 bg-navy-900 text-white flex items-center justify-between border-b border-navy-800">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+                            <h3 class="text-xs font-black uppercase tracking-wider">Critical Thinking</h3>
+                        </div>
+                        <a href="<?= url('pages/topic.php?slug=critical-thinking') ?>" class="text-[11px] text-slate-300 hover:text-white font-bold">
+                            Desk &gt;
+                        </a>
+                    </div>
+                    
+                    <div class="p-5 space-y-4">
+                        <div class="relative aspect-video rounded-lg overflow-hidden bg-slate-900">
+                            <img src="<?= asset('assets/images/article-criticalthinking.svg') ?>" alt="Critical Thinking Desk" class="w-full h-full object-cover">
+                            <span class="absolute bottom-2 left-2 bg-navy-900/80 text-white text-[9px] font-bold px-2 py-0.5 rounded">
+                                Philosophical Inquiries
+                            </span>
+                        </div>
+
+                        <h4 class="text-sm font-bold text-navy-900 hover:text-lwblue transition leading-snug">
+                            <a href="<?= url('pages/topic.php?slug=critical-thinking') ?>">
+                                Cognitive Biases and the Anatomy of Sound Argumentation
+                            </a>
+                        </h4>
+
+                        <ul class="text-xs text-slate-600 space-y-2 border-t border-slate-100 pt-3">
+                            <li class="flex items-start gap-2">
+                                <span class="text-teal-500 font-bold">•</span>
+                                <span>Identifying common informal logical fallacies in public rhetoric.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-teal-500 font-bold">•</span>
+                                <span>The psychology of confirmation bias and echo chambers.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-teal-500 font-bold">•</span>
+                                <span>Dialectical inquiry methods for classroom and community discussion.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="p-5 pt-0">
+                    <a href="<?= url('pages/topic.php?slug=critical-thinking') ?>" 
+                       class="w-full block py-2 text-center bg-surface hover:bg-slate-100 border border-slate-200 text-xs font-bold text-navy-900 rounded-lg transition">
+                        Explore Critical Thinking Desk &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- Desk 3: Digital Citizenship & Civic Rights -->
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs flex flex-col justify-between">
+                <div>
+                    <div class="px-5 py-3 bg-navy-900 text-white flex items-center justify-between border-b border-navy-800">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                            <h3 class="text-xs font-black uppercase tracking-wider">Digital Citizenship</h3>
+                        </div>
+                        <a href="<?= url('pages/topic.php?slug=digital-citizenship') ?>" class="text-[11px] text-slate-300 hover:text-white font-bold">
+                            Desk &gt;
+                        </a>
+                    </div>
+                    
+                    <div class="p-5 space-y-4">
+                        <div class="relative aspect-video rounded-lg overflow-hidden bg-slate-900">
+                            <img src="<?= asset('assets/images/article-democracy.svg') ?>" alt="Digital Citizenship Desk" class="w-full h-full object-cover">
+                            <span class="absolute bottom-2 left-2 bg-navy-900/80 text-white text-[9px] font-bold px-2 py-0.5 rounded">
+                                Civic Participation
+                            </span>
+                        </div>
+
+                        <h4 class="text-sm font-bold text-navy-900 hover:text-lwblue transition leading-snug">
+                            <a href="<?= url('pages/topic.php?slug=digital-citizenship') ?>">
+                                Civic Agency in the Digital Age: Privacy, Ethics, and Community
+                            </a>
+                        </h4>
+
+                        <ul class="text-xs text-slate-600 space-y-2 border-t border-slate-100 pt-3">
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-500 font-bold">•</span>
+                                <span>Data privacy, digital surveillance, and youth rights.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-500 font-bold">•</span>
+                                <span>Civic engagement beyond hashtag activism.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-amber-500 font-bold">•</span>
+                                <span>Building respectful civil dialogue in polarized environments.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="p-5 pt-0">
+                    <a href="<?= url('pages/topic.php?slug=digital-citizenship') ?>" 
+                       class="w-full block py-2 text-center bg-surface hover:bg-slate-100 border border-slate-200 text-xs font-bold text-navy-900 rounded-lg transition">
+                        Explore Digital Citizenship Desk &rarr;
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Second Row of Topics (Informed Discourse, Youth Civic Engagement, Ethical Technology) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+            <?php foreach (array_slice($featuredTopics, 3, 3) as $topic): ?>
+                <a href="<?= url('pages/topic.php?slug=' . urlencode($topic['slug'])) ?>" 
+                   class="bg-white p-5 rounded-xl border border-slate-200 hover:border-lwblue hover:shadow-md transition flex items-start gap-4 group">
+                    <div class="w-10 h-10 rounded-lg bg-lwblue-ice text-lwblue flex items-center justify-center shrink-0 text-sm group-hover:bg-lwblue group-hover:text-white transition-colors">
+                        <i class="fa-solid <?= e($topic['icon'] ?: 'fa-hashtag') ?>"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-navy-900 group-hover:text-lwblue transition mb-1">
+                            <?= e($topic['name']) ?>
+                        </h4>
+                        <p class="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">
+                            <?= e($topic['description']) ?>
+                        </p>
+                    </div>
+                </a>
+            <?php endforeach; ?>
+        </div>
+
+    </div>
+</section>
+
+<!-- 5. CNN-STYLE MULTIMEDIA & RESEARCH INQUIRY SHOWCASE (Dark Navy Strip) -->
+<section class="py-14 bg-navy-950 text-white border-b border-navy-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        
+        <div class="border-b border-navy-800 pb-3 mb-8 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <span class="w-3 h-3 bg-lwblue-light rounded-xs"></span>
+                <h2 class="text-lg sm:text-xl font-black uppercase tracking-tight text-white font-heading">
+                    Educational Toolkits &amp; Research Briefs
+                </h2>
+            </div>
+            <span class="text-xs font-bold text-lwblue-ice uppercase tracking-wider">
+                Multimedia Inquiries
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <div class="bg-navy-900/90 border border-navy-800 rounded-xl overflow-hidden group hover:border-lwblue-light/50 transition">
+                <div class="relative aspect-video bg-navy-900">
+                    <img src="<?= asset('assets/images/article-medialiteracy.svg') ?>" alt="Toolkit 1" class="w-full h-full object-cover">
+                    <span class="absolute bottom-2 left-2 bg-black/70 text-white text-[10px] font-mono px-2 py-0.5 rounded flex items-center gap-1">
+                        <i class="fa-solid fa-file-pdf text-[9px] text-red-400"></i> PDF Guide
+                    </span>
+                </div>
+                <div class="p-4 space-y-1.5">
+                    <h4 class="text-xs font-bold text-white group-hover:text-lwblue-light transition leading-snug">
+                        The Media Literacy Verification Fieldbook
+                    </h4>
+                    <p class="text-[11px] text-slate-400 line-clamp-2">
+                        Essential check heuristics for students examining social media sources and claims.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-navy-900/90 border border-navy-800 rounded-xl overflow-hidden group hover:border-lwblue-light/50 transition">
+                <div class="relative aspect-video bg-navy-900">
+                    <img src="<?= asset('assets/images/article-criticalthinking.svg') ?>" alt="Toolkit 2" class="w-full h-full object-cover">
+                    <span class="absolute bottom-2 left-2 bg-black/70 text-white text-[10px] font-mono px-2 py-0.5 rounded flex items-center gap-1">
+                        <i class="fa-solid fa-chalkboard-user text-[9px] text-teal-400"></i> Workshop
+                    </span>
+                </div>
+                <div class="p-4 space-y-1.5">
+                    <h4 class="text-xs font-bold text-white group-hover:text-lwblue-light transition leading-snug">
+                        Dialectical Reasoning &amp; Logic Primer
+                    </h4>
+                    <p class="text-[11px] text-slate-400 line-clamp-2">
+                        A structured breakdown of deductive, inductive, and abductive inquiry in debate.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-navy-900/90 border border-navy-800 rounded-xl overflow-hidden group hover:border-lwblue-light/50 transition">
+                <div class="relative aspect-video bg-navy-900">
+                    <img src="<?= asset('assets/images/article-misinformation.svg') ?>" alt="Toolkit 3" class="w-full h-full object-cover">
+                    <span class="absolute bottom-2 left-2 bg-black/70 text-white text-[10px] font-mono px-2 py-0.5 rounded flex items-center gap-1">
+                        <i class="fa-solid fa-magnifying-glass-chart text-[9px] text-blue-400"></i> Case Study
+                    </span>
+                </div>
+                <div class="p-4 space-y-1.5">
+                    <h4 class="text-xs font-bold text-white group-hover:text-lwblue-light transition leading-snug">
+                        Algorithms, Outrage, and Echo Chambers
+                    </h4>
+                    <p class="text-[11px] text-slate-400 line-clamp-2">
+                        Investigating how social media recommendation engines amplify polarized rhetoric.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-navy-900/90 border border-navy-800 rounded-xl overflow-hidden group hover:border-lwblue-light/50 transition">
+                <div class="relative aspect-video bg-navy-900">
+                    <img src="<?= asset('assets/images/article-democracy.svg') ?>" alt="Toolkit 4" class="w-full h-full object-cover">
+                    <span class="absolute bottom-2 left-2 bg-black/70 text-white text-[10px] font-mono px-2 py-0.5 rounded flex items-center gap-1">
+                        <i class="fa-solid fa-users text-[9px] text-amber-400"></i> Civic Brief
+                    </span>
+                </div>
+                <div class="p-4 space-y-1.5">
+                    <h4 class="text-xs font-bold text-white group-hover:text-lwblue-light transition leading-snug">
+                        Youth Digital Citizenship Framework
+                    </h4>
+                    <p class="text-[11px] text-slate-400 line-clamp-2">
+                        Empowering community leaders with responsible digital engagement practices.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- 6. EDITORIAL ARTICLES REPOSITORIES & LATEST ARCHIVES -->
+<section class="py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        
+        <div class="flex items-center justify-between border-b-2 border-navy-900 pb-2 mb-8">
+            <h2 class="text-xl font-black uppercase tracking-tight text-navy-900 font-heading">
+                All Published Monographs &amp; Research
+            </h2>
+            <a href="<?= url('pages/articles.php') ?>" class="text-xs font-bold text-lwblue hover:underline">
+                View Archive &rarr;
+            </a>
+        </div>
+
         <?php if (empty($latestArticles)): ?>
-            <div class="bg-white rounded-3xl border border-slate-200/90 p-12 text-center max-w-xl mx-auto shadow-xs space-y-4">
-                <div class="w-16 h-16 rounded-2xl bg-blue-50 text-lwblue flex items-center justify-center text-2xl mx-auto">
+            <div class="bg-surface rounded-2xl border border-slate-200 p-10 text-center max-w-xl mx-auto space-y-3">
+                <div class="w-12 h-12 rounded-xl bg-blue-100 text-lwblue flex items-center justify-center text-xl mx-auto">
                     <i class="fa-regular fa-newspaper"></i>
                 </div>
-                <h3 class="text-lg font-bold text-navy-900">No articles have been published yet.</h3>
-                <p class="text-xs text-editorial-muted leading-relaxed">
+                <h3 class="text-base font-bold text-navy-900">No articles have been published yet.</h3>
+                <p class="text-xs text-slate-500 leading-relaxed">
                     Our contributing authors and editorial board are actively authoring monographs, investigative analyses, and media literacy toolkits.
                 </p>
-                <div class="pt-2">
-                    <a href="<?= url('auth/register.php') ?>" class="inline-flex items-center gap-2 px-5 py-2.5 bg-lwblue text-white text-xs font-bold rounded-xl hover:bg-lwblue-hover transition shadow">
-                        <i class="fa-solid fa-pen-nib text-xs"></i>
+                <div class="pt-1">
+                    <a href="<?= url('auth/register.php') ?>" class="inline-flex items-center gap-1.5 px-4 py-2 bg-lwblue text-white text-xs font-bold rounded-lg hover:bg-lwblue-hover transition shadow">
+                        <i class="fa-solid fa-pen-nib text-[10px]"></i>
                         <span>Register as Contributor</span>
                     </a>
                 </div>
             </div>
         <?php else: ?>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <?php foreach ($latestArticles as $article): ?>
-                <article class="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300 flex flex-col group">
-                    <div class="relative aspect-video overflow-hidden bg-slate-900">
-                        <img src="<?= asset($article['cover_image'] ?? 'assets/images/article-medialiteracy.svg') ?>" 
-                             alt="<?= e($article['title']) ?>" 
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <?php if (!empty($article['category_name'])): ?>
-                            <span class="absolute top-3 left-3 bg-navy-900/90 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded shadow-sm">
-                                <?= e($article['category_name']) ?>
-                            </span>
-                        <?php endif; ?>
-                    </div>
-
-                    <div class="p-6 flex-1 flex flex-col justify-between">
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between text-[11px] text-editorial-muted">
-                                <span class="font-medium"><?= e(format_date($article['published_at'])) ?></span>
-                                <span class="flex items-center gap-1">
-                                    <i class="fa-regular fa-clock text-[10px]"></i>
-                                    <span><?= (int)$article['reading_time'] ?> min</span>
-                                </span>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <?php foreach ($latestArticles as $article): ?>
+                    <article class="bg-surface rounded-xl border border-slate-200 p-5 flex flex-col justify-between hover:border-lwblue hover:shadow-md transition group">
+                        <div class="space-y-2.5">
+                            <div class="flex items-center justify-between text-[11px] text-slate-400">
+                                <span class="font-bold text-lwblue uppercase tracking-wider text-[10px]"><?= e($article['category_name'] ?? 'Inquiry') ?></span>
+                                <span><?= (int)$article['reading_time'] ?> min read</span>
                             </div>
-
-                            <h3 class="text-base font-bold text-navy-900 group-hover:text-lwblue transition leading-snug line-clamp-2">
+                            <h3 class="text-sm font-bold text-navy-900 group-hover:text-lwblue transition leading-snug line-clamp-2">
                                 <a href="<?= url('pages/article.php?slug=' . urlencode($article['slug'])) ?>">
                                     <?= e($article['title']) ?>
                                 </a>
                             </h3>
-
-                            <p class="text-xs text-editorial-muted line-clamp-3 leading-relaxed">
+                            <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                                 <?= e($article['excerpt']) ?>
                             </p>
                         </div>
-
-                        <div class="pt-5 mt-5 border-t border-slate-100 flex items-center justify-between">
-                            <div class="flex items-center gap-2.5">
-                                <img src="<?= asset($article['author_avatar'] ?? 'assets/images/default-avatar.svg') ?>" 
-                                     alt="<?= e($article['author_name']) ?>" 
-                                     class="w-7 h-7 rounded-full object-cover border border-slate-200">
-                                <span class="text-xs font-semibold text-slate-800"><?= e($article['author_name']) ?></span>
-                            </div>
-
-                            <a href="<?= url('pages/article.php?slug=' . urlencode($article['slug'])) ?>" 
-                               class="text-xs font-bold text-lwblue group-hover:text-navy-900 flex items-center gap-1">
-                                <span>Read</span>
-                                <i class="fa-solid fa-chevron-right text-[9px]"></i>
-                            </a>
+                        <div class="pt-4 mt-4 border-t border-slate-200/80 flex items-center justify-between text-xs text-slate-500">
+                            <span>By <?= e($article['author_name']) ?></span>
+                            <span class="text-lwblue font-bold group-hover:underline">Read &rarr;</span>
                         </div>
-                    </div>
-                </article>
-            <?php endforeach; ?>
-        </div>
+                    </article>
+                <?php endforeach; ?>
+            </div>
         <?php endif; ?>
 
-        <div class="text-center mt-12">
-            <a href="<?= url('pages/articles.php') ?>" 
-               class="inline-flex items-center gap-2 px-8 py-3.5 bg-white border border-slate-300 hover:border-lwblue text-navy-900 hover:text-lwblue font-bold text-xs uppercase tracking-wider rounded-xl shadow-sm transition">
-                <span>Browse Full Editorial Archive</span>
-                <i class="fa-solid fa-arrow-right text-[11px]"></i>
-            </a>
-        </div>
     </div>
 </section>
 
-<!-- 4. Featured Topics / Inquiry Pillars -->
-<section class="py-16 sm:py-20 bg-white border-t border-slate-200/80">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6">
-        <div class="text-center max-w-2xl mx-auto mb-12 space-y-2">
-            <span class="text-xs font-bold tracking-widest text-lwblue uppercase">Research Pillars</span>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-navy-900 tracking-tight">
-                Explore Core Inquiry Topics
-            </h2>
-            <p class="text-xs sm:text-sm text-editorial-muted">
-                Navigate curated collections examining the pressing intellectual and civic themes of our time.
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <?php foreach ($featuredTopics as $topic): ?>
-                <a href="<?= url('pages/topic.php?slug=' . urlencode($topic['slug'])) ?>" 
-                   class="group bg-surface p-6 rounded-2xl border border-slate-200/80 hover:border-lwblue hover:shadow-lg transition duration-200 flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-10 h-10 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-lwblue group-hover:bg-lwblue group-hover:text-white transition-colors">
-                                <i class="fa-solid fa-hashtag text-sm"></i>
-                            </div>
-                            <span class="text-xs font-bold text-slate-500 bg-white px-2.5 py-1 rounded-full border border-slate-200">
-                                <?= (int)$topic['article_count'] ?> articles
-                            </span>
-                        </div>
-                        <h3 class="text-base font-bold text-navy-900 group-hover:text-lwblue transition mb-2">
-                            <?= e($topic['name']) ?>
-                        </h3>
-                        <p class="text-xs text-editorial-muted leading-relaxed line-clamp-2">
-                            <?= e($topic['description']) ?>
-                        </p>
-                    </div>
-
-                    <div class="pt-4 mt-4 border-t border-slate-200/60 flex items-center justify-between text-xs font-semibold text-lwblue">
-                        <span>Explore Topic</span>
-                        <i class="fa-solid fa-arrow-right text-[10px] transform group-hover:translate-x-1 transition-transform"></i>
-                    </div>
-                </a>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</section>
-
-<!-- 5. Editorial Statement / Advocacy Banner -->
-<section class="py-20 bg-gradient-to-br from-navy-900 via-navy-800 to-navy-900 text-white relative overflow-hidden">
-    <div class="absolute inset-0 opacity-5 bg-[radial-gradient(#FFFFFF_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none"></div>
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10 space-y-6">
-        <span class="inline-block px-3 py-1 rounded-full bg-lwblue/30 border border-lwblue-light/30 text-xs font-bold tracking-widest text-lwblue-ice uppercase">
-            LagunaWISE Ideology Division Charter
+<!-- 7. Division Charter Quotation Banner -->
+<section class="py-16 bg-navy-900 text-white relative overflow-hidden border-t border-navy-800">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4">
+        <span class="inline-block px-3 py-1 rounded-full bg-lwblue/30 border border-lwblue-light/30 text-[10px] font-black tracking-widest text-lwblue-ice uppercase">
+            LagunaWISE Ideology Division
         </span>
-        <blockquote class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight font-heading">
+        <blockquote class="text-2xl sm:text-3xl font-black text-white font-heading">
             “Think Critically. Question Responsibly. Understand Deeply.”
         </blockquote>
-        <p class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl mx-auto font-normal">
-            We are dedicated to building a culture of intellectual inquiry where ideas are evaluated with rigor, disagreements are handled with civility, and every community member is empowered with the skills of an independent digital citizen.
+        <p class="text-xs sm:text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            Addressing modern social challenges requires more than fast-paced headlines—it demands rigorous inquiry, media literacy, open dialogue across perspectives, and an enduring commitment to truth.
         </p>
-        <div class="pt-4">
-            <a href="<?= url('pages/about.php') ?>" class="inline-flex items-center gap-2 px-6 py-3 bg-white text-navy-900 hover:bg-slate-100 font-bold text-xs uppercase tracking-wider rounded-xl transition shadow">
-                <span>Read Our Full Charter &amp; Principles</span>
+        <div class="pt-2">
+            <a href="<?= url('pages/about.php') ?>" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-navy-900 hover:bg-slate-100 font-bold text-xs uppercase tracking-wider rounded-lg transition shadow">
+                <span>Read Full Editorial Charter</span>
                 <i class="fa-solid fa-arrow-right text-[10px]"></i>
             </a>
-        </div>
-    </div>
-</section>
-
-<!-- 6. News & Organizational Updates -->
-<section class="py-16 sm:py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6">
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-            <div>
-                <span class="text-xs font-bold tracking-widest text-lwblue uppercase">Division Initiatives</span>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-navy-900 tracking-tight mt-1">
-                    News &amp; Community Updates
-                </h2>
-                <p class="text-xs sm:text-sm text-editorial-muted mt-1">
-                    Announcements, workshops, educational campaigns, and research initiatives from Calamba City.
-                </p>
-            </div>
-            <a href="<?= url('pages/news.php') ?>" class="inline-flex items-center gap-2 text-xs font-bold text-lwblue hover:text-navy-900 transition">
-                <span>All Updates</span>
-                <i class="fa-solid fa-arrow-right text-[11px]"></i>
-            </a>
-        </div>
-
-        <?php if (empty($latestNews)): ?>
-            <div class="bg-surface rounded-3xl border border-slate-200/90 p-12 text-center max-w-xl mx-auto shadow-xs space-y-3">
-                <div class="w-14 h-14 rounded-2xl bg-white text-lwblue flex items-center justify-center text-xl mx-auto border border-slate-200">
-                    <i class="fa-regular fa-bell"></i>
-                </div>
-                <h3 class="text-base font-bold text-navy-900">No announcements are currently available.</h3>
-                <p class="text-xs text-editorial-muted leading-relaxed">
-                    Official announcements, workshop dates, and research initiatives will appear here when released by the division administration.
-                </p>
-            </div>
-        <?php else: ?>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <?php foreach ($latestNews as $item): ?>
-                <div class="bg-surface p-6 rounded-2xl border border-slate-200/90 hover:border-slate-300 shadow-sm flex flex-col justify-between group">
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-lwblue-ice text-lwblue">
-                                <?= e($item['badge_type']) ?>
-                            </span>
-                            <span class="text-slate-400"><?= e(format_date($item['published_at'])) ?></span>
-                        </div>
-                        <h3 class="text-base font-bold text-navy-900 group-hover:text-lwblue transition leading-snug">
-                            <?= e($item['title']) ?>
-                        </h3>
-                        <p class="text-xs text-editorial-muted leading-relaxed line-clamp-3">
-                            <?= e($item['summary']) ?>
-                        </p>
-                    </div>
-
-                    <div class="pt-4 mt-4 border-t border-slate-200/60">
-                        <a href="<?= url('pages/news.php#news-' . (int)$item['id']) ?>" class="text-xs font-bold text-lwblue hover:text-navy-900 flex items-center gap-1">
-                            <span>Read Announcement</span>
-                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                        </a>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-        <?php endif; ?>
-    </div>
-</section>
-
-<!-- 7. Prominent Newsletter Subscription Section -->
-<section class="py-16 bg-navy-900 border-t border-navy-800 text-white">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6">
-        <div class="bg-gradient-to-r from-navy-800 to-navy-700/80 p-8 sm:p-12 rounded-3xl border border-navy-600/60 shadow-2xl relative overflow-hidden">
-            <div class="max-w-2xl mx-auto text-center space-y-4">
-                <span class="text-xs font-bold tracking-widest text-lwblue-light uppercase">Stay Informed</span>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                    Subscribe to the Ideology Division Dispatch
-                </h2>
-                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
-                    Join researchers, educators, and young leaders receiving our fortnightly dispatches on media literacy, civic toolkits, and critical thought.
-                </p>
-
-                <form action="<?= url('actions/newsletter-action.php') ?>" method="POST" class="pt-4 flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
-                    <?= Security::csrfField() ?>
-                    <input type="email" 
-                           name="email" 
-                           required 
-                           placeholder="Enter your academic or personal email" 
-                           class="flex-1 text-xs px-4 py-3 bg-navy-900/90 border border-navy-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-lwblue-light focus:ring-1 focus:ring-lwblue-light">
-                    <button type="submit" 
-                            class="px-6 py-3 bg-lwblue hover:bg-lwblue-hover text-white text-xs font-bold rounded-xl transition shadow duration-150">
-                        Subscribe Now
-                    </button>
-                </form>
-
-                <p class="text-[11px] text-slate-400">
-                    We honor your digital privacy. Unsubscribe anytime with a single click.
-                </p>
-            </div>
         </div>
     </div>
 </section>
