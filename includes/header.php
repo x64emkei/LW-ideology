@@ -97,10 +97,33 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
             --color-muted-text: #718096;
         }
 
+        html {
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100vw;
+        }
+
         body {
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100vw;
+            position: relative;
             font-family: 'Inter', sans-serif;
             color: var(--color-body-text);
             background-color: var(--color-bg-light);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /* Universal mobile anti-overflow protections */
+        img, svg, video, iframe {
+            max-width: 100%;
+            height: auto;
+        }
+
+        p, h1, h2, h3, h4, h5, h6, a, span {
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
 
         h1, h2, h3, h4, .font-heading {

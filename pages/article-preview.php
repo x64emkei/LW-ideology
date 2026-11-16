@@ -199,18 +199,18 @@ require_once dirname(__DIR__) . '/includes/header.php';
     </div>
 </header>
 
-<!-- Article Responsive Two-Column Layout (Main Content 66% / Sidebar 34%) -->
-<div class="py-12 sm:py-16 bg-surface">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+<!-- Article Responsive Two-Column Layout (Mobile: Cardless Seamless Reading / Desktop: Two-Column Elevated Layout) -->
+<div class="py-0 sm:py-8 lg:py-16 bg-white lg:bg-surface">
+    <div class="max-w-7xl mx-auto px-0 sm:px-6">
         
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-0 lg:gap-10 items-start">
             
-            <!-- Main Content Column (Desktop ~66% / 8 cols) -->
-            <div class="lg:col-span-8 bg-white p-6 sm:p-10 rounded-3xl border border-slate-200/90 shadow-sm space-y-8">
+            <!-- Main Content Column (Mobile: Seamless Cardless Reading, Desktop: Elevated Container ~66% / 8 cols) -->
+            <div class="lg:col-span-8 bg-white px-4 py-6 sm:px-8 sm:py-10 lg:p-10 border-0 lg:border lg:border-slate-200 shadow-none lg:shadow-xs rounded-none lg:rounded-lg space-y-6 sm:space-y-8">
                 
                 <!-- Cover Image -->
                 <?php if (!empty($article['cover_image'])): ?>
-                    <div class="rounded-2xl overflow-hidden shadow-md border border-slate-200 aspect-[16/9] bg-slate-900">
+                    <div class="rounded-lg sm:rounded-md overflow-hidden shadow-xs border border-slate-200 aspect-[16/9] bg-slate-900 w-full">
                         <img src="<?= asset($article['cover_image']) ?>" 
                              alt="<?= e($article['title']) ?>" 
                              class="w-full h-full object-cover">
@@ -218,12 +218,12 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 <?php endif; ?>
 
                 <!-- Excerpt Lead Box -->
-                <div class="p-5 bg-blue-50/70 border-l-4 border-lwblue rounded-r-xl text-sm font-medium text-slate-800 leading-relaxed">
+                <div class="p-4 sm:p-5 bg-blue-50/70 border-l-4 border-lwblue rounded-r-lg sm:rounded-r-xl text-sm font-medium text-slate-800 leading-relaxed">
                     <?= e($article['excerpt']) ?>
                 </div>
 
-                <!-- Editorial Body Prose -->
-                <div class="editorial-prose text-base sm:text-lg text-slate-800 leading-relaxed max-w-prose">
+                <!-- Editorial Body Prose (Comfortable Reading Width, Strictly Word-Wrapped) -->
+                <div class="editorial-prose text-base sm:text-lg text-slate-800 leading-relaxed max-w-prose break-words">
                     <?= render_article_content($article['content']) ?>
                 </div>
 
@@ -254,17 +254,17 @@ require_once dirname(__DIR__) . '/includes/header.php';
 
             </div>
 
-            <!-- Secondary Sidebar Column (Desktop ~34% / 4 cols) -->
-            <div class="lg:col-span-4 space-y-6">
+            <!-- Secondary Sidebar Column (Mobile: Clean Natural Flow / Desktop: Sticky Elevated Cards ~34% / 4 cols) -->
+            <div class="lg:col-span-4 px-4 sm:px-6 lg:px-0 space-y-6 pt-8 pb-12 lg:py-0 border-t border-slate-200 lg:border-t-0">
                 
                 <!-- Publishing & Workflow Card -->
-                <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm space-y-4">
-                    <h3 class="text-xs font-bold text-navy-900 uppercase tracking-wider pb-2 border-b border-slate-100">
+                <div class="bg-slate-50/70 lg:bg-white p-5 sm:p-6 rounded-xl lg:rounded-lg border border-slate-200/80 lg:border-slate-200 shadow-none lg:shadow-xs space-y-4">
+                    <h3 class="text-xs font-bold text-navy-900 uppercase tracking-wider pb-2 border-b border-slate-200/70 lg:border-slate-100">
                         Manuscript Controls
                     </h3>
 
                     <div class="space-y-2 text-xs">
-                        <div class="flex items-center justify-between py-1 border-b border-slate-100">
+                        <div class="flex items-center justify-between py-1 border-b border-slate-200/60 lg:border-slate-100">
                             <span class="text-slate-500">Status</span>
                             <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase
                                 <?= match($article['status']) {
@@ -276,11 +276,11 @@ require_once dirname(__DIR__) . '/includes/header.php';
                                 <?= e(str_replace('_', ' ', $article['status'])) ?>
                             </span>
                         </div>
-                        <div class="flex items-center justify-between py-1 border-b border-slate-100">
+                        <div class="flex items-center justify-between py-1 border-b border-slate-200/60 lg:border-slate-100">
                             <span class="text-slate-500">Reading Time</span>
                             <span class="font-bold text-slate-800"><?= (int)$article['reading_time'] ?> min</span>
                         </div>
-                        <div class="flex items-center justify-between py-1 border-b border-slate-100">
+                        <div class="flex items-center justify-between py-1 border-b border-slate-200/60 lg:border-slate-100">
                             <span class="text-slate-500">Created</span>
                             <span class="font-medium text-slate-800"><?= e(format_date($article['created_at'])) ?></span>
                         </div>
@@ -310,7 +310,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 </div>
 
                 <!-- Author Bio Card -->
-                <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm space-y-3">
+                <div class="bg-slate-50/70 lg:bg-white p-5 sm:p-6 rounded-xl lg:rounded-lg border border-slate-200/80 lg:border-slate-200 shadow-none lg:shadow-xs space-y-3">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-lwblue">Author Attribution</span>
                     <div class="flex items-center gap-3">
                         <img src="<?= asset($article['author_avatar'] ?? 'assets/images/default-avatar.svg') ?>" 
@@ -327,7 +327,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 </div>
 
                 <!-- Citation Preview Box -->
-                <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm space-y-2 text-xs text-slate-600">
+                <div class="bg-slate-50/70 lg:bg-white p-5 sm:p-6 rounded-xl lg:rounded-lg border border-slate-200/80 lg:border-slate-200 shadow-none lg:shadow-xs space-y-2 text-xs text-slate-600">
                     <h4 class="font-bold text-navy-900 flex items-center gap-2">
                         <i class="fa-solid fa-quote-left text-lwblue"></i>
                         <span>Citation Preview</span>

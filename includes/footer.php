@@ -1,7 +1,24 @@
     </main>
 
+    <!-- GLOBAL PROTOTYPE ADVISORY BANNER (VISIBLE ACROSS ALL PAGES) -->
+    <aside class="bg-amber-400 text-navy-950 border-t-2 border-b-2 border-amber-500 py-3.5 px-4 shadow-sm" aria-label="Prototype Notice">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2.5">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-navy-950 text-amber-300 font-extrabold uppercase text-[10px] tracking-wider shrink-0 shadow-xs">
+                    <i class="fa-solid fa-flask-vial text-amber-400"></i> PROTOTYPE ONLY
+                </span>
+                <p class="font-bold text-navy-950 text-xs sm:text-sm">
+                    ACADEMIC DEMONSTRATION &bull; RESEARCH PROTOTYPE SYSTEM
+                </p>
+            </div>
+            <p class="text-[11px] sm:text-xs text-navy-900 font-medium text-center sm:text-right">
+                This platform is an educational prototype developed for academic and research evaluation. Content is for illustrative study.
+            </p>
+        </div>
+    </aside>
+
     <!-- Master News-Portal Footer (Solid Dark Navy with Verified WCAG AAA Contrast) -->
-    <footer class="bg-navy-950 text-slate-300 border-t border-navy-800 pt-16 pb-12 mt-20" style="background-color: #030D22;">
+    <footer class="bg-navy-950 text-slate-300 border-t border-navy-800 pt-16 pb-12" style="background-color: #030D22;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             
             <!-- Top Footer Bar: Brand, Official Emblem, Wordmark Badge, and Headquarters Details -->
@@ -199,6 +216,17 @@
                     <span>•</span>
                     <a href="<?= url('admin/index.php') ?>" class="text-slate-300 hover:text-white transition">Staff CMS</a>
                 </div>
+            </div>
+
+            <!-- Prominent Global Advisory Notice: Prototype Only -->
+            <div class="mt-6 pt-4 border-t border-navy-850 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-amber-300/90 font-mono">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                    <span class="font-bold tracking-wide">NOTICE: THIS ENTIRE WEBSITE IS A PROTOTYPE ONLY</span>
+                </div>
+                <p class="text-[10px] text-slate-400 text-center sm:text-right font-sans">
+                    Constructed for academic research and educational demonstration &bull; Not for official commercial or legal reliance.
+                </p>
             </div>
 
         </div>

@@ -177,7 +177,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
         
         <!-- Mobile Horizontal Topic Ribbon (Thumb-Friendly Swipe Carousel) -->
-        <div class="lg:hidden mb-6 -mx-4 px-4 overflow-x-auto no-scrollbar scroll-smooth flex items-center gap-2 py-1">
+        <div class="lg:hidden mb-6 w-full max-w-full overflow-x-auto no-scrollbar scroll-smooth flex items-center gap-2 py-1">
             <a href="<?= url('pages/articles.php') ?>" 
                class="px-3.5 py-1.5 rounded-full text-xs font-bold shrink-0 bg-navy-900 text-white shadow-xs">
                 All Dispatches

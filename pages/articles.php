@@ -147,7 +147,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
         </form>
 
         <!-- Mobile Horizontal Quick Category Chips -->
-        <div class="lg:hidden mt-4 pt-3 border-t border-slate-100 -mx-4 px-4 overflow-x-auto no-scrollbar scroll-smooth flex items-center gap-2">
+        <div class="lg:hidden mt-4 pt-3 border-t border-slate-100 w-full max-w-full overflow-x-auto no-scrollbar scroll-smooth flex items-center gap-2">
             <a href="<?= url('pages/articles.php' . (!empty($search) ? '?q=' . urlencode($search) : '')) ?>" 
                class="px-3 py-1.5 rounded-full text-xs font-bold shrink-0 transition <?= empty($categorySlug) ? 'bg-navy-900 text-white' : 'bg-surface text-slate-700 hover:bg-slate-200 border border-slate-200' ?>">
                 All (<?= $totalArticles ?>)
