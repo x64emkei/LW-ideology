@@ -10,6 +10,15 @@ declare(strict_types=1);
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
+// Enforce standard UTF-8 charset
+ini_set('default_charset', 'UTF-8');
+if (function_exists('mb_internal_encoding')) {
+    mb_internal_encoding('UTF-8');
+}
+if (!headers_sent() && php_sapi_name() !== 'cli') {
+    header('Content-Type: text/html; charset=UTF-8');
+}
+
 // Timezone
 date_default_timezone_set('Asia/Manila');
 

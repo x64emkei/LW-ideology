@@ -7,7 +7,10 @@ if (!defined('APP_NAME')) {
 $currentUser = current_user();
 $pageTitle = isset($pageTitle) ? $pageTitle . ' — ' . get_setting('site_name', 'LagunaWISE — Ideology Division') : get_setting('site_name', 'LagunaWISE — Ideology Division');
 $pageDesc = isset($pageDescription) ? $pageDescription : get_setting('division_statement', 'An intellectual and educational division of LagunaWISE dedicated to fostering critical thinking, media literacy, and digital citizenship.');
-$canonicalUrl = isset($canonicalUrl) ? $canonicalUrl : (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+$httpHost = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$reqUri = $_SERVER['REQUEST_URI'] ?? '/';
+$isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+$canonicalUrl = isset($canonicalUrl) ? $canonicalUrl : ($isHttps ? "https" : "http") . "://{$httpHost}{$reqUri}";
 $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo.png');
 ?>
 <!DOCTYPE html>
@@ -51,7 +54,9 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
                 extend: {
                     colors: {
                         navy: {
+                            950: '#030D22',
                             900: '#061638',
+                            850: '#081B44',
                             800: '#0B2252',
                             700: '#153372',
                         },
@@ -80,6 +85,7 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
 
     <style>
         :root {
+            --color-deep-navy: #030D22;
             --color-primary-navy: #061638;
             --color-secondary-navy: #0B2252;
             --color-lw-blue: #1557A6;
@@ -111,6 +117,48 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
             outline-offset: 2px;
         }
 
+        /* Shimmer & Skeleton Loaders */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        .skeleton-dark {
+            background: linear-gradient(90deg, #0B2252 25%, #153372 50%, #0B2252 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        /* Smooth page fade-in animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Top Page Loading Bar */
+        #top-loading-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #2799E8, #1557A6);
+            z-index: 99999;
+            width: 100%;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+
         /* Subtle scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -129,6 +177,7 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-lwblue-ice selection:text-navy-900">
+    <div id="top-loading-bar"></div>
 
     <!-- Top Organizational Information Bar -->
     <div class="bg-navy-900 text-silver text-xs border-b border-navy-800 py-2 px-4 sm:px-6">
