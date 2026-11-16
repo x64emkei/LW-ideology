@@ -37,7 +37,7 @@ if (!$article) {
 
 // Access Control: If article is not published, only authorized editors, admins, or the author can view it
 if ($article['status'] !== 'published') {
-    $canView = is_logged_in() && (user_has_any_role(['super_admin', 'admin', 'editor']) || (int)$article['author_id'] === (int)($_SESSION['user_id'] ?? 0));
+    $canView = is_logged_in() && (user_has_any_role(['administrator', 'super_admin', 'admin', 'editor']) || (int)$article['author_id'] === (int)($_SESSION['user_id'] ?? 0));
     if (!$canView) {
         http_response_code(403);
         $pageTitle = 'Private Draft';
@@ -110,6 +110,7 @@ $relatedArticles = $relStmt->fetchAll();
 $pageTitle = $article['title'];
 $pageDescription = $article['excerpt'];
 $ogImage = asset($article['cover_image'] ?? 'assets/images/lagunawise-map-logo.png');
+$canonicalUrl = url('pages/article.php?slug=' . urlencode($article['slug']));
 
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
@@ -143,8 +144,8 @@ require_once dirname(__DIR__) . '/includes/header.php';
 <?php if ($article['status'] !== 'published'): ?>
     <div class="bg-amber-500 text-slate-900 font-bold px-4 py-2.5 text-xs text-center border-b border-amber-600">
         <i class="fa-solid fa-triangle-exclamation mr-1.5"></i>
-        EDITORIAL PREVIEW MODE: This article is currently <strong><?= strtoupper(e($article['status'])) ?></strong> and is not visible to the public.
-        <?php if (user_has_any_role(['super_admin', 'admin', 'editor'])): ?>
+        EDITORIAL PREVIEW MODE: This article is currently <strong><?= strtoupper(e(str_replace('_', ' ', $article['status']))) ?></strong> and is not visible to the public.
+        <?php if (user_has_any_role(['administrator', 'super_admin', 'admin', 'editor'])): ?>
             <a href="<?= url('admin/article-edit.php?id=' . (int)$article['id']) ?>" class="ml-2 underline hover:text-black">Edit in CMS &rarr;</a>
         <?php endif; ?>
     </div>
@@ -153,7 +154,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
 <!-- Article Header Section -->
 <header class="bg-navy-900 text-white pt-12 pb-16 relative overflow-hidden border-b border-navy-800">
     <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#2799E8_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none"></div>
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 relative z-10 space-y-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 space-y-6">
         
         <!-- Breadcrumb & Categories -->
         <div class="flex flex-wrap items-center gap-2 text-xs">
@@ -176,7 +177,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
 
         <!-- Subtitle / Excerpt -->
         <?php if (!empty($article['subtitle'])): ?>
-            <p class="text-base sm:text-xl text-slate-300 font-normal leading-relaxed">
+            <p class="text-base sm:text-xl text-slate-300 font-normal leading-relaxed max-w-4xl">
                 <?= e($article['subtitle']) ?>
             </p>
         <?php endif; ?>
@@ -189,7 +190,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                      class="w-10 h-10 rounded-full object-cover border border-navy-700 shadow-sm">
                 <div>
                     <p class="font-bold text-white text-sm"><?= e($article['author_name']) ?></p>
-                    <p class="text-[11px] text-slate-400">LagunaWISE Ideology Division Fellow</p>
+                    <p class="text-[11px] text-slate-400">LagunaWISE Ideology Division Contributor</p>
                 </div>
             </div>
 
@@ -212,216 +213,252 @@ require_once dirname(__DIR__) . '/includes/header.php';
     </div>
 </header>
 
-<!-- Article Main Content & Reader Layout -->
-<article class="py-12 sm:py-16 bg-white">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6">
-
-        <!-- Cover Image -->
-        <?php if (!empty($article['cover_image'])): ?>
-            <div class="rounded-3xl overflow-hidden shadow-lg border border-slate-200 mb-12 aspect-[16/9] bg-slate-900">
-                <img src="<?= asset($article['cover_image']) ?>" 
-                     alt="<?= e($article['title']) ?>" 
-                     class="w-full h-full object-cover">
-            </div>
-        <?php endif; ?>
-
-        <!-- Reading Utility Bar (Share, Bookmark, Font adjustment) -->
-        <div class="flex flex-wrap items-center justify-between gap-4 pb-8 mb-10 border-b border-slate-200 text-xs">
+<!-- Article Responsive Two-Column Layout (Main Reading Column 66% / Sidebar Column 34%) -->
+<article class="py-12 sm:py-16 bg-surface">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
             
-            <!-- Bookmark Button -->
-            <button type="button" 
-                    class="bookmark-toggle-btn inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 bg-surface hover:bg-slate-100 text-slate-700 font-semibold transition"
-                    data-article-id="<?= (int)$article['id'] ?>">
-                <i class="<?= $isBookmarked ? 'fa-solid fa-bookmark text-amber-500' : 'fa-regular fa-bookmark' ?>"></i>
-                <span class="bookmark-label"><?= $isBookmarked ? 'Bookmarked' : 'Bookmark' ?></span>
-            </button>
-
-            <!-- Social Share Buttons -->
-            <div class="flex items-center gap-2">
-                <span class="text-slate-400 font-medium mr-1">Share:</span>
+            <!-- Main Content Area (Desktop ~66% / 8 cols) -->
+            <div class="lg:col-span-8 bg-white p-6 sm:p-10 rounded-3xl border border-slate-200/90 shadow-sm space-y-8">
                 
-                <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode($canonicalUrl) ?>" 
-                   target="_blank" rel="noopener noreferrer"
-                   class="w-8 h-8 rounded-full bg-slate-100 hover:bg-blue-600 hover:text-white flex items-center justify-center text-slate-600 transition" 
-                   title="Share on Facebook">
-                    <i class="fa-brands fa-facebook-f text-xs"></i>
-                </a>
+                <!-- Cover Image -->
+                <?php if (!empty($article['cover_image'])): ?>
+                    <div class="rounded-2xl overflow-hidden shadow-md border border-slate-200 aspect-[16/9] bg-slate-900">
+                        <img src="<?= asset($article['cover_image']) ?>" 
+                             alt="<?= e($article['title']) ?>" 
+                             class="w-full h-full object-cover">
+                    </div>
+                <?php endif; ?>
 
-                <a href="https://twitter.com/intent/tweet?url=<?= urlencode($canonicalUrl) ?>&text=<?= urlencode($article['title']) ?>" 
-                   target="_blank" rel="noopener noreferrer"
-                   class="w-8 h-8 rounded-full bg-slate-100 hover:bg-black hover:text-white flex items-center justify-center text-slate-600 transition" 
-                   title="Share on X">
-                    <i class="fa-brands fa-x-twitter text-xs"></i>
-                </a>
+                <!-- Excerpt Lead Box -->
+                <div class="p-5 bg-blue-50/70 border-l-4 border-lwblue rounded-r-xl text-sm font-medium text-slate-800 leading-relaxed">
+                    <?= e($article['excerpt']) ?>
+                </div>
 
-                <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?= urlencode($canonicalUrl) ?>" 
-                   target="_blank" rel="noopener noreferrer"
-                   class="w-8 h-8 rounded-full bg-slate-100 hover:bg-blue-700 hover:text-white flex items-center justify-center text-slate-600 transition" 
-                   title="Share on LinkedIn">
-                    <i class="fa-brands fa-linkedin-in text-xs"></i>
-                </a>
+                <!-- Editorial Body Prose (Comfortable Reading Width) -->
+                <div class="editorial-prose text-base sm:text-lg text-slate-800 leading-relaxed space-y-6 max-w-prose">
+                    <?= Security::sanitizeArticleHtml($article['content']) ?>
+                </div>
 
-                <button type="button" 
-                        onclick="navigator.clipboard.writeText(window.location.href); alert('Article URL copied to clipboard!');"
-                        class="w-8 h-8 rounded-full bg-slate-100 hover:bg-lwblue hover:text-white flex items-center justify-center text-slate-600 transition" 
-                        title="Copy Link">
-                    <i class="fa-solid fa-link text-xs"></i>
-                </button>
+                <!-- References & Sources Section -->
+                <?php if (!empty($article['references_sources'])): ?>
+                    <div class="mt-12 pt-6 border-t border-slate-200 space-y-3">
+                        <h3 class="text-sm font-bold text-navy-900 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-book-bookmark text-lwblue"></i>
+                            <span>References &amp; Cited Academic Sources</span>
+                        </h3>
+                        <div class="p-4 bg-surface rounded-xl border border-slate-200 text-xs text-slate-700 whitespace-pre-line leading-relaxed font-mono">
+                            <?= e($article['references_sources']) ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <!-- Tags -->
+                <?php if (!empty($article['tags'])): ?>
+                    <div class="pt-4 flex flex-wrap items-center gap-2 text-xs">
+                        <span class="text-slate-400 font-semibold"><i class="fa-solid fa-tags text-[11px] mr-1"></i>Tags:</span>
+                        <?php foreach (explode(',', $article['tags']) as $t): ?>
+                            <?php $t = trim($t); if (!empty($t)): ?>
+                                <span class="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-medium">#<?= e($t) ?></span>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
+                <!-- Comments & Discussion Area inside Main Column -->
+                <section class="mt-14 pt-8 border-t border-slate-200 space-y-8" id="comments">
+                    
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                        <h3 class="text-lg font-bold text-navy-900 flex items-center gap-2">
+                            <i class="fa-regular fa-comments text-lwblue"></i>
+                            <span>Discussion &amp; Inquiry (<?= count($comments) ?>)</span>
+                        </h3>
+                        <span class="text-xs text-slate-400">Moderated civic discourse</span>
+                    </div>
+
+                    <!-- Existing Comments -->
+                    <?php if (empty($comments)): ?>
+                        <div class="p-8 rounded-2xl bg-surface border border-slate-200 text-center text-xs text-slate-500">
+                            <p>No comments posted yet. Be the first to offer an informed inquiry or constructive perspective.</p>
+                        </div>
+                    <?php else: ?>
+                        <div class="space-y-4">
+                            <?php foreach ($comments as $comment): ?>
+                                <div class="bg-surface p-5 rounded-2xl border border-slate-200 text-xs space-y-2">
+                                    <div class="flex items-center justify-between text-[11px]">
+                                        <div class="flex items-center gap-2 font-bold text-navy-900">
+                                            <img src="<?= asset($comment['user_avatar'] ?? 'assets/images/default-avatar.svg') ?>" alt="User" class="w-6 h-6 rounded-full object-cover">
+                                            <span><?= e($comment['author_name']) ?></span>
+                                        </div>
+                                        <span class="text-slate-400"><?= e(format_date($comment['created_at'])) ?></span>
+                                    </div>
+                                    <p class="text-slate-700 leading-relaxed pl-8">
+                                        <?= nl2br(e($comment['content'])) ?>
+                                    </p>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Add Comment Form -->
+                    <div class="p-6 rounded-2xl bg-surface border border-slate-200 space-y-4">
+                        <h4 class="text-sm font-bold text-navy-900">Participate in the Discussion</h4>
+                        
+                        <form action="<?= url('actions/comment-action.php') ?>" method="POST" class="space-y-4">
+                            <?= Security::csrfField() ?>
+                            <input type="hidden" name="article_id" value="<?= (int)$article['id'] ?>">
+                            <input type="hidden" name="slug" value="<?= e($article['slug']) ?>">
+
+                            <?php if (!is_logged_in()): ?>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-700 mb-1">Your Full Name *</label>
+                                        <input type="text" name="author_name" required placeholder="e.g. Maria Clara" 
+                                               class="w-full text-xs p-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-lwblue">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-700 mb-1">Your Email Address *</label>
+                                        <input type="email" name="author_email" required placeholder="name@domain.com" 
+                                               class="w-full text-xs p-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-lwblue">
+                                    </div>
+                                </div>
+                            <?php else: ?>
+                                <div class="p-3 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 flex items-center gap-2">
+                                    <i class="fa-solid fa-user-check text-lwblue"></i>
+                                    <span>Commenting as <strong><?= e($currentUser['name']) ?></strong></span>
+                                </div>
+                            <?php endif; ?>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Your Perspective *</label>
+                                <textarea name="content" rows="4" required placeholder="Share your insights or constructive argument adhering to our Editorial Charter..."
+                                          class="w-full text-xs p-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-lwblue leading-relaxed"></textarea>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-1">
+                                <span class="text-[11px] text-slate-400">Respectful, civil debates only.</span>
+                                <button type="submit" class="px-5 py-2.5 bg-lwblue hover:bg-lwblue-hover text-white text-xs font-bold rounded-xl transition shadow">
+                                    Submit Comment
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </section>
+
             </div>
 
-        </div>
+            <!-- Secondary Sidebar Area (Desktop ~34% / 4 cols) -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- Reader Actions & Utility Card -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm space-y-4">
+                    <h3 class="text-xs font-bold text-navy-900 uppercase tracking-wider pb-2 border-b border-slate-100 flex items-center justify-between">
+                        <span>Reader Actions</span>
+                        <i class="fa-solid fa-bookmark text-lwblue"></i>
+                    </h3>
 
-        <!-- Editorial Body Prose -->
-        <div class="editorial-prose text-lg text-slate-800 leading-relaxed space-y-6 max-w-none">
-            <?= Security::sanitizeArticleHtml($article['content']) ?>
-        </div>
+                    <div class="space-y-3">
+                        <!-- Interactive Bookmark Button -->
+                        <button type="button" 
+                                class="bookmark-toggle-btn w-full py-3 px-4 rounded-xl border border-slate-200 bg-surface hover:bg-slate-100 text-slate-800 text-xs font-bold transition flex items-center justify-center gap-2"
+                                data-article-id="<?= (int)$article['id'] ?>">
+                            <i class="<?= $isBookmarked ? 'fa-solid fa-bookmark text-amber-500' : 'fa-regular fa-bookmark' ?>"></i>
+                            <span class="bookmark-label"><?= $isBookmarked ? 'Bookmarked in Reading List' : 'Bookmark Article' ?></span>
+                        </button>
 
-        <!-- Citation & Institutional Footer Note -->
-        <div class="mt-14 p-6 bg-surface rounded-2xl border border-slate-200 text-xs text-slate-600 space-y-2">
-            <h4 class="font-bold text-navy-900 text-sm flex items-center gap-2">
-                <i class="fa-solid fa-feather text-lwblue"></i>
-                Academic Citation &amp; Attribution
-            </h4>
-            <p>
-                LagunaWISE Ideology Division. (<?= date('Y', strtotime($article['published_at'] ?? 'now')) ?>). <em><?= e($article['title']) ?></em>. LagunaWISE Digital Publication, Calamba City, Laguna. Retrieved from <?= e($canonicalUrl) ?>
-            </p>
-        </div>
+                        <!-- Social Share -->
+                        <div class="pt-3 border-t border-slate-100">
+                            <span class="block text-xs font-semibold text-slate-600 mb-2">Share this Insight:</span>
+                            <div class="flex items-center gap-2">
+                                <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode($canonicalUrl) ?>" 
+                                   target="_blank" rel="noopener noreferrer"
+                                   class="flex-1 py-2 rounded-xl bg-surface hover:bg-blue-600 hover:text-white border border-slate-200 text-slate-700 text-center transition text-xs font-bold" 
+                                   title="Facebook">
+                                    <i class="fa-brands fa-facebook-f mr-1"></i> FB
+                                </a>
 
-        <!-- Author Biography Card -->
-        <div class="mt-10 p-6 bg-navy-900 text-white rounded-2xl flex flex-col sm:flex-row items-center sm:items-start gap-5">
-            <img src="<?= asset($article['author_avatar'] ?? 'assets/images/default-avatar.svg') ?>" 
-                 alt="<?= e($article['author_name']) ?>" 
-                 class="w-16 h-16 rounded-full object-cover border-2 border-lwblue-light shadow-md shrink-0">
-            <div class="space-y-2 text-center sm:text-left">
-                <span class="text-[10px] font-bold uppercase tracking-widest text-lwblue-light">About the Author</span>
-                <h3 class="text-base font-bold text-white"><?= e($article['author_name']) ?></h3>
-                <p class="text-xs text-slate-300 leading-relaxed">
-                    <?= e($article['author_bio'] ?? 'Research contributor and educational advocate at the LagunaWISE Ideology Division.') ?>
-                </p>
+                                <a href="https://twitter.com/intent/tweet?url=<?= urlencode($canonicalUrl) ?>&text=<?= urlencode($article['title']) ?>" 
+                                   target="_blank" rel="noopener noreferrer"
+                                   class="flex-1 py-2 rounded-xl bg-surface hover:bg-black hover:text-white border border-slate-200 text-slate-700 text-center transition text-xs font-bold" 
+                                   title="X / Twitter">
+                                    <i class="fa-brands fa-x-twitter mr-1"></i> X
+                                </a>
+
+                                <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?= urlencode($canonicalUrl) ?>" 
+                                   target="_blank" rel="noopener noreferrer"
+                                   class="flex-1 py-2 rounded-xl bg-surface hover:bg-blue-700 hover:text-white border border-slate-200 text-slate-700 text-center transition text-xs font-bold" 
+                                   title="LinkedIn">
+                                    <i class="fa-brands fa-linkedin-in mr-1"></i> In
+                                </a>
+
+                                <button type="button" 
+                                        onclick="navigator.clipboard.writeText(window.location.href); alert('Article URL copied to clipboard!');"
+                                        class="p-2.5 rounded-xl bg-surface hover:bg-lwblue hover:text-white border border-slate-200 text-slate-700 transition" 
+                                        title="Copy Link">
+                                    <i class="fa-solid fa-link text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Author Profile Card -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm space-y-4">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-lwblue">Author Attribution</span>
+                    
+                    <div class="flex items-center gap-3.5">
+                        <img src="<?= asset($article['author_avatar'] ?? 'assets/images/default-avatar.svg') ?>" 
+                             alt="<?= e($article['author_name']) ?>" 
+                             class="w-14 h-14 rounded-full object-cover border-2 border-lwblue-light shadow-sm shrink-0">
+                        <div>
+                            <h4 class="text-sm font-bold text-navy-900"><?= e($article['author_name']) ?></h4>
+                            <p class="text-[11px] text-slate-500">Contributing Fellow</p>
+                            <span class="inline-block mt-1 px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-lwblue-ice text-lwblue">Verified Author</span>
+                        </div>
+                    </div>
+
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        <?= e($article['author_bio'] ?? 'Research contributor and educational advocate at the LagunaWISE Ideology Division.') ?>
+                    </p>
+                </div>
+
+                <!-- Academic Citation & Attribution Box -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm space-y-2 text-xs text-slate-600">
+                    <h4 class="font-bold text-navy-900 flex items-center gap-2">
+                        <i class="fa-solid fa-feather text-lwblue"></i>
+                        <span>Citation &amp; Attribution</span>
+                    </h4>
+                    <p class="text-[11px] text-slate-500 leading-relaxed bg-surface p-3 rounded-xl border border-slate-100 font-mono">
+                        LagunaWISE Ideology Division. (<?= date('Y', strtotime($article['published_at'] ?? 'now')) ?>). <em><?= e($article['title']) ?></em>. Retrieved from <?= e($canonicalUrl) ?>
+                    </p>
+                </div>
+
+                <!-- Related Published Articles -->
+                <?php if (!empty($relatedArticles)): ?>
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm space-y-4">
+                        <h4 class="text-xs font-bold text-navy-900 uppercase tracking-wider pb-2 border-b border-slate-100">
+                            Related Insights
+                        </h4>
+                        <div class="space-y-3">
+                            <?php foreach ($relatedArticles as $rel): ?>
+                                <div class="space-y-1">
+                                    <a href="<?= url('pages/article.php?slug=' . urlencode($rel['slug'])) ?>" class="text-xs font-bold text-navy-900 hover:text-lwblue line-clamp-2 leading-snug">
+                                        <?= e($rel['title']) ?>
+                                    </a>
+                                    <p class="text-[10px] text-slate-400">By <?= e($rel['author_name']) ?> • <?= (int)$rel['reading_time'] ?> min</p>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
             </div>
+
         </div>
 
     </div>
 </article>
-
-<!-- Comments Section -->
-<section class="py-16 bg-surface border-t border-slate-200" id="comments">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 space-y-10">
-        
-        <div class="flex items-center justify-between pb-4 border-b border-slate-200">
-            <h3 class="text-xl font-bold text-navy-900 flex items-center gap-2">
-                <i class="fa-regular fa-comments text-lwblue"></i>
-                <span>Discussion &amp; Inquiry (<?= count($comments) ?>)</span>
-            </h3>
-            <span class="text-xs text-slate-400">Moderated academic and civic debate</span>
-        </div>
-
-        <!-- Existing Comments List -->
-        <?php if (empty($comments)): ?>
-            <div class="bg-white p-8 rounded-2xl border border-slate-200 text-center text-xs text-slate-500">
-                <p>No comments posted yet. Be the first to offer a thoughtful inquiry or perspective.</p>
-            </div>
-        <?php else: ?>
-            <div class="space-y-4">
-                <?php foreach ($comments as $comment): ?>
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-3">
-                        <div class="flex items-center justify-between text-xs">
-                            <div class="flex items-center gap-2.5">
-                                <img src="<?= asset($comment['user_avatar'] ?? 'assets/images/default-avatar.svg') ?>" 
-                                     alt="<?= e($comment['author_name']) ?>" 
-                                     class="w-7 h-7 rounded-full object-cover border border-slate-200">
-                                <span class="font-bold text-navy-900"><?= e($comment['author_name']) ?></span>
-                            </div>
-                            <span class="text-slate-400"><?= e(format_date($comment['created_at'])) ?></span>
-                        </div>
-                        <p class="text-xs text-slate-700 leading-relaxed">
-                            <?= nl2br(e($comment['content'])) ?>
-                        </p>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-
-        <!-- Post a Comment Form -->
-        <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-5">
-            <h4 class="text-base font-bold text-navy-900">Add to the Conversation</h4>
-            <p class="text-xs text-slate-500">
-                Please maintain respectful, evidence-based dialogue adhering to our 
-                <a href="<?= url('pages/about.php#editorial-charter') ?>" class="text-lwblue underline">Editorial Charter</a>.
-            </p>
-
-            <form action="<?= url('actions/comment-action.php') ?>" method="POST" class="space-y-4">
-                <?= Security::csrfField() ?>
-                <input type="hidden" name="article_id" value="<?= (int)$article['id'] ?>">
-                <input type="hidden" name="slug" value="<?= e($article['slug']) ?>">
-
-                <?php if (!is_logged_in()): ?>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Your Full Name *</label>
-                            <input type="text" name="author_name" required placeholder="e.g. Maria Clara" 
-                                   class="w-full text-xs p-3 bg-surface border border-slate-200 rounded-xl focus:outline-none focus:border-lwblue">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Your Email Address *</label>
-                            <input type="email" name="author_email" required placeholder="name@domain.com" 
-                                   class="w-full text-xs p-3 bg-surface border border-slate-200 rounded-xl focus:outline-none focus:border-lwblue">
-                        </div>
-                    </div>
-                <?php else: ?>
-                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-lwblue font-medium flex items-center gap-2">
-                        <i class="fa-solid fa-user-check"></i>
-                        <span>Posting as <strong><?= e($currentUser['name']) ?></strong> (<?= e($currentUser['email']) ?>)</span>
-                    </div>
-                <?php endif; ?>
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Your Thoughtful Comment *</label>
-                    <textarea name="content" rows="4" required placeholder="Share your perspective, constructive counter-argument, or inquiry..."
-                              class="w-full text-xs p-3 bg-surface border border-slate-200 rounded-xl focus:outline-none focus:border-lwblue"></textarea>
-                </div>
-
-                <div class="flex items-center justify-between pt-2">
-                    <span class="text-[11px] text-slate-400">Moderated to uphold respectful civil discourse.</span>
-                    <button type="submit" class="px-6 py-2.5 bg-lwblue hover:bg-lwblue-hover text-white text-xs font-bold rounded-xl transition shadow">
-                        Submit Comment
-                    </button>
-                </div>
-            </form>
-        </div>
-
-    </div>
-</section>
-
-<!-- Related Articles Section -->
-<?php if (!empty($relatedArticles)): ?>
-    <section class="py-16 bg-white border-t border-slate-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6">
-            <h3 class="text-xl font-bold text-navy-900 mb-8">Related Inquiries &amp; Perspectives</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <?php foreach ($relatedArticles as $rel): ?>
-                    <article class="bg-surface rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between group hover:shadow-md transition">
-                        <div class="aspect-video bg-slate-900 overflow-hidden">
-                            <img src="<?= asset($rel['cover_image'] ?? 'assets/images/article-medialiteracy.svg') ?>" 
-                                 alt="<?= e($rel['title']) ?>" 
-                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-                        </div>
-                        <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
-                            <h4 class="text-sm font-bold text-navy-900 group-hover:text-lwblue transition line-clamp-2">
-                                <a href="<?= url('pages/article.php?slug=' . urlencode($rel['slug'])) ?>">
-                                    <?= e($rel['title']) ?>
-                                </a>
-                            </h4>
-                            <div class="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-200">
-                                <span><?= e(format_date($rel['published_at'])) ?></span>
-                                <a href="<?= url('pages/article.php?slug=' . urlencode($rel['slug'])) ?>" class="font-bold text-lwblue">Read &rarr;</a>
-                            </div>
-                        </div>
-                    </article>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    </section>
-<?php endif; ?>
 
 <?php require_once dirname(__DIR__) . '/includes/footer.php'; ?>

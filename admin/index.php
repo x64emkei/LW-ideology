@@ -13,7 +13,8 @@ $pendingArticles = (int)$db->query("SELECT COUNT(*) FROM articles WHERE status =
 $draftArticles = (int)$db->query("SELECT COUNT(*) FROM articles WHERE status = 'draft'")->fetchColumn();
 
 $totalUsers = (int)$db->query("SELECT COUNT(*) FROM users")->fetchColumn();
-$totalWriters = (int)$db->query("SELECT COUNT(DISTINCT user_id) FROM user_roles ur JOIN roles r ON ur.role_id = r.id WHERE r.name IN ('writer', 'editor')")->fetchColumn();
+$totalContributors = (int)$db->query("SELECT COUNT(DISTINCT user_id) FROM user_roles ur JOIN roles r ON ur.role_id = r.id WHERE r.name IN ('contributor', 'writer', 'editor')")->fetchColumn();
+$totalAnnouncements = (int)$db->query("SELECT COUNT(*) FROM announcements")->fetchColumn();
 $totalComments = (int)$db->query("SELECT COUNT(*) FROM comments")->fetchColumn();
 $newsletterSubs = (int)$db->query("SELECT COUNT(*) FROM newsletter_subscribers WHERE status = 'subscribed'")->fetchColumn();
 
@@ -83,7 +84,7 @@ require_once __DIR__ . '/includes/admin-header.php';
         <div>
             <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Users</p>
             <p class="text-2xl font-extrabold text-navy-900 mt-1"><?= $totalUsers ?></p>
-            <span class="text-[10px] text-lwblue font-semibold"><?= $totalWriters ?> staff writers</span>
+            <span class="text-[10px] text-lwblue font-semibold"><?= $totalContributors ?> contributors / editors</span>
         </div>
         <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg">
             <i class="fa-solid fa-users"></i>
@@ -92,9 +93,9 @@ require_once __DIR__ . '/includes/admin-header.php';
 
     <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
         <div>
-            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Subscribers</p>
-            <p class="text-2xl font-extrabold text-navy-900 mt-1"><?= $newsletterSubs ?></p>
-            <span class="text-[10px] text-slate-500 font-semibold"><?= $totalComments ?> comments</span>
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Announcements</p>
+            <p class="text-2xl font-extrabold text-navy-900 mt-1"><?= $totalAnnouncements ?></p>
+            <span class="text-[10px] text-slate-500 font-semibold"><?= $newsletterSubs ?> subscribers</span>
         </div>
         <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
             <i class="fa-solid fa-envelope-open-text"></i>
@@ -113,16 +114,16 @@ require_once __DIR__ . '/includes/admin-header.php';
                 <i class="fa-solid fa-inbox text-amber-500"></i>
                 <span>Editorial Review Queue</span>
             </h2>
-            <a href="<?= url('admin/articles.php?status=pending_review') ?>" class="text-xs font-bold text-lwblue hover:underline">
+            <a href="<?= url('admin/submissions.php') ?>" class="text-xs font-bold text-lwblue hover:underline">
                 View All Pending (<?= $pendingArticles ?>)
             </a>
         </div>
 
         <?php if (empty($pendingQueue)): ?>
-            <div class="p-8 text-center text-xs text-slate-400 space-y-1">
+            <div class="p-8 text-center text-xs text-slate-400 space-y-2">
                 <i class="fa-solid fa-circle-check text-2xl text-emerald-400 mb-2"></i>
-                <p class="font-bold text-slate-700">Editorial Queue is Clear</p>
-                <p>All submitted monographs have been reviewed and resolved.</p>
+                <p class="font-bold text-slate-700 text-sm">No submissions are awaiting review.</p>
+                <p>All submitted monographs have been reviewed and evaluated.</p>
             </div>
         <?php else: ?>
             <div class="divide-y divide-slate-100">

@@ -5,6 +5,7 @@
 * **Default Collation**: `utf8mb4_unicode_ci`
 * **Storage Engine**: `InnoDB` (ACID Compliant with strict Foreign Key constraints)
 * **Access Protocol**: PHP Data Objects (PDO) with strictly parameterized queries
+* **Content Policy**: Strict zero-dummy-record policy. Initial seed consists strictly of the 4 system roles, 8 taxonomy categories, and 12 baseline website settings.
 
 ---
 
@@ -38,7 +39,11 @@
 ### 1. `roles`
 Stores authorization privilege levels.
 * `id` (INT UNSIGNED, PK, AUTO_INCREMENT)
-* `name` (VARCHAR(50), UNIQUE): Machine name (`super_admin`, `admin`, `editor`, `writer`, `reader`)
+* `name` (VARCHAR(50), UNIQUE): Machine name:
+  - `administrator` (ID: 1) — Full administrative governance, settings, user management, publishing
+  - `editor` (ID: 2) — Editorial review queue, manuscript edits, revision requests, publishing
+  - `contributor` (ID: 3) — Publicly registered authors; manuscript composition, drafts, review submissions
+  - `reader` (ID: 4) — Public community readers; bookmarking, moderated discussions
 * `display_name` (VARCHAR(100)): Human-readable title
 * `description` (TEXT): Scope of authorization
 * `created_at` (TIMESTAMP)
@@ -87,6 +92,8 @@ Core editorial monographs, investigative insights, and civic toolkits.
 * `content` (MEDIUMTEXT): Sanitized rich editorial body
 * `cover_image` (VARCHAR(255)): Asset path to cover visual
 * `reading_time` (INT UNSIGNED): Calculated reading time in minutes
+* `references_sources` (TEXT, NULL): Citations, academic references, and source attribution
+* `tags` (VARCHAR(255), NULL): Comma-separated search tags
 * `status` (ENUM: `draft`, `pending_review`, `revision_requested`, `approved`, `published`, `archived`)
 * `views_count` (INT UNSIGNED): Monitored reader engagement
 * `is_featured` (TINYINT(1)): Spotlight priority
@@ -177,3 +184,20 @@ Dynamic key-value settings table.
 * `category` (VARCHAR(50))
 * `description` (VARCHAR(255))
 * `updated_at` (TIMESTAMP)
+
+---
+
+## Baseline Seed Data Summary
+In accordance with the strict zero-fake-content policy:
+* **Roles (4)**: `administrator`, `editor`, `contributor`, `reader`.
+* **Taxonomy Categories (8)**:
+  1. *Critical Thinking* (`#1557A6`)
+  2. *Media Literacy* (`#2799E8`)
+  3. *Digital Citizenship* (`#0B2252`)
+  4. *Informed Discourse* (`#0D9488`)
+  5. *Youth Civic Engagement* (`#D97706`)
+  6. *Open Information* (`#4F46E5`)
+  7. *Ethical Technology* (`#475569`)
+  8. *Community Research* (`#2563EB`)
+* **Website Settings (12)**: Official organization name, motto, email, headquarters address, copyright, social URLs, and default meta tags.
+* **Users / Articles / Comments / Announcements / Subscribers**: **0** records initially inserted.

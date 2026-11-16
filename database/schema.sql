@@ -89,6 +89,8 @@ CREATE TABLE `articles` (
     `subtitle` VARCHAR(255) NULL,
     `excerpt` TEXT NOT NULL,
     `content` MEDIUMTEXT NOT NULL,
+    `references_sources` TEXT NULL,
+    `tags` VARCHAR(255) NULL,
     `cover_image` VARCHAR(255) NULL,
     `reading_time` INT UNSIGNED NOT NULL DEFAULT 5,
     `status` ENUM('draft', 'pending_review', 'revision_requested', 'approved', 'published', 'archived') NOT NULL DEFAULT 'draft',

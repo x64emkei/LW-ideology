@@ -58,7 +58,8 @@ Start-Process "C:\xampp\apache\bin\httpd.exe" -ArgumentList "-d C:/xampp/apache"
 4. Choose collation: `utf8mb4_unicode_ci` and click **Create**.
 5. Select `lagunawise_ideology` from the left sidebar, click the **Import** tab.
 6. Choose `database/schema.sql` from the project directory and click **Import**.
-7. In the same manner, import `database/seed.sql` to populate demonstration articles, taxonomy categories, and seed users.
+7. In the same manner, import `database/seed.sql` to populate the 4 system roles, 8 taxonomy categories, and 12 baseline website configuration settings.
+   > **Note**: Per the strict project policy, `seed.sql` does NOT insert fake users or fabricated articles. The database is initialized in a pristine, zero-dummy-record state.
 
 ### Option B: Using the Command Line / PowerShell
 Run the following commands in PowerShell from the project root:
@@ -98,25 +99,42 @@ http://localhost/lagunawise-ideology/
 ```
 
 ### Automated QA Test Suite
-Verify database integrity, security filters, and role permissions:
+Verify database integrity, empty states, security filters, and role permissions:
 ```
 http://localhost/LW-ideology/tests/index.php
 ```
+Or via CLI:
+```powershell
+C:\xampp\php\php.exe tests\index.php
+```
+All 22 automated unit, integration, and security tests should report **PASS (100%)**.
 
 ---
 
-## 7. Demonstration Accounts & First-Time Login
+## 7. Account Setup (Strict No-Fake-Content Policy)
 
-| Role | Username | Initial Password | Description |
-| :--- | :--- | :--- | :--- |
-| **Super Administrator** | `admin` | `admin123!` | Complete system governance, role management, settings. |
-| **Editor** | `elena.vance` | `editor123!` | Peer review queue, manuscript edits, publishing approvals. |
-| **Writer / Fellow** | `marcus.reyes` | `writer123!` | Draft creation, revision submission, author profile. |
-| **Writer / Specialist** | `sophia.delacruz` | `writer123!` | Draft creation, community research submissions. |
-| **Public Reader** | `juan.reader` | `reader123!` | Bookmarks, discussion comments, reading lists. |
+In accordance with strict project guidelines, the database is intentionally initialized without fake demo accounts or dummy articles.
 
-### Mandatory First-Login Password Change
-As mandated by security standards, the initial administrator account has the `must_change_password` flag set. Upon first logging into `admin`, the application will prompt the administrator to enter a new secure password in `admin/profile.php`. Once changed, the flag is cleared.
+### Creating the First Administrator Account
+You have two straightforward methods to create your administrative account:
+
+#### Method 1: Web Self-Bootstrap (Recommended)
+1. Navigate to `http://localhost/LW-ideology/auth/register.php`.
+2. Fill out the registration form (Name, Username, Email, Password, Confirm Password, and accept Terms).
+3. Because the user table is initially empty, the application **automatically assigns the Administrator role (`id: 1`)** to this very first registration.
+4. You are immediately logged in and redirected to the **Administrative CMS** (`admin/index.php`).
+
+#### Method 2: Command Line Interface (CLI)
+You can create an administrator at any time using the provided CLI tool:
+```powershell
+C:\xampp\php\php.exe cli/create-admin.php --name="System Administrator" --username="admin" --email="admin@lagunawise.org" --password="YourSecurePassword123!"
+```
+If the username or email already exists, this command safely elevates the account to the **Administrator** role.
+
+### Creating Contributor Accounts
+All subsequent public registrations via `auth/register.php` are automatically granted the **Contributor role (`id: 3`)**.
+* Contributors are immediately redirected to their **Contributor Dashboard** (`pages/dashboard.php`).
+* Contributors have full permissions to compose articles, save drafts, preview manuscripts, and submit them for review to editors.
 
 ---
 

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/config/app.php';
 
-require_role(['super_admin', 'admin']);
+require_role(['administrator', 'super_admin', 'admin']);
 
 $db = Database::getConnection();
 $currentUser = current_user();
@@ -127,6 +127,11 @@ require_once __DIR__ . '/includes/admin-header.php';
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 text-slate-700">
+                <?php if (empty($usersList)): ?>
+                    <tr>
+                        <td colspan="6" class="py-12 text-center text-slate-400">No registered users found.</td>
+                    </tr>
+                <?php else: ?>
                 <?php foreach ($usersList as $u): ?>
                     <tr class="hover:bg-slate-50 transition">
                         <td class="py-4 px-6 font-bold text-navy-900">
@@ -200,6 +205,7 @@ require_once __DIR__ . '/includes/admin-header.php';
                         </td>
                     </tr>
                 <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

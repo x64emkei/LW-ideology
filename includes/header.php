@@ -237,15 +237,15 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
                                     <i class="fa-solid fa-gauge-high text-slate-400 w-4"></i> My Dashboard
                                 </a>
 
-                                <?php if (user_has_any_role(['super_admin', 'admin', 'editor'])): ?>
+                                <?php if (user_has_any_role(['administrator', 'super_admin', 'admin', 'editor'])): ?>
                                     <a href="<?= url('admin/index.php') ?>" class="flex items-center gap-2.5 px-4 py-2 hover:bg-slate-50 text-lwblue font-semibold">
                                         <i class="fa-solid fa-shield-halved text-lwblue w-4"></i> CMS Administration
                                     </a>
                                 <?php endif; ?>
 
-                                <?php if (user_has_any_role(['super_admin', 'admin', 'editor', 'writer'])): ?>
+                                <?php if (user_has_any_role(['administrator', 'super_admin', 'admin', 'editor', 'contributor', 'writer'])): ?>
                                     <a href="<?= url('admin/article-create.php') ?>" class="flex items-center gap-2.5 px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium">
-                                        <i class="fa-solid fa-pen-nib text-slate-400 w-4"></i> Write Article
+                                        <i class="fa-solid fa-pen-nib text-slate-400 w-4"></i> Create Article
                                     </a>
                                 <?php endif; ?>
 
@@ -304,6 +304,32 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
                     <a href="<?= url('auth/register.php') ?>" class="w-full text-center py-2.5 text-xs font-bold text-white bg-lwblue rounded-lg hover:bg-lwblue-hover">
                         Join the Community
                     </a>
+                </div>
+            <?php else: ?>
+                <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
+                    <div class="px-3 py-2 bg-surface rounded-lg flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-navy-900"><?= e($currentUser['name']) ?></p>
+                            <p class="text-[10px] text-slate-400 capitalize"><?= e(str_replace('_', ' ', $currentUser['primary_role'])) ?></p>
+                        </div>
+                        <a href="<?= url('auth/logout.php') ?>" class="text-[11px] font-bold text-rose-600 hover:underline">Log Out</a>
+                    </div>
+                    <a href="<?= url('pages/dashboard.php') ?>" class="w-full text-center py-2.5 text-xs font-bold text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-gauge-high text-xs"></i>
+                        <span>My Dashboard</span>
+                    </a>
+                    <?php if (user_has_any_role(['administrator', 'super_admin', 'admin', 'editor', 'contributor', 'writer'])): ?>
+                        <a href="<?= url('admin/article-create.php') ?>" class="w-full text-center py-2.5 text-xs font-bold text-white bg-lwblue rounded-lg hover:bg-lwblue-hover flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-pen-nib text-xs"></i>
+                            <span>Create Article</span>
+                        </a>
+                    <?php endif; ?>
+                    <?php if (user_has_any_role(['administrator', 'super_admin', 'admin', 'editor'])): ?>
+                        <a href="<?= url('admin/index.php') ?>" class="w-full text-center py-2.5 text-xs font-bold text-slate-700 border border-slate-200 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-shield-halved text-xs text-lwblue"></i>
+                            <span>CMS Administration</span>
+                        </a>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
         </div>

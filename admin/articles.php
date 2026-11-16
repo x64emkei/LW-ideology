@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/config/app.php';
 
-require_role(['super_admin', 'admin', 'editor']);
+require_role(['administrator', 'super_admin', 'admin', 'editor']);
 
 $db = Database::getConnection();
 

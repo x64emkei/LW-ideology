@@ -69,8 +69,12 @@ require_once dirname(__DIR__) . '/includes/header.php';
 
         <?php if (empty($articles)): ?>
             <div class="bg-white p-12 rounded-3xl border border-slate-200 text-center max-w-md mx-auto space-y-3">
-                <p class="text-xs text-slate-500">No published articles yet in this specific topic area.</p>
-                <a href="<?= url('pages/articles.php') ?>" class="inline-block px-4 py-2 bg-lwblue text-white rounded-xl text-xs font-bold">Browse All Articles</a>
+                <i class="fa-regular fa-newspaper text-2xl text-slate-400 mb-1"></i>
+                <h3 class="text-base font-bold text-navy-900">No articles have been published yet.</h3>
+                <p class="text-xs text-slate-500">There are currently no published monographs under this topic category.</p>
+                <div class="pt-2">
+                    <a href="<?= url('pages/articles.php') ?>" class="inline-block px-4 py-2 bg-lwblue text-white rounded-xl text-xs font-bold hover:bg-lwblue-hover transition">Browse All Articles</a>
+                </div>
             </div>
         <?php else: ?>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

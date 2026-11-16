@@ -176,15 +176,20 @@ require_once dirname(__DIR__) . '/includes/header.php';
             <!-- Empty State -->
             <div class="bg-white rounded-3xl p-12 text-center max-w-lg mx-auto border border-slate-200 shadow-sm space-y-4">
                 <div class="w-16 h-16 rounded-2xl bg-blue-50 text-lwblue flex items-center justify-center text-2xl mx-auto">
-                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <i class="fa-regular fa-newspaper"></i>
                 </div>
-                <h3 class="text-lg font-bold text-navy-900">No Articles Found</h3>
+                <h3 class="text-lg font-bold text-navy-900">No articles have been published yet.</h3>
                 <p class="text-xs text-editorial-muted leading-relaxed">
-                    We could not find any published monographs matching your current search parameters. Try expanding your search terms or resetting filters.
+                    <?= (!empty($search) || !empty($categorySlug)) ? 'No articles match your current search criteria. Try clearing filters or exploring another topic.' : 'Our editorial board and contributing authors are preparing monographs and commentaries. Check back soon or register as a contributor to submit your research.' ?>
                 </p>
-                <div class="pt-2">
-                    <a href="<?= url('pages/articles.php') ?>" class="inline-block px-5 py-2.5 bg-lwblue text-white text-xs font-bold rounded-xl hover:bg-lwblue-hover transition">
-                        View All Articles
+                <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
+                    <?php if (!empty($search) || !empty($categorySlug)): ?>
+                        <a href="<?= url('pages/articles.php') ?>" class="inline-block px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition">
+                            Reset Search Filters
+                        </a>
+                    <?php endif; ?>
+                    <a href="<?= url('auth/register.php') ?>" class="inline-block px-5 py-2.5 bg-lwblue text-white text-xs font-bold rounded-xl hover:bg-lwblue-hover transition shadow">
+                        Register as Contributor
                     </a>
                 </div>
             </div>

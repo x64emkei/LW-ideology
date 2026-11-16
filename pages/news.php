@@ -52,8 +52,10 @@ require_once dirname(__DIR__) . '/includes/header.php';
 <section class="py-14 bg-surface">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 space-y-8">
         <?php if (empty($newsItems)): ?>
-            <div class="bg-white p-12 rounded-3xl border border-slate-200 text-center">
-                <p class="text-xs text-slate-500">No announcements found matching this category filter.</p>
+            <div class="bg-white p-12 rounded-3xl border border-slate-200 text-center space-y-2">
+                <i class="fa-regular fa-bell text-2xl text-slate-400 mb-1"></i>
+                <p class="text-sm font-bold text-navy-900">No announcements are currently available.</p>
+                <p class="text-xs text-slate-500">Check back soon for new dispatches, community workshops, and research releases.</p>
             </div>
         <?php else: ?>
             <?php foreach ($newsItems as $item): ?>

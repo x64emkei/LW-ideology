@@ -84,7 +84,7 @@ require_once __DIR__ . '/includes/admin-header.php';
 <?php if (!empty($user['must_change_password'])): ?>
     <div class="p-4 bg-amber-50 border border-amber-300 rounded-2xl text-amber-900 text-xs font-semibold flex items-center gap-3">
         <i class="fa-solid fa-triangle-exclamation text-amber-600 text-base"></i>
-        <span>Security Notice: You are using the default local demonstration credentials. Please update your password below to secure this administrative account.</span>
+        <span>Security Notice: You are flagged for a mandatory password update. Please change your password below to proceed.</span>
     </div>
 <?php endif; ?>
 
@@ -135,10 +135,10 @@ require_once __DIR__ . '/includes/admin-header.php';
             <div>
                 <label class="block text-xs font-semibold text-slate-700 mb-1">Avatar Preset</label>
                 <select name="avatar" class="w-full text-xs p-3 bg-surface border border-slate-200 rounded-xl font-medium focus:outline-none focus:border-lwblue">
-                    <option value="assets/images/avatar-admin.svg" <?= $user['avatar'] === 'assets/images/avatar-admin.svg' ? 'selected' : '' ?>>Admin Crest (Navy &amp; Blue)</option>
-                    <option value="assets/images/avatar-editor.svg" <?= $user['avatar'] === 'assets/images/avatar-editor.svg' ? 'selected' : '' ?>>Editorial Lead (Marla Adriano)</option>
-                    <option value="assets/images/avatar-writer1.svg" <?= $user['avatar'] === 'assets/images/avatar-writer1.svg' ? 'selected' : '' ?>>Research Director (Michael Ordenes)</option>
-                    <option value="assets/images/avatar-writer2.svg" <?= $user['avatar'] === 'assets/images/avatar-writer2.svg' ? 'selected' : '' ?>>Writer / Contributor</option>
+                    <option value="assets/images/avatar-admin.svg" <?= $user['avatar'] === 'assets/images/avatar-admin.svg' ? 'selected' : '' ?>>Administrator Crest (Navy &amp; Blue)</option>
+                    <option value="assets/images/avatar-editor.svg" <?= $user['avatar'] === 'assets/images/avatar-editor.svg' ? 'selected' : '' ?>>Editorial Reviewer Avatar</option>
+                    <option value="assets/images/avatar-writer1.svg" <?= $user['avatar'] === 'assets/images/avatar-writer1.svg' ? 'selected' : '' ?>>Research Fellow Avatar</option>
+                    <option value="assets/images/avatar-writer2.svg" <?= $user['avatar'] === 'assets/images/avatar-writer2.svg' ? 'selected' : '' ?>>Writer / Contributor Avatar</option>
                     <option value="assets/images/avatar-reader.svg" <?= $user['avatar'] === 'assets/images/avatar-reader.svg' ? 'selected' : '' ?>>Reader Emblem (Blue)</option>
                     <option value="assets/images/default-avatar.svg" <?= $user['avatar'] === 'assets/images/default-avatar.svg' ? 'selected' : '' ?>>Standard Monogram</option>
                 </select>

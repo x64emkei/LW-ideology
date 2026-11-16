@@ -6,7 +6,7 @@ require_once dirname(__DIR__) . '/config/app.php';
 // If already logged in, redirect to dashboard
 if (is_logged_in()) {
     $user = current_user();
-    if (user_has_any_role(['super_admin', 'admin', 'editor'])) {
+    if (user_has_any_role(['administrator', 'super_admin', 'admin', 'editor'])) {
         header('Location: ' . url('admin/index.php'));
     } else {
         header('Location: ' . url('pages/dashboard.php'));
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($user && password_verify($password, $user['password_hash'])) {
                 Security::clearRateLimit('login_attempt');
-                $roles = !empty($user['role_names']) ? explode(',', $user['role_names']) : ['reader'];
+                $roles = !empty($user['role_names']) ? explode(',', $user['role_names']) : ['contributor'];
                 login_user($user, $roles);
 
                 flash('success', "Welcome back, {$user['name']}!");
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     exit;
                 }
 
-                if (in_array('super_admin', $roles, true) || in_array('admin', $roles, true) || in_array('editor', $roles, true)) {
+                if (in_array('administrator', $roles, true) || in_array('super_admin', $roles, true) || in_array('admin', $roles, true) || in_array('editor', $roles, true)) {
                     header('Location: ' . url('admin/index.php'));
                 } else {
                     header('Location: ' . url('pages/dashboard.php'));
@@ -80,86 +80,129 @@ $pageDescription = 'Sign in to your LagunaWISE Ideology Division account to acce
 require_once dirname(__DIR__) . '/includes/header.php';
 ?>
 
-<section class="py-16 sm:py-24 bg-surface flex items-center justify-center min-h-[70vh]">
-    <div class="w-full max-w-md px-4 sm:px-6">
+<!-- Responsive Two-Column Login Section -->
+<section class="py-12 sm:py-20 bg-surface min-h-[80vh] flex items-center justify-center">
+    <div class="w-full max-w-4xl px-4 sm:px-6">
         
-        <div class="bg-white p-8 sm:p-10 rounded-3xl border border-slate-200/90 shadow-xl space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             
-            <div class="text-center space-y-2">
-                <img src="<?= asset('assets/images/lagunawise-map-logo.png') ?>" alt="LagunaWISE Emblem" class="w-14 h-14 mx-auto object-contain rounded-full shadow-xs">
-                <span class="text-[11px] font-bold tracking-widest text-lwblue uppercase">Authentication</span>
-                <h1 class="text-2xl font-extrabold text-navy-900 tracking-tight">Access Your Account</h1>
-                <p class="text-xs text-editorial-muted">Enter your registered credentials to proceed</p>
+            <!-- Column 1: Organization Identity & Mission (Desktop ~45% / 5 cols) -->
+            <div class="lg:col-span-5 bg-gradient-to-br from-navy-900 via-navy-800 to-navy-900 text-white p-8 sm:p-10 rounded-3xl border border-navy-700 shadow-xl flex flex-col justify-between relative overflow-hidden">
+                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#2799E8_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none"></div>
+                <div class="absolute -top-20 -right-20 w-60 h-60 bg-lwblue-light/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                <div class="relative z-10 space-y-6">
+                    <div class="flex items-center gap-3">
+                        <img src="<?= asset('assets/images/lagunawise-map-logo.png') ?>" alt="LagunaWISE Emblem" class="w-12 h-12 object-contain rounded-full shadow-md">
+                        <div>
+                            <span class="block text-xs font-bold tracking-widest text-lwblue-light uppercase">LagunaWISE</span>
+                            <span class="text-base font-extrabold text-white tracking-tight">IDEOLOGY DIVISION</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 pt-4">
+                        <span class="inline-block px-3 py-1 rounded-full bg-navy-800 border border-navy-700 text-[10px] font-bold tracking-wider text-lwblue-ice uppercase">
+                            Editorial Portal
+                        </span>
+                        <h2 class="text-2xl font-extrabold text-white tracking-tight leading-snug">
+                            Understanding Ideas.<br>
+                            <span class="text-lwblue-light">Challenging Perspectives.</span><br>
+                            Empowering Minds.
+                        </h2>
+                        <p class="text-xs text-slate-300 leading-relaxed font-normal">
+                            Sign in to draft research monographs, review peer submissions, or manage your personal reading bookmarks.
+                        </p>
+                    </div>
+
+                    <div class="pt-4 border-t border-navy-700/80 space-y-2 text-xs text-slate-300">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-check text-lwblue-light text-xs"></i>
+                            <span>Peer-reviewed editorial monographs</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-check text-lwblue-light text-xs"></i>
+                            <span>Transparent editorial workflows</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-check text-lwblue-light text-xs"></i>
+                            <span>Nonpartisan media literacy toolkits</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative z-10 pt-8 mt-8 border-t border-navy-700/80 text-[11px] text-slate-400">
+                    <p>New to LagunaWISE? <a href="<?= url('auth/register.php') ?>" class="text-lwblue-light font-bold hover:underline">Register here &rarr;</a></p>
+                </div>
             </div>
 
-            <?php if ($error): ?>
-                <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs font-medium flex items-center gap-2">
-                    <i class="fa-solid fa-circle-exclamation shrink-0"></i>
-                    <span><?= e($error) ?></span>
-                </div>
-            <?php endif; ?>
-
-            <form action="<?= url('auth/login.php') ?>" method="POST" class="space-y-4">
-                <?= Security::csrfField() ?>
-                <input type="hidden" name="redirect" value="<?= e($redirect) ?>">
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Username or Email</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
-                        <input type="text" name="identifier" required placeholder="admin or username@lagunawise.org" 
-                               value="<?= e($_POST['identifier'] ?? '') ?>"
-                               class="w-full text-xs pl-10 pr-3.5 py-3 bg-surface border border-slate-200 rounded-xl focus:outline-none focus:border-lwblue focus:bg-white transition">
-                    </div>
+            <!-- Column 2: Login Form (Desktop ~55% / 7 cols) -->
+            <div class="lg:col-span-7 bg-white p-8 sm:p-10 rounded-3xl border border-slate-200/90 shadow-xl space-y-6 flex flex-col justify-between">
+                
+                <div class="space-y-2">
+                    <span class="text-[11px] font-bold tracking-widest text-lwblue uppercase">Authentication</span>
+                    <h1 class="text-2xl font-extrabold text-navy-900 tracking-tight">Access Your Account</h1>
+                    <p class="text-xs text-editorial-muted">Enter your registered credentials to access your dashboard.</p>
                 </div>
 
-                <div>
-                    <div class="flex items-center justify-between mb-1">
-                        <label class="block text-xs font-semibold text-slate-700">Password</label>
-                        <a href="<?= url('auth/forgot-password.php') ?>" class="text-[11px] font-semibold text-lwblue hover:underline">Forgot password?</a>
+                <?php if ($error): ?>
+                    <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs font-medium flex items-center gap-2">
+                        <i class="fa-solid fa-circle-exclamation shrink-0 text-sm"></i>
+                        <span><?= e($error) ?></span>
                     </div>
-                    <div class="relative">
-                        <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
-                        <input type="password" name="password" id="loginPassword" required placeholder="••••••••" 
-                               class="w-full text-xs pl-10 pr-10 py-3 bg-surface border border-slate-200 rounded-xl focus:outline-none focus:border-lwblue focus:bg-white transition">
-                        <button type="button" onclick="const p = document.getElementById('loginPassword'); p.type = p.type === 'password' ? 'text' : 'password';" class="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 text-xs">
-                            <i class="fa-regular fa-eye"></i>
+                <?php endif; ?>
+
+                <form action="<?= url('auth/login.php') ?>" method="POST" class="space-y-4">
+                    <?= Security::csrfField() ?>
+                    <input type="hidden" name="redirect" value="<?= e($redirect) ?>">
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Username or Email Address</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-xs">
+                                <i class="fa-solid fa-user"></i>
+                            </span>
+                            <input type="text" 
+                                   name="identifier" 
+                                   required 
+                                   placeholder="e.g. maria.santos or maria@domain.com" 
+                                   value="<?= e($_POST['identifier'] ?? '') ?>"
+                                   class="w-full text-xs pl-10 pr-4 py-3 bg-surface border border-slate-200 rounded-xl focus:outline-none focus:border-lwblue focus:bg-white transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-xs font-semibold text-slate-700">Password</label>
+                            <a href="<?= url('auth/forgot-password.php') ?>" class="text-[11px] text-lwblue hover:underline">Forgot?</a>
+                        </div>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-xs">
+                                <i class="fa-solid fa-lock"></i>
+                            </span>
+                            <input type="password" 
+                                   name="password" 
+                                   required 
+                                   placeholder="••••••••" 
+                                   class="w-full text-xs pl-10 pr-4 py-3 bg-surface border border-slate-200 rounded-xl focus:outline-none focus:border-lwblue focus:bg-white transition">
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" 
+                                class="w-full py-3.5 bg-lwblue hover:bg-lwblue-hover text-white text-xs font-bold rounded-xl transition duration-150 shadow-md shadow-lwblue/20 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
+                            <span>Sign In to Dashboard</span>
                         </button>
                     </div>
+                </form>
+
+                <div class="pt-6 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                    <span>Don't have an account yet?</span>
+                    <a href="<?= url('auth/register.php') ?>" class="text-lwblue font-bold hover:underline">
+                        Register Contributor &rarr;
+                    </a>
                 </div>
 
-                <button type="submit" class="w-full py-3 bg-navy-900 hover:bg-navy-800 text-white text-xs font-bold rounded-xl transition duration-150 shadow-md flex items-center justify-center gap-2">
-                    <span>Sign In</span>
-                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                </button>
-            </form>
-
-            <div class="text-center pt-2 border-t border-slate-100 text-xs text-slate-500">
-                <p>New to the platform? <a href="<?= url('auth/register.php') ?>" class="font-bold text-lwblue hover:underline">Create a Reader Account</a></p>
-            </div>
-
-            <!-- Local Accounts Helper Box -->
-            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 text-[11px] text-slate-600 space-y-2">
-                <p class="font-bold text-navy-900 flex items-center gap-1.5 text-xs">
-                    <i class="fa-solid fa-key text-amber-500"></i> Authorized Accounts:
-                </p>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    <button type="button" onclick="document.getElementsByName('identifier')[0].value='admin'; document.getElementById('loginPassword').value='admin123!';" 
-                            class="text-left p-2 rounded bg-white border border-slate-200 hover:border-lwblue hover:bg-blue-50/50 transition">
-                        <span class="font-bold block text-slate-800">Super Admin</span>
-                        <span class="text-slate-500 font-mono text-[10px]">admin / admin123!</span>
-                    </button>
-                    <button type="button" onclick="document.getElementsByName('identifier')[0].value='marla.adriano'; document.getElementById('loginPassword').value='marla123!';" 
-                            class="text-left p-2 rounded bg-white border border-slate-200 hover:border-lwblue hover:bg-blue-50/50 transition">
-                        <span class="font-bold block text-slate-800">Marla Adriano</span>
-                        <span class="text-slate-500 font-mono text-[10px]">marla.adriano / marla123!</span>
-                    </button>
-                    <button type="button" onclick="document.getElementsByName('identifier')[0].value='michael.ordenes'; document.getElementById('loginPassword').value='michael123!';" 
-                            class="text-left p-2 rounded bg-white border border-slate-200 hover:border-lwblue hover:bg-blue-50/50 transition">
-                        <span class="font-bold block text-slate-800">Michael Ordenes</span>
-                        <span class="text-slate-500 font-mono text-[10px]">michael.ordenes / michael123!</span>
-                    </button>
-                </div>
             </div>
 
         </div>

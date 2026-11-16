@@ -62,10 +62,13 @@ function user_has_role(string $role): bool {
     $user = current_user();
     if (!$user) return false;
 
-    // Super admin inherently satisfies all role checks
-    if (in_array('super_admin', $user['roles'], true)) {
+    // Administrator inherently satisfies administrative/editorial role checks
+    if (in_array('administrator', $user['roles'], true) || in_array('super_admin', $user['roles'], true) || in_array('admin', $user['roles'], true)) {
         return true;
     }
+
+    if ($role === 'contributor' && in_array('writer', $user['roles'], true)) return true;
+    if ($role === 'writer' && in_array('contributor', $user['roles'], true)) return true;
 
     return in_array($role, $user['roles'], true);
 }
@@ -74,12 +77,21 @@ function user_has_any_role(array $roles): bool {
     $user = current_user();
     if (!$user) return false;
 
-    if (in_array('super_admin', $user['roles'], true)) {
+    if (in_array('administrator', $user['roles'], true) || in_array('super_admin', $user['roles'], true) || in_array('admin', $user['roles'], true)) {
         return true;
     }
 
     foreach ($roles as $role) {
         if (in_array($role, $user['roles'], true)) {
+            return true;
+        }
+        if ($role === 'contributor' && in_array('writer', $user['roles'], true)) {
+            return true;
+        }
+        if ($role === 'writer' && in_array('contributor', $user['roles'], true)) {
+            return true;
+        }
+        if ($role === 'admin' && in_array('administrator', $user['roles'], true)) {
             return true;
         }
     }

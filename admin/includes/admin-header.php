@@ -4,7 +4,7 @@ declare(strict_types=1);
 require_once dirname(__DIR__, 2) . '/config/app.php';
 
 // Only staff (super_admin, admin, editor) can access administrative CMS
-require_role(['super_admin', 'admin', 'editor']);
+require_role(['administrator', 'super_admin', 'admin', 'editor']);
 
 $currentUser = current_user();
 $adminPageTitle = $adminPageTitle ?? 'Administration CMS';
@@ -116,6 +116,11 @@ $adminPageTitle = $adminPageTitle ?? 'Administration CMS';
                         <a href="<?= url('admin/articles.php') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition <?= str_contains($_SERVER['SCRIPT_NAME'], 'articles.php') ? 'bg-navy-900 text-white' : 'text-slate-700 hover:bg-slate-100' ?>">
                             <i class="fa-solid fa-newspaper w-4 text-center"></i>
                             <span>Articles Management</span>
+                        </a>
+
+                        <a href="<?= url('admin/submissions.php') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition <?= str_contains($_SERVER['SCRIPT_NAME'], 'submissions.php') ? 'bg-navy-900 text-white' : 'text-slate-700 hover:bg-slate-100' ?>">
+                            <i class="fa-solid fa-inbox w-4 text-center"></i>
+                            <span>Editorial Submissions</span>
                         </a>
 
                         <a href="<?= url('admin/article-create.php') ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition <?= str_contains($_SERVER['SCRIPT_NAME'], 'article-create.php') ? 'bg-navy-900 text-white' : 'text-slate-700 hover:bg-slate-100' ?>">

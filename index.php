@@ -250,13 +250,14 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="w-16 h-16 rounded-2xl bg-blue-50 text-lwblue flex items-center justify-center text-2xl mx-auto">
                     <i class="fa-regular fa-newspaper"></i>
                 </div>
-                <h3 class="text-lg font-bold text-navy-900">Forthcoming Publications Underway</h3>
+                <h3 class="text-lg font-bold text-navy-900">No articles have been published yet.</h3>
                 <p class="text-xs text-editorial-muted leading-relaxed">
-                    Our editorial team is currently preparing upcoming monographs, analytical investigations, and research commentaries. Check back soon or visit our Announcements for the latest updates.
+                    Our contributing authors and editorial board are actively authoring monographs, investigative analyses, and media literacy toolkits.
                 </p>
                 <div class="pt-2">
-                    <a href="<?= url('pages/news.php') ?>" class="inline-block px-5 py-2.5 bg-navy-900 text-white text-xs font-bold rounded-xl hover:bg-navy-800 transition">
-                        View Announcements
+                    <a href="<?= url('auth/register.php') ?>" class="inline-flex items-center gap-2 px-5 py-2.5 bg-lwblue text-white text-xs font-bold rounded-xl hover:bg-lwblue-hover transition shadow">
+                        <i class="fa-solid fa-pen-nib text-xs"></i>
+                        <span>Register as Contributor</span>
                     </a>
                 </div>
             </div>
@@ -411,6 +412,17 @@ require_once __DIR__ . '/includes/header.php';
             </a>
         </div>
 
+        <?php if (empty($latestNews)): ?>
+            <div class="bg-surface rounded-3xl border border-slate-200/90 p-12 text-center max-w-xl mx-auto shadow-xs space-y-3">
+                <div class="w-14 h-14 rounded-2xl bg-white text-lwblue flex items-center justify-center text-xl mx-auto border border-slate-200">
+                    <i class="fa-regular fa-bell"></i>
+                </div>
+                <h3 class="text-base font-bold text-navy-900">No announcements are currently available.</h3>
+                <p class="text-xs text-editorial-muted leading-relaxed">
+                    Official announcements, workshop dates, and research initiatives will appear here when released by the division administration.
+                </p>
+            </div>
+        <?php else: ?>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <?php foreach ($latestNews as $item): ?>
                 <div class="bg-surface p-6 rounded-2xl border border-slate-200/90 hover:border-slate-300 shadow-sm flex flex-col justify-between group">
@@ -438,6 +450,7 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
             <?php endforeach; ?>
         </div>
+        <?php endif; ?>
     </div>
 </section>
 

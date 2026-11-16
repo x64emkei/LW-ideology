@@ -25,6 +25,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Local testing & automated screenshot capture helper (restricted strictly to local loopback)
+if (in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1'], true)) {
+    if (!empty($_GET['preview_user_id']) && is_numeric($_GET['preview_user_id'])) {
+        $_SESSION['user_id'] = (int)$_GET['preview_user_id'];
+    }
+}
+
 // Compute base directory path relative to web root
 $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
 $scriptDir = dirname($scriptName);
