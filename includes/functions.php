@@ -14,6 +14,20 @@ function e(?string $string): string {
 }
 
 /**
+ * Render hidden HTML input for CSRF protection
+ */
+function csrf_field(): string {
+    return Security::csrfField();
+}
+
+/**
+ * Get current CSRF token string
+ */
+function csrf_token(): string {
+    return Security::getCsrfToken();
+}
+
+/**
  * Generate full URL based on application base path
  */
 function url(string $path = ''): string {
