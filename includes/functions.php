@@ -149,3 +149,182 @@ function log_activity(?int $userId, string $action, ?string $entityType = null, 
         error_log("Failed to log activity: " . $e->getMessage());
     }
 }
+
+/**
+ * Render Markdown content to safe, semantic HTML
+ * Supports headings, paragraphs, bold, italics, blockquotes, lists, links, images, code, and dividers
+ */
+function render_markdown(string $md): string {
+    $text = trim($md);
+    if ($text === '') {
+        return '';
+    }
+
+    // Normalize newlines
+    $text = str_replace(["\r\n", "\r"], "\n", $text);
+
+    // Stash code blocks
+    $codeBlocks = [];
+    $text = preg_replace_callback('/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/', function ($matches) use (&$codeBlocks) {
+        $key = '%%CODEBLOCK_' . count($codeBlocks) . '%%';
+        $lang = htmlspecialchars(trim($matches[1]), ENT_QUOTES, 'UTF-8');
+        $code = htmlspecialchars($matches[2], ENT_QUOTES, 'UTF-8');
+        $codeBlocks[$key] = '<pre class="my-6 p-4 rounded-xl bg-slate-900 text-slate-100 overflow-x-auto text-xs font-mono leading-relaxed"><code class="language-' . ($lang ?: 'text') . '">' . $code . '</code></pre>';
+        return "\n\n" . $key . "\n\n";
+    }, $text);
+
+    // Stash inline code
+    $inlineCodes = [];
+    $text = preg_replace_callback('/`([^`\n]+)`/', function ($matches) use (&$inlineCodes) {
+        $key = '%%INLINECODE_' . count($inlineCodes) . '%%';
+        $inlineCodes[$key] = '<code class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-800 text-xs font-mono font-semibold">' . htmlspecialchars($matches[1], ENT_QUOTES, 'UTF-8') . '</code>';
+        return $key;
+    }, $text);
+
+    // Split into blocks by double newlines
+    $rawBlocks = preg_split('/\n{2,}/', $text);
+    $parsedBlocks = [];
+
+    foreach ($rawBlocks as $block) {
+        $block = trim($block);
+        if ($block === '') {
+            continue;
+        }
+
+        // Check for code block placeholder
+        if (isset($codeBlocks[$block])) {
+            $parsedBlocks[] = $codeBlocks[$block];
+            continue;
+        }
+
+        // Horizontal Rule (--- or ***)
+        if (preg_match('/^(\*{3,}|-{3,}|_{3,})$/', $block)) {
+            $parsedBlocks[] = '<hr class="my-8 border-slate-200">';
+            continue;
+        }
+
+        // Headings (# Heading)
+        if (preg_match('/^(#{1,6})\s+(.+)$/m', $block, $m) && !str_contains($block, "\n")) {
+            $level = strlen($m[1]);
+            $headingText = format_inline_markdown($m[2]);
+            $parsedBlocks[] = "<h{$level}>{$headingText}</h{$level}>";
+            continue;
+        }
+
+        // Blockquotes (> Quote)
+        if (str_starts_with($block, '>')) {
+            $lines = explode("\n", $block);
+            $quoteLines = [];
+            foreach ($lines as $line) {
+                $quoteLines[] = preg_replace('/^>\s?/', '', $line);
+            }
+            $quoteContent = format_inline_markdown(implode("\n", $quoteLines));
+            $parsedBlocks[] = '<blockquote><p>' . nl2br($quoteContent) . '</p></blockquote>';
+            continue;
+        }
+
+        // Unordered Lists (- Item or * Item)
+        if (preg_match('/^[\*\-]\s+/m', $block)) {
+            $lines = explode("\n", $block);
+            $items = [];
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if (preg_match('/^[\*\-]\s+(.+)$/', $line, $lm)) {
+                    $items[] = '<li>' . format_inline_markdown($lm[1]) . '</li>';
+                }
+            }
+            if (!empty($items)) {
+                $parsedBlocks[] = '<ul>' . implode('', $items) . '</ul>';
+                continue;
+            }
+        }
+
+        // Ordered Lists (1. Item)
+        if (preg_match('/^\d+\.\s+/m', $block)) {
+            $lines = explode("\n", $block);
+            $items = [];
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if (preg_match('/^\d+\.\s+(.+)$/', $line, $lm)) {
+                    $items[] = '<li>' . format_inline_markdown($lm[1]) . '</li>';
+                }
+            }
+            if (!empty($items)) {
+                $parsedBlocks[] = '<ol>' . implode('', $items) . '</ol>';
+                continue;
+            }
+        }
+
+        // If block is already an HTML block tag, preserve and format inline
+        if (preg_match('/^<(p|div|figure|blockquote|h[1-6]|ul|ol|table)\b/i', $block)) {
+            $parsedBlocks[] = format_inline_markdown($block);
+            continue;
+        }
+
+        // Standard Paragraph with inline formatting
+        $inlineFormatted = format_inline_markdown($block);
+        $inlineFormatted = nl2br($inlineFormatted);
+        $parsedBlocks[] = '<p>' . $inlineFormatted . '</p>';
+    }
+
+    $html = implode("\n\n", $parsedBlocks);
+
+    // Restore inline code
+    foreach ($inlineCodes as $key => $codeHtml) {
+        $html = str_replace($key, $codeHtml, $html);
+    }
+
+    // Restore any leftover code blocks
+    foreach ($codeBlocks as $key => $blockHtml) {
+        $html = str_replace($key, $blockHtml, $html);
+    }
+
+    return $html;
+}
+
+/**
+ * Format inline markdown syntax (bold, italics, links, images)
+ */
+function format_inline_markdown(string $text): string {
+    // Images: ![alt](url)
+    $text = preg_replace_callback('/!\[([^\]]*)\]\(([^)]+)\)/', function ($m) {
+        $alt = htmlspecialchars($m[1], ENT_QUOTES, 'UTF-8');
+        $src = htmlspecialchars(trim($m[2]), ENT_QUOTES, 'UTF-8');
+        $caption = !empty($alt) ? '<figcaption class="text-xs text-slate-500 mt-2 text-center">' . $alt . '</figcaption>' : '';
+        return '<figure class="my-8"><img src="' . $src . '" alt="' . $alt . '" class="rounded-xl shadow-md w-full max-h-[500px] object-cover">' . $caption . '</figure>';
+    }, $text);
+
+    // Links: [text](url)
+    $text = preg_replace_callback('/\[([^\]]+)\]\(([^)]+)\)/', function ($m) {
+        $label = $m[1];
+        $url = htmlspecialchars(trim($m[2]), ENT_QUOTES, 'UTF-8');
+        if (preg_match('/^javascript:/i', $url)) {
+            $url = '#';
+        }
+        return '<a href="' . $url . '" target="_blank" rel="noopener noreferrer">' . $label . '</a>';
+    }, $text);
+
+    // Bold + Italic: ***text***
+    $text = preg_replace('/\*\*\*([^\*]+)\*\*\*/', '<strong><em>$1</em></strong>', $text);
+
+    // Bold: **text** or __text__
+    $text = preg_replace('/\*\*([^\*]+)\*\*/', '<strong>$1</strong>', $text);
+    $text = preg_replace('/__([^_\n]+)__/', '<strong>$1</strong>', $text);
+
+    // Italic: *text* or _text_
+    $text = preg_replace('/\*([^\*\n]+)\*/', '<em>$1</em>', $text);
+    $text = preg_replace('/(?<=\s|^)_([^_\n]+)_(?=\s|$|[.,;:!?])/', '<em>$1</em>', $text);
+
+    // Citations / Em dashes: -- or —
+    $text = preg_replace('/(?<=\s)--(?=\s)/', '&mdash;', $text);
+
+    return $text;
+}
+
+/**
+ * Render article content safely with Markdown parsing and HTML sanitization
+ */
+function render_article_content(string $content): string {
+    $parsedHtml = render_markdown($content);
+    return Security::sanitizeArticleHtml($parsedHtml);
+}

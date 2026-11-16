@@ -223,8 +223,8 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 </div>
 
                 <!-- Editorial Body Prose -->
-                <div class="editorial-prose text-base sm:text-lg text-slate-800 leading-relaxed space-y-6 max-w-prose">
-                    <?= Security::sanitizeArticleHtml($article['content']) ?>
+                <div class="editorial-prose text-base sm:text-lg text-slate-800 leading-relaxed max-w-prose">
+                    <?= render_article_content($article['content']) ?>
                 </div>
 
                 <!-- References & Sources Section -->

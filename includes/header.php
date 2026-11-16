@@ -108,7 +108,154 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
         }
 
         .editorial-prose {
-            font-family: 'Source Serif 4', serif;
+            font-family: 'Source Serif 4', Georgia, Cambria, 'Times New Roman', serif;
+            font-size: 1.125rem;
+            line-height: 1.85;
+            color: #1e293b;
+        }
+
+        .editorial-prose p {
+            margin-bottom: 1.6rem;
+            line-height: 1.85;
+            color: #1e293b;
+        }
+
+        .editorial-prose p:last-child {
+            margin-bottom: 0;
+        }
+
+        .editorial-prose h1, .editorial-prose h2, .editorial-prose h3, .editorial-prose h4 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #061638;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .editorial-prose h1 {
+            font-size: 2rem;
+            line-height: 1.25;
+            margin-top: 2.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .editorial-prose h2 {
+            font-size: 1.65rem;
+            line-height: 1.35;
+            margin-top: 2.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .editorial-prose h3 {
+            font-size: 1.35rem;
+            line-height: 1.4;
+            margin-top: 2.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .editorial-prose h4 {
+            font-size: 1.15rem;
+            margin-top: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .editorial-prose blockquote {
+            margin: 2rem 0;
+            padding: 1.25rem 1.75rem;
+            background-color: #f8fafc;
+            border-left: 4px solid #1557A6;
+            border-radius: 0 0.75rem 0.75rem 0;
+            font-style: italic;
+            font-size: 1.15rem;
+            line-height: 1.75;
+            color: #0f172a;
+        }
+
+        .editorial-prose blockquote p {
+            margin-bottom: 0;
+        }
+
+        .editorial-prose ul {
+            list-style-type: disc;
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        .editorial-prose ol {
+            list-style-type: decimal;
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        .editorial-prose li {
+            margin-bottom: 0.6rem;
+            line-height: 1.75;
+        }
+
+        .editorial-prose a {
+            color: #1557A6;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            font-weight: 600;
+            transition: color 0.15s ease;
+        }
+
+        .editorial-prose a:hover {
+            color: #061638;
+        }
+
+        .editorial-prose strong, .editorial-prose b {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .editorial-prose em, .editorial-prose i {
+            font-style: italic;
+        }
+
+        .editorial-prose hr {
+            border: 0;
+            border-top: 1px solid #cbd5e1;
+            margin: 2.5rem 0;
+        }
+
+        .editorial-prose code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            background-color: #f1f5f9;
+            color: #be185d;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.9em;
+        }
+
+        .editorial-prose pre {
+            background-color: #0f172a;
+            color: #f8fafc;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin: 1.75rem 0;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .editorial-prose pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+        }
+
+        .editorial-prose figure {
+            margin: 2rem 0;
+        }
+
+        .editorial-prose figcaption {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            color: #64748b;
+            text-align: center;
+            margin-top: 0.5rem;
         }
 
         /* Focus accessibility indicator */

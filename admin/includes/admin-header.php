@@ -55,6 +55,42 @@ $adminPageTitle = $adminPageTitle ?? 'Administration CMS';
             }
         }
     </script>
+    <style>
+        .editorial-prose {
+            font-family: 'Source Serif 4', Georgia, Cambria, 'Times New Roman', serif;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #1e293b;
+        }
+        .editorial-prose p { margin-bottom: 1.4rem; line-height: 1.8; color: #1e293b; }
+        .editorial-prose p:last-child { margin-bottom: 0; }
+        .editorial-prose h1, .editorial-prose h2, .editorial-prose h3, .editorial-prose h4 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #061638;
+            font-weight: 800;
+        }
+        .editorial-prose h2 { font-size: 1.5rem; margin-top: 2rem; margin-bottom: 0.75rem; padding-bottom: 0.35rem; border-bottom: 1px solid #e2e8f0; }
+        .editorial-prose h3 { font-size: 1.25rem; margin-top: 1.75rem; margin-bottom: 0.5rem; }
+        .editorial-prose blockquote {
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background-color: #f8fafc;
+            border-left: 4px solid #1557A6;
+            border-radius: 0 0.5rem 0.5rem 0;
+            font-style: italic;
+            color: #0f172a;
+        }
+        .editorial-prose blockquote p { margin-bottom: 0; }
+        .editorial-prose ul { list-style-type: disc; margin: 1.25rem 0; padding-left: 1.75rem; }
+        .editorial-prose ol { list-style-type: decimal; margin: 1.25rem 0; padding-left: 1.75rem; }
+        .editorial-prose li { margin-bottom: 0.4rem; line-height: 1.7; }
+        .editorial-prose a { color: #1557A6; text-decoration: underline; font-weight: 600; }
+        .editorial-prose strong, .editorial-prose b { font-weight: 700; color: #0f172a; }
+        .editorial-prose em, .editorial-prose i { font-style: italic; }
+        .editorial-prose hr { border: 0; border-top: 1px solid #cbd5e1; margin: 2rem 0; }
+        .editorial-prose code { background-color: #f1f5f9; color: #be185d; padding: 0.15rem 0.35rem; border-radius: 0.25rem; font-size: 0.9em; font-family: monospace; }
+        .editorial-prose pre { background-color: #0f172a; color: #f8fafc; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin: 1.5rem 0; font-size: 0.85rem; }
+    </style>
 </head>
 <body class="bg-surface text-slate-800 antialiased font-sans min-h-screen flex flex-col">
 

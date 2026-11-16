@@ -22,7 +22,7 @@ try {
     $categories = $db->query("SELECT * FROM categories ORDER BY display_order ASC, name ASC")->fetchAll();
 } catch (Throwable $e) {
     error_log("Failed to load categories: " . $e->getMessage());
-    $error = "Notice: Could not load categories from database. Please verify that 'database/infinityfree_setup.sql' was imported in phpMyAdmin.";
+    $error = "Notice: Could not load categories from database.";
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -31,7 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = Security::sanitize($_POST['title'] ?? '');
     $subtitle = Security::sanitize($_POST['subtitle'] ?? '');
     $excerpt = Security::sanitize($_POST['excerpt'] ?? '');
-    $content = $_POST['content'] ?? '';
+    // Markdown content is preserved as written
+    $content = trim($_POST['content'] ?? '');
     $referencesSources = Security::sanitize($_POST['references_sources'] ?? '');
     $tags = Security::sanitize($_POST['tags'] ?? '');
     $readingTime = max(1, (int)($_POST['reading_time'] ?? 5));
@@ -94,9 +95,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($title) || empty($excerpt) || empty($content)) {
         $error = 'Please fill in Title, Summary/Excerpt, and Article Content.';
     } elseif (!$error) {
-        // Sanitize article body HTML
-        $sanitizedContent = Security::sanitizeArticleHtml($content);
-
         // Generate unique slug
         $baseSlug = slugify($title);
         $slug = $baseSlug;
@@ -127,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $slug,
                 $subtitle,
                 $excerpt,
-                $sanitizedContent,
+                $content,
                 $referencesSources,
                 $tags,
                 $coverImage,
@@ -190,7 +188,7 @@ require_once __DIR__ . '/includes/admin-header.php';
     <div>
         <span class="text-xs font-bold uppercase tracking-wider text-lwblue">Editorial Studio</span>
         <h1 class="text-2xl font-extrabold text-navy-900 tracking-tight">Compose New Article</h1>
-        <p class="text-xs text-slate-500 mt-0.5">Author a research commentary, media literacy analysis, or philosophical essay.</p>
+        <p class="text-xs text-slate-500 mt-0.5">Author a research commentary, media literacy analysis, or philosophical essay in Markdown format.</p>
     </div>
     <div class="flex items-center gap-2">
         <a href="<?= $isStaff ? url('admin/articles.php') : url('pages/dashboard.php') ?>" 
@@ -240,33 +238,97 @@ require_once __DIR__ . '/includes/admin-header.php';
                           class="w-full text-xs p-4 bg-surface border border-slate-200 rounded-xl focus:outline-none focus:border-lwblue focus:bg-white transition leading-relaxed"><?= e($_POST['excerpt'] ?? '') ?></textarea>
             </div>
 
-            <!-- Rich Content Editor with Complete Toolbar -->
-            <div>
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1.5">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                        Article Content * (Rich Text &amp; Semantic HTML)
-                    </label>
-                    <span class="text-[11px] text-slate-400">Headings, paragraphs, blockquotes, lists, links, citations</span>
-                </div>
-                
-                <!-- Formatting Toolbar -->
-                <div class="flex flex-wrap items-center gap-1.5 p-2 bg-slate-100 rounded-t-xl border-t border-x border-slate-200 text-xs select-none">
-                    <button type="button" onclick="formatInsert('<h2>', '</h2>')" class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50 font-bold text-navy-900" title="Section Heading 2">H2</button>
-                    <button type="button" onclick="formatInsert('<h3>', '</h3>')" class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50 font-bold text-navy-900" title="Sub-section Heading 3">H3</button>
-                    <button type="button" onclick="formatInsert('<p>', '</p>')" class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50" title="Paragraph">P</button>
-                    <button type="button" onclick="formatInsert('<strong>', '</strong>')" class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50 font-bold" title="Bold"><i class="fa-solid fa-bold"></i></button>
-                    <button type="button" onclick="formatInsert('<em>', '</em>')" class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50 italic" title="Italic"><i class="fa-solid fa-italic"></i></button>
-                    <button type="button" onclick="formatInsert('<blockquote>\n  <p>', '</p>\n</blockquote>')" class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50" title="Blockquote"><i class="fa-solid fa-quote-left"></i></button>
-                    <button type="button" onclick="formatInsert('<ul>\n  <li>', '</li>\n  <li>Second item</li>\n</ul>')" class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50" title="Unordered List"><i class="fa-solid fa-list-ul"></i></button>
-                    <button type="button" onclick="formatInsert('<ol>\n  <li>', '</li>\n  <li>Second step</li>\n</ol>')" class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50" title="Ordered List"><i class="fa-solid fa-list-ol"></i></button>
-                    <button type="button" onclick="insertLink()" class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50" title="Hyperlink"><i class="fa-solid fa-link"></i></button>
-                    <button type="button" onclick="insertImage()" class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50" title="Insert Image"><i class="fa-solid fa-image"></i></button>
-                    <button type="button" onclick="formatInsert('<cite class=\"text-xs text-slate-500 block mt-2\">— ', '</cite>')" class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-50 font-mono text-[11px]" title="Cite Source">Cite</button>
+            <!-- Markdown Studio with Toolbar & Live Preview -->
+            <div class="space-y-2">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <label class="block text-xs font-bold text-slate-800 uppercase tracking-wider">
+                            Article Manuscript * (Markdown Format &mdash; .md)
+                        </label>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-100 text-lwblue border border-sky-200">MD Active</span>
+                    </div>
+
+                    <!-- Mode Tabs: Write vs Preview -->
+                    <div class="inline-flex rounded-lg border border-slate-200 bg-slate-100 p-0.5 text-xs font-semibold">
+                        <button type="button" id="tabWrite" onclick="switchEditorTab('write')" class="px-3 py-1 rounded-md bg-white text-navy-900 shadow-xs font-bold transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-pen-nib text-[10px] text-lwblue"></i>
+                            <span>Write (MD)</span>
+                        </button>
+                        <button type="button" id="tabPreview" onclick="switchEditorTab('preview')" class="px-3 py-1 rounded-md text-slate-600 hover:text-navy-900 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-eye text-[10px]"></i>
+                            <span>Live Preview</span>
+                        </button>
+                    </div>
                 </div>
 
-                <textarea name="content" id="articleContent" rows="18" required 
-                          placeholder="Compose your full article here. Use the toolbar buttons above to format headings, paragraphs, blockquotes, lists, links, and citations. Server sanitization ensures clean semantic rendering..."
-                          class="w-full text-xs p-4 bg-surface border border-slate-200 rounded-b-xl focus:outline-none focus:border-lwblue focus:bg-white font-mono leading-relaxed transition"><?= e($_POST['content'] ?? '') ?></textarea>
+                <!-- Markdown Toolbar -->
+                <div id="mdToolbar" class="flex flex-wrap items-center gap-1 p-2 bg-slate-100 rounded-t-xl border border-slate-200 text-xs select-none">
+                    <button type="button" onclick="insertMd('## ', '')" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 font-bold text-navy-900 hover:border-slate-300 transition" title="Section Heading (## Section)">H2</button>
+                    <button type="button" onclick="insertMd('### ', '')" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 font-bold text-navy-900 hover:border-slate-300 transition" title="Sub-section (### Sub-section)">H3</button>
+                    <div class="h-4 w-px bg-slate-300 mx-0.5"></div>
+                    <button type="button" onclick="insertMd('**', '**')" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 font-bold text-navy-900 hover:border-slate-300 transition" title="Bold (**text**)"><i class="fa-solid fa-bold text-xs"></i></button>
+                    <button type="button" onclick="insertMd('*', '*')" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 italic text-navy-900 hover:border-slate-300 transition" title="Italic (*text*)"><i class="fa-solid fa-italic text-xs"></i></button>
+                    <div class="h-4 w-px bg-slate-300 mx-0.5"></div>
+                    <button type="button" onclick="insertMd('> ', '')" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 text-navy-900 hover:border-slate-300 transition" title="Blockquote (> Quote)"><i class="fa-solid fa-quote-left text-xs"></i></button>
+                    <button type="button" onclick="insertMd('- ', '')" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 text-navy-900 hover:border-slate-300 transition" title="Bullet List (- item)"><i class="fa-solid fa-list-ul text-xs"></i></button>
+                    <button type="button" onclick="insertMd('1. ', '')" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 text-navy-900 hover:border-slate-300 transition" title="Numbered List (1. item)"><i class="fa-solid fa-list-ol text-xs"></i></button>
+                    <div class="h-4 w-px bg-slate-300 mx-0.5"></div>
+                    <button type="button" onclick="insertMdLink()" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 text-navy-900 hover:border-slate-300 transition" title="Link [text](url)"><i class="fa-solid fa-link text-xs"></i></button>
+                    <button type="button" onclick="insertMdImage()" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 text-navy-900 hover:border-slate-300 transition" title="Image ![alt](url)"><i class="fa-solid fa-image text-xs"></i></button>
+                    <button type="button" onclick="insertMd('`', '`')" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 font-mono text-[11px] text-pink-600 hover:border-slate-300 transition" title="Inline Code (`code`)"><i class="fa-solid fa-code text-xs"></i></button>
+                    <button type="button" onclick="insertMdCodeBlock()" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 font-mono text-[11px] text-slate-700 hover:border-slate-300 transition" title="Code Block (```)">&lt;/&gt;</button>
+                    <div class="h-4 w-px bg-slate-300 mx-0.5"></div>
+                    <button type="button" onclick="insertMd('\n\n---\n\n', '')" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 text-navy-900 hover:border-slate-300 transition" title="Horizontal Divider (---)"><i class="fa-solid fa-minus text-xs"></i></button>
+                    <button type="button" onclick="insertMd('\n\n— *Source / Citation*', '')" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 font-mono text-[11px] text-slate-700 hover:border-slate-300 transition" title="Citation (Cite)">Cite</button>
+                </div>
+
+                <!-- Textarea Editor (Write Mode) -->
+                <div id="editorWriteContainer">
+                    <textarea name="content" id="articleContent" rows="18" required 
+                              placeholder="Write your article in Markdown (.md) format.
+
+Double Enter creates a clean, elegant paragraph break:
+
+First paragraph of your monograph. In an information environment saturated with artificial intelligence and digital mediation, clear evidence matters more than ever.
+
+Second paragraph separates cleanly and renders with high-readability editorial margins.
+
+## Key Section Subheading
+Detail your thesis arguments, research methodologies, or policy insights.
+
+> Notable quotes or highlighted principles start with a greater-than symbol.
+
+- Unordered evidence points start with a hyphen
+- Second point of civic inquiry
+1. Step-by-step or prioritized arguments use numbers"
+                              class="w-full text-sm p-4 bg-surface border border-t-0 border-slate-200 rounded-b-xl focus:outline-none focus:border-lwblue focus:bg-white font-mono leading-relaxed transition"><?= e($_POST['content'] ?? '') ?></textarea>
+                </div>
+
+                <!-- Live Preview Container (Preview Mode) -->
+                <div id="editorPreviewContainer" class="hidden min-h-[420px] p-6 sm:p-8 bg-surface rounded-b-xl border border-t-0 border-slate-200 overflow-y-auto">
+                    <div id="livePreviewOutput" class="editorial-prose max-w-none">
+                        <!-- Populated by JavaScript preview renderer -->
+                    </div>
+                </div>
+
+                <!-- Markdown Helper Cheat Sheet -->
+                <div class="p-3 bg-blue-50/50 rounded-xl border border-blue-100 flex items-start gap-2 text-[11px] text-slate-600">
+                    <i class="fa-solid fa-circle-info text-lwblue mt-0.5 shrink-0"></i>
+                    <div>
+                        <strong class="text-navy-900 font-semibold">Markdown Formatting Quick Guide:</strong>
+                        <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-slate-500 font-mono">
+                            <span><code class="text-navy-900 font-bold">## Heading</code></span>
+                            <span><code class="text-navy-900 font-bold">**Bold**</code></span>
+                            <span><code class="text-navy-900 font-bold">*Italic*</code></span>
+                            <span><code class="text-navy-900 font-bold">&gt; Quote</code></span>
+                            <span><code class="text-navy-900 font-bold">- Bullet</code></span>
+                            <span><code class="text-navy-900 font-bold">1. Numbered</code></span>
+                            <span><code class="text-navy-900 font-bold">[Link](url)</code></span>
+                            <span><code class="text-navy-900 font-bold">![Alt](image.png)</code></span>
+                            <span class="text-lwblue font-sans font-semibold">Blank line = New Paragraph</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- References and Sources Field -->
@@ -383,34 +445,197 @@ require_once __DIR__ . '/includes/admin-header.php';
 </form>
 
 <script>
-function formatInsert(startTag, endTag) {
+function insertMd(prefix, suffix) {
     const textarea = document.getElementById('articleContent');
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const selected = textarea.value.substring(start, end);
-    const replacement = startTag + (selected || 'Sample text') + endTag;
+    const replacement = prefix + (selected || '') + suffix;
     textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
     textarea.focus();
-    textarea.setSelectionRange(start + startTag.length, start + replacement.length - endTag.length);
+    const cursor = start + prefix.length + (selected ? selected.length : 0);
+    textarea.setSelectionRange(cursor, cursor);
 }
 
-function insertLink() {
-    const url = prompt('Enter hyperlink URL (https://...):', 'https://');
+function insertMdLink() {
+    const url = prompt('Enter Hyperlink URL (e.g. https://...):', 'https://');
     if (url) {
-        formatInsert('<a href="' + encodeURI(url) + '" target="_blank" rel="noopener noreferrer">', '</a>');
-    }
-}
-
-function insertImage() {
-    const imgUrl = prompt('Enter Image URL:', 'assets/images/article-medialiteracy.svg');
-    const altText = prompt('Enter Alt Description:', 'Illustration');
-    if (imgUrl) {
         const textarea = document.getElementById('articleContent');
-        const imgTag = '\n<figure class="my-6">\n  <img src="' + imgUrl + '" alt="' + (altText || '') + '" class="rounded-xl shadow-md">\n  <figcaption class="text-xs text-slate-400 mt-2 text-center">' + (altText || '') + '</figcaption>\n</figure>\n';
         const start = textarea.selectionStart;
-        textarea.value = textarea.value.substring(0, start) + imgTag + textarea.value.substring(start);
+        const end = textarea.selectionEnd;
+        const selected = textarea.value.substring(start, end) || 'Link Text';
+        const linkMd = '[' + selected + '](' + encodeURI(url) + ')';
+        textarea.value = textarea.value.substring(0, start) + linkMd + textarea.value.substring(end);
         textarea.focus();
     }
+}
+
+function insertMdImage() {
+    const imgUrl = prompt('Enter Image URL or Path:', 'assets/images/article-medialiteracy.svg');
+    if (imgUrl) {
+        const alt = prompt('Enter Alt Description / Caption:', 'Descriptive illustration caption') || '';
+        const imgMd = '\n\n![' + alt + '](' + imgUrl + ')\n\n';
+        insertMd(imgMd, '');
+    }
+}
+
+function insertMdCodeBlock() {
+    insertMd('\n```\n', '\n```\n');
+}
+
+function switchEditorTab(mode) {
+    const writeTab = document.getElementById('tabWrite');
+    const previewTab = document.getElementById('tabPreview');
+    const writeContainer = document.getElementById('editorWriteContainer');
+    const previewContainer = document.getElementById('editorPreviewContainer');
+    const toolbar = document.getElementById('mdToolbar');
+    const previewOutput = document.getElementById('livePreviewOutput');
+    const textarea = document.getElementById('articleContent');
+
+    if (mode === 'preview') {
+        writeTab.classList.remove('bg-white', 'text-navy-900', 'shadow-xs', 'font-bold');
+        writeTab.classList.add('text-slate-600');
+        previewTab.classList.add('bg-white', 'text-navy-900', 'shadow-xs', 'font-bold');
+        previewTab.classList.remove('text-slate-600');
+
+        writeContainer.classList.add('hidden');
+        previewContainer.classList.remove('hidden');
+        toolbar.classList.add('opacity-50', 'pointer-events-none');
+
+        previewOutput.innerHTML = parseMarkdownToHtml(textarea.value);
+    } else {
+        previewTab.classList.remove('bg-white', 'text-navy-900', 'shadow-xs', 'font-bold');
+        previewTab.classList.add('text-slate-600');
+        writeTab.classList.add('bg-white', 'text-navy-900', 'shadow-xs', 'font-bold');
+        writeTab.classList.remove('text-slate-600');
+
+        previewContainer.classList.add('hidden');
+        writeContainer.classList.remove('hidden');
+        toolbar.classList.remove('opacity-50', 'pointer-events-none');
+        textarea.focus();
+    }
+}
+
+function parseMarkdownToHtml(md) {
+    if (!md || !md.trim()) {
+        return '<p class="text-slate-400 italic text-sm">Nothing to preview yet. Start typing your article in Write mode...</p>';
+    }
+
+    let text = md.trim().replace(/\r\n/g, '\n');
+
+    // Code blocks
+    const codeBlocks = [];
+    text = text.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g, (match, lang, code) => {
+        const id = '%%CB_' + codeBlocks.length + '%%';
+        codeBlocks.push('<pre class="my-6 p-4 rounded-xl bg-slate-900 text-slate-100 overflow-x-auto text-xs font-mono"><code>' + escapeHtml(code) + '</code></pre>');
+        return '\n\n' + id + '\n\n';
+    });
+
+    // Split paragraphs
+    const blocks = text.split(/\n{2,}/);
+    const htmlBlocks = [];
+
+    blocks.forEach(block => {
+        block = block.trim();
+        if (!block) return;
+
+        if (block.startsWith('%%CB_')) {
+            const idx = parseInt(block.replace(/\D/g, ''), 10);
+            if (codeBlocks[idx]) {
+                htmlBlocks.push(codeBlocks[idx]);
+                return;
+            }
+        }
+
+        // Horizontal Rule
+        if (/^(\*{3,}|-{3,}|_{3,})$/.test(block)) {
+            htmlBlocks.push('<hr class="my-8 border-slate-200">');
+            return;
+        }
+
+        // Headings
+        const hMatch = block.match(/^(#{1,6})\s+(.+)$/);
+        if (hMatch && !block.includes('\n')) {
+            const level = hMatch[1].length;
+            htmlBlocks.push('<h' + level + '>' + parseInline(hMatch[2]) + '</h' + level + '>');
+            return;
+        }
+
+        // Blockquote
+        if (block.startsWith('>')) {
+            const lines = block.split('\n').map(l => l.replace(/^>\s?/, ''));
+            htmlBlocks.push('<blockquote><p>' + lines.map(parseInline).join('<br>') + '</p></blockquote>');
+            return;
+        }
+
+        // Unordered list
+        if (/^[\*\-]\s+/m.test(block)) {
+            const items = block.split('\n')
+                .filter(l => /^[\*\-]\s+/.test(l.trim()))
+                .map(l => '<li>' + parseInline(l.replace(/^[\*\-]\s+/, '')) + '</li>');
+            if (items.length) {
+                htmlBlocks.push('<ul>' + items.join('') + '</ul>');
+                return;
+            }
+        }
+
+        // Ordered list
+        if (/^\d+\.\s+/m.test(block)) {
+            const items = block.split('\n')
+                .filter(l => /^\d+\.\s+/.test(l.trim()))
+                .map(l => '<li>' + parseInline(l.replace(/^\d+\.\s+/, '')) + '</li>');
+            if (items.length) {
+                htmlBlocks.push('<ol>' + items.join('') + '</ol>');
+                return;
+            }
+        }
+
+        // HTML block passthrough
+        if (/^<(p|div|figure|blockquote|h[1-6]|ul|ol)\b/i.test(block)) {
+            htmlBlocks.push(parseInline(block));
+            return;
+        }
+
+        // Paragraph
+        htmlBlocks.push('<p>' + parseInline(block).replace(/\n/g, '<br>') + '</p>');
+    });
+
+    return htmlBlocks.join('\n\n');
+}
+
+function parseInline(text) {
+    // Images
+    text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (m, alt, url) => {
+        return '<figure class="my-6"><img src="' + escapeHtml(url) + '" alt="' + escapeHtml(alt) + '" class="rounded-xl shadow-md mx-auto max-h-[400px] object-cover"><figcaption class="text-xs text-slate-500 mt-2 text-center">' + escapeHtml(alt) + '</figcaption></figure>';
+    });
+
+    // Links
+    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (m, label, url) => {
+        return '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer" class="text-lwblue underline font-semibold">' + label + '</a>';
+    });
+
+    // Bold + Italic
+    text = text.replace(/\*\*\*([^\*]+)\*\*\*/g, '<strong><em>$1</em></strong>');
+    // Bold
+    text = text.replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/__([^_\n]+)__/g, '<strong>$1</strong>');
+    // Italic
+    text = text.replace(/\*([^\*\n]+)\*/g, '<em>$1</em>');
+    text = text.replace(/(?<=\s|^)_([^_\n]+)_(?=\s|$|[.,;:!?])/g, '<em>$1</em>');
+    // Code
+    text = text.replace(/`([^`\n]+)`/g, '<code class="px-1.5 py-0.5 rounded bg-slate-100 text-pink-600 font-mono text-xs font-semibold">$1</code>');
+    // Em dash
+    text = text.replace(/(?<=\s)--(?=\s)/g, '&mdash;');
+
+    return text;
+}
+
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
 }
 </script>
 
