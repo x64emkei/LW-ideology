@@ -146,6 +146,21 @@ require_once dirname(__DIR__) . '/includes/header.php';
 
         </form>
 
+        <!-- Mobile Horizontal Quick Category Chips -->
+        <div class="lg:hidden mt-4 pt-3 border-t border-slate-100 -mx-4 px-4 overflow-x-auto no-scrollbar scroll-smooth flex items-center gap-2">
+            <a href="<?= url('pages/articles.php' . (!empty($search) ? '?q=' . urlencode($search) : '')) ?>" 
+               class="px-3 py-1.5 rounded-full text-xs font-bold shrink-0 transition <?= empty($categorySlug) ? 'bg-navy-900 text-white' : 'bg-surface text-slate-700 hover:bg-slate-200 border border-slate-200' ?>">
+                All (<?= $totalArticles ?>)
+            </a>
+            <?php foreach ($categories as $cat): ?>
+                <a href="<?= url('pages/articles.php?category=' . urlencode($cat['slug']) . (!empty($search) ? '&q=' . urlencode($search) : '')) ?>" 
+                   class="px-3 py-1.5 rounded-full text-xs font-semibold shrink-0 transition flex items-center gap-1.5 <?= $categorySlug === $cat['slug'] ? 'bg-lwblue text-white font-bold' : 'bg-surface text-slate-700 hover:bg-slate-200 border border-slate-200' ?>">
+                    <span class="w-1.5 h-1.5 rounded-full" style="background-color: <?= e($cat['color_hex'] ?? '#1557A6') ?>;"></span>
+                    <span><?= e($cat['name']) ?></span>
+                </a>
+            <?php endforeach; ?>
+        </div>
+
         <!-- Active Filter Tags -->
         <?php if (!empty($search) || !empty($categorySlug)): ?>
             <div class="flex flex-wrap items-center gap-2 pt-4 text-xs">

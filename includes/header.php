@@ -258,6 +258,37 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
             margin-top: 0.5rem;
         }
 
+        /* Mobile Reader Mode & Typography Scaling */
+        .editorial-prose.text-size-lg p {
+            font-size: 1.25rem !important;
+            line-height: 2 !important;
+        }
+        .editorial-prose.text-size-lg h2 {
+            font-size: 1.85rem !important;
+        }
+        .editorial-prose.text-size-lg h3 {
+            font-size: 1.5rem !important;
+        }
+
+        /* No-scrollbar utility for mobile horizontal swipe carousels */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Floating Mobile Reader Bar Animations */
+        #mobileReaderBar {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+        }
+        #mobileReaderBar.hide-bar {
+            transform: translateY(130%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
         /* Focus accessibility indicator */
         a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
             outline: 2px solid #2799E8;

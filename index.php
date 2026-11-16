@@ -176,6 +176,21 @@ require_once __DIR__ . '/includes/header.php';
 <section class="py-10 bg-white border-b border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
         
+        <!-- Mobile Horizontal Topic Ribbon (Thumb-Friendly Swipe Carousel) -->
+        <div class="lg:hidden mb-6 -mx-4 px-4 overflow-x-auto no-scrollbar scroll-smooth flex items-center gap-2 py-1">
+            <a href="<?= url('pages/articles.php') ?>" 
+               class="px-3.5 py-1.5 rounded-full text-xs font-bold shrink-0 bg-navy-900 text-white shadow-xs">
+                All Dispatches
+            </a>
+            <?php foreach ($featuredTopics as $top): ?>
+                <a href="<?= url('pages/topic.php?slug=' . urlencode($top['slug'])) ?>" 
+                   class="px-3 py-1.5 rounded-full text-xs font-semibold shrink-0 bg-surface hover:bg-slate-200 text-slate-700 border border-slate-200 transition flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full" style="background-color: <?= e($top['color_hex'] ?? '#1557A6') ?>;"></span>
+                    <span><?= e($top['name']) ?></span>
+                </a>
+            <?php endforeach; ?>
+        </div>
+
         <!-- CNN-Style Section Header Bar -->
         <div class="border-b-2 border-navy-900 pb-2 mb-6 flex items-center justify-between">
             <div class="flex items-center gap-2.5">

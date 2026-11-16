@@ -461,4 +461,207 @@ require_once dirname(__DIR__) . '/includes/header.php';
     </div>
 </article>
 
+<!-- Top Reading Progress Indicator -->
+<div id="readingProgressContainer" class="fixed top-0 left-0 right-0 h-1 z-50 bg-transparent pointer-events-none">
+    <div id="readingProgressBar" class="h-full bg-gradient-to-r from-lwblue via-sky-400 to-lwblue-light w-0 transition-all duration-75"></div>
+</div>
+
+<!-- Unique Floating Mobile Reader Bar (Mobile Only) -->
+<aside id="mobileReaderBar" 
+       class="fixed bottom-3 inset-x-3 sm:inset-x-6 z-40 lg:hidden bg-navy-950/95 backdrop-blur-md text-white border border-slate-700/80 rounded-full shadow-2xl px-4 py-2.5 flex items-center justify-between gap-3 text-xs"
+       aria-label="Mobile Reader Controls">
+    
+    <!-- Left: Reading Progress & Remaining Time -->
+    <div class="flex items-center gap-2 border-r border-slate-700/80 pr-3 shrink-0">
+        <span id="mobileProgressPercent" class="font-mono text-[11px] font-bold text-sky-400">0%</span>
+        <span class="text-[10px] text-slate-400 hidden xs:inline">• <?= (int)$article['reading_time'] ?>m read</span>
+    </div>
+
+    <!-- Center/Right: Core Reader Actions -->
+    <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Font Size Toggle (Comfortable 17px vs Large 20px) -->
+        <button type="button" 
+                id="toggleFontSizeBtn" 
+                class="px-2 py-1 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 text-xs font-bold transition flex items-center gap-0.5"
+                title="Adjust Text Size">
+            <span class="text-[9px]">A</span><span class="text-xs font-black">A+</span>
+        </button>
+
+        <!-- Quick Bookmark -->
+        <button type="button" 
+                class="bookmark-toggle-btn px-2.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition flex items-center gap-1.5 text-xs font-semibold <?= $isBookmarked ? 'text-amber-400' : 'text-slate-300' ?>"
+                data-article-id="<?= (int)$article['id'] ?>"
+                title="Bookmark article">
+            <i class="<?= $isBookmarked ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark' ?> text-xs"></i>
+            <span class="hidden sm:inline"><?= $isBookmarked ? 'Saved' : 'Save' ?></span>
+        </button>
+
+        <!-- Comments Jump -->
+        <a href="#comments" 
+           class="px-2.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold"
+           title="Jump to Discussion">
+            <i class="fa-regular fa-comments text-xs"></i>
+            <span class="px-1.5 py-0.2 rounded-full bg-lwblue text-[10px] font-bold"><?= count($comments) ?></span>
+        </a>
+
+        <!-- Native Share Sheet -->
+        <button type="button" 
+                id="mobileShareBtn" 
+                class="w-8 h-8 rounded-full bg-lwblue hover:bg-lwblue-hover text-white flex items-center justify-center transition shadow shrink-0"
+                title="Share Article">
+            <i class="fa-solid fa-arrow-up-from-bracket text-xs"></i>
+        </button>
+    </div>
+</aside>
+
+<!-- Floating Toast Notification -->
+<div id="editorialToast" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 hidden bg-navy-900 text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-xl border border-navy-700 items-center gap-2 transition-all duration-300">
+    <i class="fa-solid fa-check text-emerald-400 text-xs" id="toastIcon"></i>
+    <span id="toastMsg">Action completed</span>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const articleId = <?= (int)$article['id'] ?>;
+    const csrfToken = <?= json_encode(csrf_token()) ?>;
+    const bookmarkUrl = <?= json_encode(url('actions/bookmark-action.php')) ?>;
+    const prose = document.querySelector('.editorial-prose');
+
+    // 1. Reading Progress & Floating Reader Bar Scroll Handler
+    const pBar = document.getElementById('readingProgressBar');
+    const pText = document.getElementById('mobileProgressPercent');
+    const mobileBar = document.getElementById('mobileReaderBar');
+    let lastScrollY = window.scrollY;
+
+    window.addEventListener('scroll', function() {
+        const currentY = window.scrollY;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        const percent = maxScroll > 0 ? Math.min(100, Math.round((currentY / maxScroll) * 100)) : 0;
+
+        if (pBar) pBar.style.width = percent + '%';
+        if (pText) pText.textContent = percent + '%';
+
+        if (mobileBar) {
+            if (currentY > 180 && currentY > lastScrollY) {
+                mobileBar.classList.add('hide-bar');
+            } else {
+                mobileBar.classList.remove('hide-bar');
+            }
+        }
+        lastScrollY = currentY;
+    }, { passive: true });
+
+    // 2. Mobile Font Size Toggle (Persisted in localStorage)
+    const fontBtn = document.getElementById('toggleFontSizeBtn');
+    if (fontBtn && prose) {
+        if (localStorage.getItem('editorial_large_font') === 'true') {
+            prose.classList.add('text-size-lg');
+            fontBtn.classList.add('bg-lwblue', 'text-white');
+        }
+
+        fontBtn.addEventListener('click', function() {
+            prose.classList.toggle('text-size-lg');
+            const isLarge = prose.classList.contains('text-size-lg');
+            localStorage.setItem('editorial_large_font', isLarge ? 'true' : 'false');
+            fontBtn.classList.toggle('bg-lwblue', isLarge);
+            fontBtn.classList.toggle('text-white', isLarge);
+            showToast(isLarge ? 'Reading Mode: Large font' : 'Reading Mode: Standard font', 'fa-font');
+        });
+    }
+
+    // 3. Native Share / Clipboard Fallback
+    const shareBtn = document.getElementById('mobileShareBtn');
+    if (shareBtn) {
+        shareBtn.addEventListener('click', function() {
+            if (navigator.share) {
+                navigator.share({
+                    title: <?= json_encode($article['title']) ?>,
+                    text: <?= json_encode($article['excerpt']) ?>,
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(window.location.href).then(function() {
+                    showToast('Article link copied to clipboard!', 'fa-link');
+                });
+            }
+        });
+    }
+
+    // 4. Interactive AJAX Bookmark Toggle (Syncs both desktop and mobile buttons)
+    document.querySelectorAll('.bookmark-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const originalHtml = btn.innerHTML;
+            btn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('article_id', articleId);
+            formData.append('csrf_token', csrfToken);
+
+            fetch(bookmarkUrl, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                btn.disabled = false;
+                if (data.status === 'unauthorized') {
+                    showToast(data.message || 'Please log in to bookmark articles', 'fa-circle-exclamation');
+                    setTimeout(() => {
+                        window.location.href = <?= json_encode(url('auth/login.php?redirect=' . urlencode($_SERVER['REQUEST_URI'] ?? ''))) ?>;
+                    }, 1200);
+                    return;
+                }
+
+                const isAdded = data.action === 'added';
+                // Update all bookmark buttons on the page
+                document.querySelectorAll('.bookmark-toggle-btn').forEach(b => {
+                    const icon = b.querySelector('i');
+                    const label = b.querySelector('.bookmark-label');
+                    if (isAdded) {
+                        if (icon) icon.className = 'fa-solid fa-bookmark text-amber-400';
+                        if (label) label.textContent = 'Bookmarked in Reading List';
+                        b.classList.add('text-amber-400');
+                    } else {
+                        if (icon) icon.className = 'fa-regular fa-bookmark';
+                        if (label) label.textContent = 'Bookmark Article';
+                        b.classList.remove('text-amber-400');
+                    }
+                });
+
+                showToast(data.message || (isAdded ? 'Saved to Reading List' : 'Removed from Bookmarks'), isAdded ? 'fa-bookmark' : 'fa-check');
+            })
+            .catch(err => {
+                btn.disabled = false;
+                showToast('Network error updating bookmark', 'fa-circle-exclamation');
+            });
+        });
+    });
+
+    // 5. Toast Notification Helper
+    function showToast(msg, iconClass) {
+        const toast = document.getElementById('editorialToast');
+        const icon = document.getElementById('toastIcon');
+        const text = document.getElementById('toastMsg');
+        if (!toast) return;
+
+        text.textContent = msg;
+        if (icon && iconClass) {
+            icon.className = 'fa-solid ' + iconClass + ' text-emerald-400 text-xs';
+        }
+
+        toast.classList.remove('hidden', 'opacity-0');
+        toast.classList.add('flex', 'opacity-100');
+
+        clearTimeout(window._toastTimeout);
+        window._toastTimeout = setTimeout(() => {
+            toast.classList.remove('opacity-100');
+            toast.classList.add('opacity-0');
+            setTimeout(() => toast.classList.add('hidden'), 300);
+        }, 2600);
+    }
+});
+</script>
+
 <?php require_once dirname(__DIR__) . '/includes/footer.php'; ?>
