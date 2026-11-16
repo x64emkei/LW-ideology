@@ -68,7 +68,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
         </div>
 
         <?php if (empty($articles)): ?>
-            <div class="bg-white p-12 rounded-3xl border border-slate-200 text-center max-w-md mx-auto space-y-3">
+            <div class="bg-white p-10 rounded-lg border border-slate-200 text-center max-w-md mx-auto space-y-3">
                 <i class="fa-regular fa-newspaper text-2xl text-slate-400 mb-1"></i>
                 <h3 class="text-base font-bold text-navy-900">No articles have been published yet.</h3>
                 <p class="text-xs text-slate-500">There are currently no published monographs under this topic category.</p>
@@ -79,7 +79,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
         <?php else: ?>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <?php foreach ($articles as $article): ?>
-                    <article class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition flex flex-col justify-between group">
+                    <article class="bg-white rounded-md border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition flex flex-col justify-between group">
                         <div class="aspect-video bg-slate-900 overflow-hidden">
                             <img src="<?= asset($article['cover_image'] ?? 'assets/images/article-medialiteracy.svg') ?>" 
                                  alt="<?= e($article['title']) ?>" 

@@ -150,28 +150,28 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                     
                     <a href="<?= url('pages/dashboard.php?status=all') ?>" 
-                       class="bg-white p-4 rounded-2xl border transition shadow-xs hover:border-lwblue <?= $statusFilter === 'all' ? 'border-lwblue ring-1 ring-lwblue' : 'border-slate-200' ?>">
+                       class="bg-white p-4 rounded-md border transition shadow-xs hover:border-lwblue <?= $statusFilter === 'all' ? 'border-lwblue ring-1 ring-lwblue' : 'border-slate-200' ?>">
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">My Articles</span>
                         <p class="text-2xl font-extrabold text-navy-900 mt-1"><?= $totalCount ?></p>
                         <span class="text-[10px] text-slate-500 font-medium">All manuscripts</span>
                     </a>
 
                     <a href="<?= url('pages/dashboard.php?status=draft') ?>" 
-                       class="bg-white p-4 rounded-2xl border transition shadow-xs hover:border-slate-400 <?= $statusFilter === 'draft' ? 'border-slate-500 ring-1 ring-slate-500' : 'border-slate-200' ?>">
+                       class="bg-white p-4 rounded-md border transition shadow-xs hover:border-slate-400 <?= $statusFilter === 'draft' ? 'border-slate-500 ring-1 ring-slate-500' : 'border-slate-200' ?>">
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Drafts</span>
                         <p class="text-2xl font-extrabold text-slate-700 mt-1"><?= $draftsCount ?></p>
                         <span class="text-[10px] text-slate-500 font-medium">Unsubmitted</span>
                     </a>
 
                     <a href="<?= url('pages/dashboard.php?status=pending_review') ?>" 
-                       class="bg-white p-4 rounded-2xl border transition shadow-xs hover:border-amber-400 <?= $statusFilter === 'pending_review' ? 'border-amber-500 ring-1 ring-amber-500' : 'border-slate-200' ?>">
+                       class="bg-white p-4 rounded-md border transition shadow-xs hover:border-amber-400 <?= $statusFilter === 'pending_review' ? 'border-amber-500 ring-1 ring-amber-500' : 'border-slate-200' ?>">
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">In Review</span>
                         <p class="text-2xl font-extrabold text-amber-600 mt-1"><?= $pendingCount ?></p>
                         <span class="text-[10px] text-amber-600 font-medium">Awaiting editor</span>
                     </a>
 
                     <a href="<?= url('pages/dashboard.php?status=published') ?>" 
-                       class="bg-white p-4 rounded-2xl border transition shadow-xs hover:border-emerald-400 <?= $statusFilter === 'published' ? 'border-emerald-500 ring-1 ring-emerald-500' : 'border-slate-200' ?>">
+                       class="bg-white p-4 rounded-md border transition shadow-xs hover:border-emerald-400 <?= $statusFilter === 'published' ? 'border-emerald-500 ring-1 ring-emerald-500' : 'border-slate-200' ?>">
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Published</span>
                         <p class="text-2xl font-extrabold text-emerald-600 mt-1"><?= $publishedCount ?></p>
                         <span class="text-[10px] text-emerald-600 font-medium">Live on site</span>
@@ -180,7 +180,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 </div>
 
                 <!-- Articles Section & Filter Navigation -->
-                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xs space-y-6">
+                <div class="bg-white p-6 sm:p-8 rounded-lg border border-slate-200 shadow-xs space-y-6">
                     
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
                         <div>
@@ -363,7 +363,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
             <div class="lg:col-span-4 space-y-6">
                 
                 <!-- Quick Contributor Guide Card -->
-                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-3">
+                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-xs space-y-3">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-lwblue">Editorial Standards</span>
                     <h3 class="text-sm font-bold text-navy-900">Publishing Guidelines</h3>
                     <p class="text-xs text-editorial-muted leading-relaxed">
@@ -375,7 +375,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 </div>
 
                 <!-- Bookmarked Articles Card (Strict Empty State per Section 3.2) -->
-                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-4">
+                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-xs space-y-4">
                     <div class="flex items-center justify-between pb-2 border-b border-slate-100">
                         <h3 class="text-xs font-bold text-navy-900 uppercase tracking-wider flex items-center gap-2">
                             <i class="fa-regular fa-bookmark text-lwblue"></i>
@@ -388,7 +388,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                             <p class="font-medium text-slate-700">You haven't bookmarked any articles yet.</p>
                             <p class="text-[11px] text-slate-400">When reading insights, click "Bookmark" to build your reading queue.</p>
                             <div class="pt-1">
-                                <a href="<?= url('pages/articles.php') ?>" class="inline-block px-3 py-1.5 bg-surface text-lwblue font-bold rounded-lg hover:bg-slate-100">
+                                <a href="<?= url('pages/articles.php') ?>" class="inline-block px-3 py-1.5 bg-surface text-lwblue font-bold rounded hover:bg-slate-100">
                                     Explore Articles
                                 </a>
                             </div>
@@ -396,7 +396,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                     <?php else: ?>
                         <div class="space-y-3">
                             <?php foreach ($bookmarkedArticles as $bArt): ?>
-                                <div class="p-3 bg-surface rounded-xl border border-slate-100 text-xs flex items-center justify-between gap-2">
+                                <div class="p-3 bg-surface rounded-md border border-slate-100 text-xs flex items-center justify-between gap-2">
                                     <div class="min-w-0">
                                         <a href="<?= url('pages/article.php?slug=' . urlencode($bArt['slug'])) ?>" class="font-bold text-navy-900 hover:text-lwblue line-clamp-1">
                                             <?= e($bArt['title']) ?>
@@ -416,7 +416,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 </div>
 
                 <!-- Discussion & Comment History Card -->
-                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-4">
+                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-xs space-y-4">
                     <div class="flex items-center justify-between pb-2 border-b border-slate-100">
                         <h3 class="text-xs font-bold text-navy-900 uppercase tracking-wider flex items-center gap-2">
                             <i class="fa-regular fa-comments text-lwblue"></i>
@@ -431,7 +431,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                     <?php else: ?>
                         <div class="space-y-3">
                             <?php foreach ($myComments as $comm): ?>
-                                <div class="p-3 bg-surface rounded-xl border border-slate-100 text-xs space-y-1">
+                                <div class="p-3 bg-surface rounded-md border border-slate-100 text-xs space-y-1">
                                     <a href="<?= url('pages/article.php?slug=' . urlencode($comm['article_slug'])) ?>" class="font-bold text-navy-900 hover:text-lwblue line-clamp-1 block">
                                         <?= e($comm['article_title']) ?>
                                     </a>
@@ -443,7 +443,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 </div>
 
                 <!-- Newsletter Subscription Card -->
-                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-3">
+                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-xs space-y-3">
                     <h3 class="text-xs font-bold text-navy-900 uppercase tracking-wider">Ideology Dispatch</h3>
                     <p class="text-xs text-slate-600">
                         Status: <strong class="<?= $isSubscribed ? 'text-emerald-600' : 'text-slate-500' ?>"><?= $isSubscribed ? 'Subscribed' : 'Not Subscribed' ?></strong>

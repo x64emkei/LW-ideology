@@ -220,11 +220,11 @@ require_once dirname(__DIR__) . '/includes/header.php';
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
             
             <!-- Main Content Area (Desktop ~66% / 8 cols) -->
-            <div class="lg:col-span-8 bg-white p-6 sm:p-10 rounded-3xl border border-slate-200/90 shadow-sm space-y-8">
+            <div class="lg:col-span-8 bg-white p-6 sm:p-10 rounded-lg border border-slate-200 shadow-xs space-y-8">
                 
                 <!-- Cover Image -->
                 <?php if (!empty($article['cover_image'])): ?>
-                    <div class="rounded-2xl overflow-hidden shadow-md border border-slate-200 aspect-[16/9] bg-slate-900">
+                    <div class="rounded-md overflow-hidden shadow-sm border border-slate-200 aspect-[16/9] bg-slate-900">
                         <img src="<?= asset($article['cover_image']) ?>" 
                              alt="<?= e($article['title']) ?>" 
                              class="w-full h-full object-cover">
@@ -279,13 +279,13 @@ require_once dirname(__DIR__) . '/includes/header.php';
 
                     <!-- Existing Comments -->
                     <?php if (empty($comments)): ?>
-                        <div class="p-8 rounded-2xl bg-surface border border-slate-200 text-center text-xs text-slate-500">
+                        <div class="p-6 rounded-md bg-surface border border-slate-200 text-center text-xs text-slate-500">
                             <p>No comments posted yet. Be the first to offer an informed inquiry or constructive perspective.</p>
                         </div>
                     <?php else: ?>
                         <div class="space-y-4">
                             <?php foreach ($comments as $comment): ?>
-                                <div class="bg-surface p-5 rounded-2xl border border-slate-200 text-xs space-y-2">
+                                <div class="bg-surface p-4 rounded-md border border-slate-200 text-xs space-y-2">
                                     <div class="flex items-center justify-between text-[11px]">
                                         <div class="flex items-center gap-2 font-bold text-navy-900">
                                             <img src="<?= asset($comment['user_avatar'] ?? 'assets/images/default-avatar.svg') ?>" alt="User" class="w-6 h-6 rounded-full object-cover">
@@ -302,7 +302,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                     <?php endif; ?>
 
                     <!-- Add Comment Form -->
-                    <div class="p-6 rounded-2xl bg-surface border border-slate-200 space-y-4">
+                    <div class="p-6 rounded-md bg-surface border border-slate-200 space-y-4">
                         <h4 class="text-sm font-bold text-navy-900">Participate in the Discussion</h4>
                         
                         <form action="<?= url('actions/comment-action.php') ?>" method="POST" class="space-y-4">
@@ -353,7 +353,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
             <div class="lg:col-span-4 space-y-6">
                 
                 <!-- Reader Actions & Utility Card -->
-                <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm space-y-4">
+                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
                     <h3 class="text-xs font-bold text-navy-900 uppercase tracking-wider pb-2 border-b border-slate-100 flex items-center justify-between">
                         <span>Reader Actions</span>
                         <i class="fa-solid fa-bookmark text-lwblue"></i>
@@ -362,7 +362,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                     <div class="space-y-3">
                         <!-- Interactive Bookmark Button -->
                         <button type="button" 
-                                class="bookmark-toggle-btn w-full py-3 px-4 rounded-xl border border-slate-200 bg-surface hover:bg-slate-100 text-slate-800 text-xs font-bold transition flex items-center justify-center gap-2"
+                                class="bookmark-toggle-btn w-full py-2.5 px-4 rounded-md border border-slate-200 bg-surface hover:bg-slate-100 text-slate-800 text-xs font-bold transition flex items-center justify-center gap-2"
                                 data-article-id="<?= (int)$article['id'] ?>">
                             <i class="<?= $isBookmarked ? 'fa-solid fa-bookmark text-amber-500' : 'fa-regular fa-bookmark' ?>"></i>
                             <span class="bookmark-label"><?= $isBookmarked ? 'Bookmarked in Reading List' : 'Bookmark Article' ?></span>
@@ -374,28 +374,28 @@ require_once dirname(__DIR__) . '/includes/header.php';
                             <div class="flex items-center gap-2">
                                 <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode($canonicalUrl) ?>" 
                                    target="_blank" rel="noopener noreferrer"
-                                   class="flex-1 py-2 rounded-xl bg-surface hover:bg-blue-600 hover:text-white border border-slate-200 text-slate-700 text-center transition text-xs font-bold" 
+                                   class="flex-1 py-1.5 rounded-md bg-surface hover:bg-blue-600 hover:text-white border border-slate-200 text-slate-700 text-center transition text-xs font-bold" 
                                    title="Facebook">
                                     <i class="fa-brands fa-facebook-f mr-1"></i> FB
                                 </a>
 
                                 <a href="https://twitter.com/intent/tweet?url=<?= urlencode($canonicalUrl) ?>&text=<?= urlencode($article['title']) ?>" 
                                    target="_blank" rel="noopener noreferrer"
-                                   class="flex-1 py-2 rounded-xl bg-surface hover:bg-black hover:text-white border border-slate-200 text-slate-700 text-center transition text-xs font-bold" 
+                                   class="flex-1 py-1.5 rounded-md bg-surface hover:bg-black hover:text-white border border-slate-200 text-slate-700 text-center transition text-xs font-bold" 
                                    title="X / Twitter">
                                     <i class="fa-brands fa-x-twitter mr-1"></i> X
                                 </a>
 
                                 <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?= urlencode($canonicalUrl) ?>" 
                                    target="_blank" rel="noopener noreferrer"
-                                   class="flex-1 py-2 rounded-xl bg-surface hover:bg-blue-700 hover:text-white border border-slate-200 text-slate-700 text-center transition text-xs font-bold" 
+                                   class="flex-1 py-1.5 rounded-md bg-surface hover:bg-blue-700 hover:text-white border border-slate-200 text-slate-700 text-center transition text-xs font-bold" 
                                    title="LinkedIn">
                                     <i class="fa-brands fa-linkedin-in mr-1"></i> In
                                 </a>
 
                                 <button type="button" 
                                         onclick="navigator.clipboard.writeText(window.location.href); alert('Article URL copied to clipboard!');"
-                                        class="p-2.5 rounded-xl bg-surface hover:bg-lwblue hover:text-white border border-slate-200 text-slate-700 transition" 
+                                        class="p-2 rounded-md bg-surface hover:bg-lwblue hover:text-white border border-slate-200 text-slate-700 transition" 
                                         title="Copy Link">
                                     <i class="fa-solid fa-link text-xs"></i>
                                 </button>
@@ -405,7 +405,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 </div>
 
                 <!-- Author Profile Card -->
-                <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm space-y-4">
+                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-lwblue">Author Attribution</span>
                     
                     <div class="flex items-center gap-3.5">
@@ -425,19 +425,19 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 </div>
 
                 <!-- Academic Citation & Attribution Box -->
-                <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm space-y-2 text-xs text-slate-600">
+                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-2 text-xs text-slate-600">
                     <h4 class="font-bold text-navy-900 flex items-center gap-2">
                         <i class="fa-solid fa-feather text-lwblue"></i>
                         <span>Citation &amp; Attribution</span>
                     </h4>
-                    <p class="text-[11px] text-slate-500 leading-relaxed bg-surface p-3 rounded-xl border border-slate-100 font-mono">
+                    <p class="text-[11px] text-slate-500 leading-relaxed bg-surface p-3 rounded-md border border-slate-100 font-mono">
                         LagunaWISE Ideology Division. (<?= date('Y', strtotime($article['published_at'] ?? 'now')) ?>). <em><?= e($article['title']) ?></em>. Retrieved from <?= e($canonicalUrl) ?>
                     </p>
                 </div>
 
                 <!-- Related Published Articles -->
                 <?php if (!empty($relatedArticles)): ?>
-                    <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm space-y-4">
+                    <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
                         <h4 class="text-xs font-bold text-navy-900 uppercase tracking-wider pb-2 border-b border-slate-100">
                             Related Insights
                         </h4>

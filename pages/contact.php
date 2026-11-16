@@ -59,7 +59,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
             
             <!-- Left Info Card -->
             <div class="lg:col-span-5 space-y-6">
-                <div class="bg-white p-8 rounded-3xl border border-slate-200/90 shadow-sm space-y-6">
+                <div class="bg-white p-8 rounded-lg border border-slate-200 shadow-sm space-y-6">
                     <div>
                         <span class="text-xs font-bold tracking-widest text-lwblue uppercase">Headquarters</span>
                         <h2 class="text-xl font-bold text-navy-900 mt-1">LagunaWISE Center</h2>
@@ -129,7 +129,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
 
             <!-- Right Form Card -->
             <div class="lg:col-span-7">
-                <div class="bg-white p-8 sm:p-10 rounded-3xl border border-slate-200/90 shadow-sm space-y-6">
+                <div class="bg-white p-8 sm:p-10 rounded-lg border border-slate-200 shadow-sm space-y-6">
                     <div>
                         <span class="text-xs font-bold tracking-widest text-lwblue uppercase">Direct Inquiry</span>
                         <h2 class="text-2xl font-bold text-navy-900 mt-1">Send a Message</h2>
@@ -139,7 +139,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                     </div>
 
                     <?php if ($submitted): ?>
-                        <div class="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-800 space-y-2">
+                        <div class="p-5 bg-emerald-50 border border-emerald-200 rounded-md text-emerald-800 space-y-2">
                             <div class="flex items-center gap-2 font-bold text-sm">
                                 <i class="fa-solid fa-circle-check text-base"></i>
                                 <span>Inquiry Received Successfully</span>

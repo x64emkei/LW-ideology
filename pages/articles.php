@@ -174,8 +174,8 @@ require_once dirname(__DIR__) . '/includes/header.php';
 
         <?php if (empty($articles)): ?>
             <!-- Empty State -->
-            <div class="bg-white rounded-3xl p-12 text-center max-w-lg mx-auto border border-slate-200 shadow-sm space-y-4">
-                <div class="w-16 h-16 rounded-2xl bg-blue-50 text-lwblue flex items-center justify-center text-2xl mx-auto">
+            <div class="bg-white rounded-lg p-10 text-center max-w-lg mx-auto border border-slate-200 shadow-sm space-y-4">
+                <div class="w-14 h-14 rounded-md bg-blue-50 text-lwblue flex items-center justify-center text-xl mx-auto">
                     <i class="fa-regular fa-newspaper"></i>
                 </div>
                 <h3 class="text-lg font-bold text-navy-900">No articles have been published yet.</h3>
@@ -197,7 +197,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
             <!-- Articles Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <?php foreach ($articles as $article): ?>
-                    <article class="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300 flex flex-col group">
+                    <article class="bg-white rounded-md border border-slate-200 overflow-hidden shadow-xs hover:shadow-md hover:-translate-y-0.5 transition duration-200 flex flex-col group">
                         
                         <div class="relative aspect-video overflow-hidden bg-slate-900">
                             <img src="<?= asset($article['cover_image'] ?? 'assets/images/article-medialiteracy.svg') ?>" 

@@ -23,7 +23,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
 
 <section class="py-16 sm:py-24 bg-surface flex items-center justify-center min-h-[70vh]">
     <div class="w-full max-w-md px-4 sm:px-6">
-        <div class="bg-white p-8 sm:p-10 rounded-3xl border border-slate-200/90 shadow-xl space-y-6">
+        <div class="bg-white p-8 sm:p-10 rounded-lg border border-slate-200 shadow-md space-y-6">
             
             <div class="text-center space-y-2">
                 <span class="text-[11px] font-bold tracking-widest text-lwblue uppercase">Account Security</span>

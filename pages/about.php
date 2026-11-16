@@ -188,21 +188,23 @@ require_once dirname(__DIR__) . '/includes/header.php';
                     </div>
 
                     <div class="relative z-10 pt-2">
-                        <div class="bg-white/95 rounded-xl p-2.5 inline-block shadow-sm">
-                            <img src="<?= asset('assets/images/lagunawise-wordmark.png') ?>" alt="LagunaWISE Wordmark" class="h-8 object-contain">
+                        <div class="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-md bg-white text-navy-900 shadow-sm border border-navy-700">
+                            <img src="<?= asset('assets/images/lagunawise-map-logo.png') ?>" alt="LagunaWISE Emblem" class="w-6 h-6 object-contain rounded-full">
+                            <span class="font-extrabold text-xs tracking-tight">Laguna<span class="text-lwblue">WISE</span></span>
+                            <span class="text-[10px] text-slate-500 border-l border-slate-200 pl-2">Ideology Division</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Advocacy Callout Card -->
-                <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm space-y-4">
+                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-lwblue">Call for Writers</span>
                     <h3 class="text-base font-bold text-navy-900">Become a Contributor</h3>
                     <p class="text-xs text-editorial-muted leading-relaxed">
                         Are you a student, educator, or researcher passionate about media literacy and civic discourse? Register for an account to draft and submit articles.
                     </p>
                     <a href="<?= url('auth/register.php') ?>" 
-                       class="w-full py-3 bg-lwblue hover:bg-lwblue-hover text-white text-xs font-bold rounded-xl transition shadow flex items-center justify-center gap-2">
+                       class="w-full py-2.5 bg-lwblue hover:bg-lwblue-hover text-white text-xs font-bold rounded-md transition shadow flex items-center justify-center gap-2">
                         <i class="fa-solid fa-pen-nib text-xs"></i>
                         <span>Register as Contributor</span>
                     </a>

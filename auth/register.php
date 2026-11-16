@@ -141,7 +141,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             
             <!-- Column 1: Organization Branding & Mission (Desktop ~42% / 5 cols) -->
-            <div class="lg:col-span-5 bg-gradient-to-br from-navy-900 via-navy-800 to-navy-900 text-white p-8 sm:p-10 rounded-3xl border border-navy-700 shadow-xl flex flex-col justify-between relative overflow-hidden">
+            <div class="lg:col-span-5 bg-gradient-to-br from-navy-900 via-navy-800 to-navy-900 text-white p-8 sm:p-10 rounded-lg border border-navy-700 shadow-md flex flex-col justify-between relative overflow-hidden" style="background-color: #061638;">
                 <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#2799E8_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none"></div>
                 <div class="absolute -top-20 -right-20 w-60 h-60 bg-lwblue-light/10 rounded-full blur-2xl pointer-events-none"></div>
 
@@ -188,7 +188,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
             </div>
 
             <!-- Column 2: Registration Form (Desktop ~58% / 7 cols) -->
-            <div class="lg:col-span-7 bg-white p-8 sm:p-10 rounded-3xl border border-slate-200/90 shadow-xl space-y-6 flex flex-col justify-between">
+            <div class="lg:col-span-7 bg-white p-8 sm:p-10 rounded-lg border border-slate-200 shadow-md space-y-6 flex flex-col justify-between">
                 
                 <div class="space-y-2">
                     <span class="text-[11px] font-bold tracking-widest text-lwblue uppercase">Create Your Account</span>

@@ -38,10 +38,10 @@ require_once dirname(__DIR__) . '/includes/header.php';
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <?php foreach ($topics as $t): ?>
-                <div class="bg-white rounded-3xl p-8 border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300 flex flex-col justify-between group">
+                <div class="bg-white rounded-lg p-6 sm:p-7 border border-slate-200 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition duration-200 flex flex-col justify-between group">
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
-                            <div class="w-12 h-12 rounded-2xl bg-lwblue-ice text-lwblue flex items-center justify-center text-lg font-bold group-hover:bg-lwblue group-hover:text-white transition">
+                            <div class="w-11 h-11 rounded-md bg-lwblue-ice text-lwblue flex items-center justify-center text-base font-bold group-hover:bg-lwblue group-hover:text-white transition">
                                 <i class="fa-solid fa-<?= e($t['icon'] ?? 'bookmark') ?>"></i>
                             </div>
                             <span class="text-xs font-bold text-slate-500 bg-surface px-3 py-1 rounded-full border border-slate-200">
