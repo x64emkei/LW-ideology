@@ -11,7 +11,10 @@
                     <div class="flex items-center gap-3.5">
                         <img src="<?= asset('assets/images/lagunawise-map-logo.png') ?>" 
                              alt="LagunaWISE Emblem" 
-                             class="w-13 h-13 object-contain rounded-full shadow-lg border border-navy-700 bg-navy-900">
+                             width="48" 
+                             height="48" 
+                             style="width: 48px; height: 48px; min-width: 48px; min-height: 48px; max-width: 48px; max-height: 48px;" 
+                             class="w-12 h-12 shrink-0 object-contain rounded-full shadow-md border border-navy-700 bg-navy-900">
                         <div>
                             <span class="block text-xs font-black tracking-widest text-lwblue-light uppercase">LagunaWISE</span>
                             <span class="text-xl sm:text-2xl font-black text-white tracking-tight font-heading">IDEOLOGY DIVISION</span>
