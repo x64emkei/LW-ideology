@@ -443,15 +443,6 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
                             <i class="fa-brands fa-linkedin-in text-xs"></i>
                         </a>
                     </div>
-
-                    <!-- Mobile Hamburger Button (Header) -->
-                    <button type="button" 
-                            id="mobileMenuToggle" 
-                            aria-label="Toggle Navigation Menu"
-                            aria-expanded="false" 
-                            class="mobileMenuToggleBtn lg:hidden p-2 text-white hover:bg-white/10 rounded-md transition focus:outline-hidden">
-                        <i class="fa-solid fa-bars text-lg mobileMenuIcon"></i>
-                    </button>
                 </div>
 
             </div>
@@ -589,10 +580,6 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
                                 Join the Community
                             </a>
                         </div>
-                        <!-- Mobile Compact Log In Link -->
-                        <a href="<?= url('auth/login.php') ?>" class="lg:hidden text-xs font-bold px-2 py-1 text-slate-700 hover:text-lwblue transition uppercase tracking-wider">
-                            Log In
-                        </a>
                     <?php endif; ?>
 
                     <!-- Sticky Mobile Menu Toggle Button (Always visible on mobile) -->
@@ -625,53 +612,6 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
                     </a>
                     <a href="<?= url('auth/login.php') ?>" class="w-full text-center py-2.5 text-xs font-bold text-slate-700 bg-slate-100 rounded-md hover:bg-slate-200 uppercase tracking-wider">
                         Log In
-                    </a>
-                </div>
-            <?php else: ?>
-                <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
-                    <div class="px-3 py-2 bg-surface rounded-md flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-bold text-navy-900"><?= e($currentUser['name']) ?></p>
-                            <p class="text-[10px] text-slate-400 capitalize"><?= e(str_replace('_', ' ', $currentUser['primary_role'])) ?></p>
-                        </div>
-                        <a href="<?= url('auth/logout.php') ?>" class="text-[11px] font-bold text-rose-600 hover:underline">Log Out</a>
-                    </div>
-                    <a href="<?= url('pages/dashboard.php') ?>" class="w-full text-center py-2.5 text-xs font-bold text-slate-700 bg-slate-100 rounded-md hover:bg-slate-200 flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-gauge-high text-xs"></i>
-                        <span>My Dashboard</span>
-                    </a>
-                    <?php if (user_has_any_role(['administrator', 'super_admin', 'admin', 'editor', 'contributor', 'writer'])): ?>
-                        <a href="<?= url('admin/article-create.php') ?>" class="w-full text-center py-2.5 text-xs font-bold text-white bg-lwblue rounded-md hover:bg-lwblue-hover flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-pen-nib text-xs"></i>
-                            <span>Create Article</span>
-                        </a>
-                    <?php endif; ?>
-                    <?php if (user_has_any_role(['administrator', 'super_admin', 'admin', 'editor'])): ?>
-                        <a href="<?= url('admin/index.php') ?>" class="w-full text-center py-2.5 text-xs font-bold text-slate-700 border border-slate-200 rounded-md hover:bg-slate-50 flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-shield-halved text-xs text-lwblue"></i>
-                            <span>CMS Administration</span>
-                        </a>
-                    <?php endif; ?>
-                </div>
-            <?php endif; ?>
-        </div>
-    </nav>
-            <nav class="flex flex-col space-y-1.5 text-sm font-semibold text-slate-700">
-                <a href="<?= url() ?>" class="px-3 py-2 rounded-md hover:bg-slate-50 hover:text-lwblue <?= ($_SERVER['SCRIPT_NAME'] == APP_BASE_URL . '/index.php' || $_SERVER['SCRIPT_NAME'] == APP_BASE_URL . '/') ? 'text-lwblue bg-slate-50 font-bold' : '' ?>">Home</a>
-                <a href="<?= url('pages/about.php') ?>" class="px-3 py-2 rounded-md hover:bg-slate-50 hover:text-lwblue <?= str_contains($_SERVER['SCRIPT_NAME'], 'about.php') ? 'text-lwblue bg-slate-50 font-bold' : '' ?>">About the Division</a>
-                <a href="<?= url('pages/articles.php') ?>" class="px-3 py-2 rounded-md hover:bg-slate-50 hover:text-lwblue <?= str_contains($_SERVER['SCRIPT_NAME'], 'articles.php') ? 'text-lwblue bg-slate-50 font-bold' : '' ?>">Articles &amp; Insights</a>
-                <a href="<?= url('pages/topics.php') ?>" class="px-3 py-2 rounded-md hover:bg-slate-50 hover:text-lwblue <?= str_contains($_SERVER['SCRIPT_NAME'], 'topics.php') ? 'text-lwblue bg-slate-50 font-bold' : '' ?>">Featured Topics</a>
-                <a href="<?= url('pages/news.php') ?>" class="px-3 py-2 rounded-md hover:bg-slate-50 hover:text-lwblue <?= str_contains($_SERVER['SCRIPT_NAME'], 'news.php') ? 'text-lwblue bg-slate-50 font-bold' : '' ?>">News &amp; Updates</a>
-                <a href="<?= url('pages/contact.php') ?>" class="px-3 py-2 rounded-md hover:bg-slate-50 hover:text-lwblue <?= str_contains($_SERVER['SCRIPT_NAME'], 'contact.php') ? 'text-lwblue bg-slate-50 font-bold' : '' ?>">Contact</a>
-            </nav>
-
-            <?php if (!$currentUser): ?>
-                <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
-                    <a href="<?= url('auth/login.php') ?>" class="w-full text-center py-2.5 text-xs font-bold text-slate-700 bg-slate-100 rounded-md hover:bg-slate-200 uppercase tracking-wider">
-                        Log In
-                    </a>
-                    <a href="<?= url('auth/register.php') ?>" class="w-full text-center py-2.5 text-xs font-bold text-white bg-lwblue rounded-md hover:bg-lwblue-hover uppercase tracking-wider shadow-xs">
-                        Join the Community
                     </a>
                 </div>
             <?php else: ?>
