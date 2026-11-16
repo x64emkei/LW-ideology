@@ -34,22 +34,23 @@ require_once dirname(__DIR__) . '/includes/header.php';
     </div>
 </section>
 
-<section class="py-16 bg-surface">
+<!-- Topics Directory Section (Cardless on Mobile / 3-Column Grid on Desktop) -->
+<section class="py-8 sm:py-16 bg-white md:bg-surface">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 md:gap-8 divide-y md:divide-y-0 divide-slate-200">
             <?php foreach ($topics as $t): ?>
-                <div class="bg-white rounded-lg p-6 sm:p-7 border border-slate-200 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition duration-200 flex flex-col justify-between group">
+                <div class="bg-transparent md:bg-white rounded-none md:rounded-lg p-0 py-6 md:p-6 sm:p-7 border-0 md:border md:border-slate-200 shadow-none md:shadow-xs first:pt-0 flex flex-col justify-between group">
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
-                            <div class="w-11 h-11 rounded-md bg-lwblue-ice text-lwblue flex items-center justify-center text-base font-bold group-hover:bg-lwblue group-hover:text-white transition">
+                            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-md bg-lwblue-ice text-lwblue flex items-center justify-center text-sm sm:text-base font-bold group-hover:bg-lwblue group-hover:text-white transition">
                                 <i class="fa-solid fa-<?= e($t['icon'] ?? 'bookmark') ?>"></i>
                             </div>
-                            <span class="text-xs font-bold text-slate-500 bg-surface px-3 py-1 rounded-full border border-slate-200">
+                            <span class="text-xs font-bold text-slate-500 bg-slate-100 md:bg-surface px-3 py-1 rounded-full border border-slate-200">
                                 <?= (int)$t['total_articles'] ?> Published
                             </span>
                         </div>
 
-                        <h2 class="text-xl font-bold text-navy-900 group-hover:text-lwblue transition">
+                        <h2 class="text-lg sm:text-xl font-bold text-navy-900 group-hover:text-lwblue transition">
                             <a href="<?= url('pages/topic.php?slug=' . urlencode($t['slug'])) ?>">
                                 <?= e($t['name']) ?>
                             </a>
@@ -60,7 +61,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                         </p>
                     </div>
 
-                    <div class="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between">
+                    <div class="pt-4 mt-4 md:pt-6 md:mt-6 border-t border-slate-100 flex items-center justify-between">
                         <a href="<?= url('pages/topic.php?slug=' . urlencode($t['slug'])) ?>" class="text-xs font-bold text-lwblue group-hover:text-navy-900 flex items-center gap-1.5">
                             <span>Explore Topic Monograph</span>
                             <i class="fa-solid fa-arrow-right text-[10px]"></i>

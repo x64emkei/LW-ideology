@@ -253,8 +253,8 @@ require_once __DIR__ . '/includes/header.php';
                     <?php endif; ?>
                 </div>
 
-                <!-- Division Mandate Box (Crisp Geometry) -->
-                <div class="bg-surface p-4 rounded-md border border-slate-200">
+                <!-- Division Mandate Box (Cardless on Mobile, Crisp Geometry on Desktop) -->
+                <div class="bg-transparent lg:bg-surface p-0 lg:p-4 rounded-none lg:rounded-md border-0 lg:border lg:border-slate-200 border-l-2 lg:border-l border-lwblue pl-3 lg:pl-4">
                     <span class="text-[10px] font-extrabold uppercase tracking-widest text-lwblue block mb-1">
                         Division Principle
                     </span>
@@ -423,9 +423,9 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </section>
 
-<!-- 4. CNN-STYLE MULTI-TOPIC SECTIONS GRID (Desks with crisp cards) -->
-<section class="py-12 bg-surface border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-10">
+<!-- 4. CNN-STYLE MULTI-TOPIC SECTIONS GRID (Cardless on Mobile / Clean Desk Cards on Desktop) -->
+<section class="py-10 sm:py-12 bg-white md:bg-surface border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-8 sm:space-y-10">
         
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 border-b-2 border-navy-900">
             <div>
@@ -440,25 +440,25 @@ require_once __DIR__ . '/includes/header.php';
             </a>
         </div>
 
-        <!-- Topic Rows: 3 Topics side by side in CNN column format (reduced roundedness) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Topic Rows: Cardless on Mobile / 3 Topics side by side on Desktop -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 md:gap-6 divide-y md:divide-y-0 divide-slate-200">
             
             <!-- Desk 1: Media Literacy & Misinformation -->
-            <div class="bg-white rounded-md border border-slate-200 overflow-hidden shadow-xs flex flex-col justify-between">
+            <div class="bg-transparent md:bg-white rounded-none md:rounded-md border-0 md:border md:border-slate-200 overflow-hidden shadow-none md:shadow-xs flex flex-col justify-between py-6 md:py-0 first:pt-0">
                 <div>
                     <!-- Desk Header -->
-                    <div class="px-4 py-2.5 bg-navy-900 text-white flex items-center justify-between border-b border-navy-800" style="background-color: #061638;">
+                    <div class="px-0 md:px-4 py-2 bg-transparent md:bg-navy-900 text-navy-900 md:text-white flex items-center justify-between border-b border-slate-200 md:border-navy-800">
                         <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-blue-400"></span>
-                            <h3 class="text-xs font-black uppercase tracking-wider text-white">Media Literacy</h3>
+                            <span class="w-2 h-2 rounded-full bg-blue-500 md:bg-blue-400"></span>
+                            <h3 class="text-xs font-black uppercase tracking-wider text-navy-900 md:text-white">Media Literacy</h3>
                         </div>
-                        <a href="<?= url('pages/topic.php?slug=media-literacy') ?>" class="text-[11px] text-slate-200 hover:text-white font-bold">
+                        <a href="<?= url('pages/topic.php?slug=media-literacy') ?>" class="text-[11px] text-lwblue md:text-slate-200 hover:underline font-bold">
                             Desk &gt;
                         </a>
                     </div>
                     
-                    <div class="p-4 space-y-3">
-                        <div class="relative aspect-video rounded overflow-hidden bg-slate-900">
+                    <div class="p-0 pt-3 md:p-4 space-y-3">
+                        <div class="relative aspect-video rounded-md overflow-hidden bg-slate-900">
                             <img src="<?= asset('assets/images/article-medialiteracy.svg') ?>" alt="Media Literacy Desk" class="w-full h-full object-cover">
                             <span class="absolute bottom-2 left-2 bg-navy-900/90 text-white text-[9px] font-bold px-2 py-0.5 rounded-xs">
                                 Verification Toolkit
@@ -488,29 +488,29 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                 </div>
 
-                <div class="p-4 pt-0">
+                <div class="p-0 pt-3 md:p-4 md:pt-0">
                     <a href="<?= url('pages/topic.php?slug=media-literacy') ?>" 
-                       class="w-full block py-2 text-center bg-surface hover:bg-slate-100 border border-slate-200 text-xs font-bold text-navy-900 rounded transition">
+                       class="w-full block py-2 text-center bg-slate-100 md:bg-surface hover:bg-slate-200 border border-slate-200 text-xs font-bold text-navy-900 rounded-md transition">
                         Explore Media Literacy Desk &rarr;
                     </a>
                 </div>
             </div>
 
             <!-- Desk 2: Critical Thinking & Logic -->
-            <div class="bg-white rounded-md border border-slate-200 overflow-hidden shadow-xs flex flex-col justify-between">
+            <div class="bg-transparent md:bg-white rounded-none md:rounded-md border-0 md:border md:border-slate-200 overflow-hidden shadow-none md:shadow-xs flex flex-col justify-between py-6 md:py-0">
                 <div>
-                    <div class="px-4 py-2.5 bg-navy-900 text-white flex items-center justify-between border-b border-navy-800" style="background-color: #061638;">
+                    <div class="px-0 md:px-4 py-2 bg-transparent md:bg-navy-900 text-navy-900 md:text-white flex items-center justify-between border-b border-slate-200 md:border-navy-800">
                         <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-teal-400"></span>
-                            <h3 class="text-xs font-black uppercase tracking-wider text-white">Critical Thinking</h3>
+                            <span class="w-2 h-2 rounded-full bg-teal-500 md:bg-teal-400"></span>
+                            <h3 class="text-xs font-black uppercase tracking-wider text-navy-900 md:text-white">Critical Thinking</h3>
                         </div>
-                        <a href="<?= url('pages/topic.php?slug=critical-thinking') ?>" class="text-[11px] text-slate-200 hover:text-white font-bold">
+                        <a href="<?= url('pages/topic.php?slug=critical-thinking') ?>" class="text-[11px] text-lwblue md:text-slate-200 hover:underline font-bold">
                             Desk &gt;
                         </a>
                     </div>
                     
-                    <div class="p-4 space-y-3">
-                        <div class="relative aspect-video rounded overflow-hidden bg-slate-900">
+                    <div class="p-0 pt-3 md:p-4 space-y-3">
+                        <div class="relative aspect-video rounded-md overflow-hidden bg-slate-900">
                             <img src="<?= asset('assets/images/article-criticalthinking.svg') ?>" alt="Critical Thinking Desk" class="w-full h-full object-cover">
                             <span class="absolute bottom-2 left-2 bg-navy-900/90 text-white text-[9px] font-bold px-2 py-0.5 rounded-xs">
                                 Philosophical Inquiries
@@ -540,29 +540,29 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                 </div>
 
-                <div class="p-4 pt-0">
+                <div class="p-0 pt-3 md:p-4 md:pt-0">
                     <a href="<?= url('pages/topic.php?slug=critical-thinking') ?>" 
-                       class="w-full block py-2 text-center bg-surface hover:bg-slate-100 border border-slate-200 text-xs font-bold text-navy-900 rounded transition">
+                       class="w-full block py-2 text-center bg-slate-100 md:bg-surface hover:bg-slate-200 border border-slate-200 text-xs font-bold text-navy-900 rounded-md transition">
                         Explore Critical Thinking Desk &rarr;
                     </a>
                 </div>
             </div>
 
             <!-- Desk 3: Digital Citizenship & Civic Rights -->
-            <div class="bg-white rounded-md border border-slate-200 overflow-hidden shadow-xs flex flex-col justify-between">
+            <div class="bg-transparent md:bg-white rounded-none md:rounded-md border-0 md:border md:border-slate-200 overflow-hidden shadow-none md:shadow-xs flex flex-col justify-between py-6 md:py-0">
                 <div>
-                    <div class="px-4 py-2.5 bg-navy-900 text-white flex items-center justify-between border-b border-navy-800" style="background-color: #061638;">
+                    <div class="px-0 md:px-4 py-2 bg-transparent md:bg-navy-900 text-navy-900 md:text-white flex items-center justify-between border-b border-slate-200 md:border-navy-800">
                         <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-                            <h3 class="text-xs font-black uppercase tracking-wider text-white">Digital Citizenship</h3>
+                            <span class="w-2 h-2 rounded-full bg-amber-500 md:bg-amber-400"></span>
+                            <h3 class="text-xs font-black uppercase tracking-wider text-navy-900 md:text-white">Digital Citizenship</h3>
                         </div>
-                        <a href="<?= url('pages/topic.php?slug=digital-citizenship') ?>" class="text-[11px] text-slate-200 hover:text-white font-bold">
+                        <a href="<?= url('pages/topic.php?slug=digital-citizenship') ?>" class="text-[11px] text-lwblue md:text-slate-200 hover:underline font-bold">
                             Desk &gt;
                         </a>
                     </div>
                     
-                    <div class="p-4 space-y-3">
-                        <div class="relative aspect-video rounded overflow-hidden bg-slate-900">
+                    <div class="p-0 pt-3 md:p-4 space-y-3">
+                        <div class="relative aspect-video rounded-md overflow-hidden bg-slate-900">
                             <img src="<?= asset('assets/images/article-digitalcitizenship.svg') ?>" alt="Digital Citizenship Desk" class="w-full h-full object-cover">
                             <span class="absolute bottom-2 left-2 bg-navy-900/90 text-white text-[9px] font-bold px-2 py-0.5 rounded-xs">
                                 Civic Participation
@@ -592,9 +592,9 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                 </div>
 
-                <div class="p-4 pt-0">
+                <div class="p-0 pt-3 md:p-4 md:pt-0">
                     <a href="<?= url('pages/topic.php?slug=digital-citizenship') ?>" 
-                       class="w-full block py-2 text-center bg-surface hover:bg-slate-100 border border-slate-200 text-xs font-bold text-navy-900 rounded transition">
+                       class="w-full block py-2 text-center bg-slate-100 md:bg-surface hover:bg-slate-200 border border-slate-200 text-xs font-bold text-navy-900 rounded-md transition">
                         Explore Digital Citizenship Desk &rarr;
                     </a>
                 </div>
@@ -602,11 +602,11 @@ require_once __DIR__ . '/includes/header.php';
 
         </div>
 
-        <!-- Second Row of Topics (Informed Discourse, Youth Civic Engagement, Ethical Technology) -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
+        <!-- Second Row of Topics: Cardless on Mobile / Card Grid on Desktop -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-5 divide-y md:divide-y-0 divide-slate-100 pt-2">
             <?php foreach (array_slice($featuredTopics, 3, 3) as $topic): ?>
                 <a href="<?= url('pages/topic.php?slug=' . urlencode($topic['slug'])) ?>" 
-                   class="bg-white p-4 rounded-md border border-slate-200 hover:border-lwblue hover:shadow-sm transition flex items-start gap-3.5 group">
+                   class="bg-transparent md:bg-white p-0 py-3.5 md:p-4 rounded-none md:rounded-md border-0 md:border md:border-slate-200 hover:border-lwblue hover:shadow-xs transition flex items-start gap-3.5 group">
                     <div class="w-9 h-9 rounded bg-lwblue-ice text-lwblue flex items-center justify-center shrink-0 text-sm group-hover:bg-lwblue group-hover:text-white transition-colors">
                         <i class="fa-solid <?= e($topic['icon'] ?: 'fa-hashtag') ?>"></i>
                     </div>
@@ -745,15 +745,15 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
             </div>
         <?php else: ?>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 md:gap-5 divide-y md:divide-y-0 divide-slate-200">
                 <?php foreach ($latestArticles as $article): ?>
-                    <article class="bg-surface rounded-md border border-slate-200 p-4 flex flex-col justify-between hover:border-lwblue hover:shadow-sm transition group">
+                    <article class="bg-transparent md:bg-surface rounded-none md:rounded-md border-0 md:border md:border-slate-200 p-0 py-5 md:p-4 flex flex-col justify-between hover:border-lwblue hover:shadow-xs transition group">
                         <div class="space-y-2">
                             <div class="flex items-center justify-between text-[11px] text-slate-500">
                                 <span class="font-bold text-lwblue uppercase tracking-wider text-[10px]"><?= e($article['category_name'] ?? 'Inquiry') ?></span>
                                 <span><?= (int)$article['reading_time'] ?> min read</span>
                             </div>
-                            <h3 class="text-sm font-bold text-navy-900 group-hover:text-lwblue transition leading-snug line-clamp-2">
+                            <h3 class="text-base sm:text-sm font-bold text-navy-900 group-hover:text-lwblue transition leading-snug line-clamp-2">
                                 <a href="<?= url('pages/article.php?slug=' . urlencode($article['slug'])) ?>">
                                     <?= e($article['title']) ?>
                                 </a>
@@ -762,7 +762,7 @@ require_once __DIR__ . '/includes/header.php';
                                 <?= e($article['excerpt']) ?>
                             </p>
                         </div>
-                        <div class="pt-3 mt-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-600">
+                        <div class="pt-3 mt-3 border-t border-slate-100 md:border-slate-200 flex items-center justify-between text-xs text-slate-600">
                             <span>By <?= e($article['author_name']) ?></span>
                             <span class="text-lwblue font-bold group-hover:underline">Read &rarr;</span>
                         </div>

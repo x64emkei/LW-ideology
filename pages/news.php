@@ -49,19 +49,19 @@ require_once dirname(__DIR__) . '/includes/header.php';
     </div>
 </section>
 
-<section class="py-14 bg-surface">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 space-y-8">
+<section class="py-6 sm:py-14 bg-white md:bg-surface">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 space-y-6 sm:space-y-8">
         <?php if (empty($newsItems)): ?>
-            <div class="bg-white p-10 rounded-lg border border-slate-200 text-center space-y-2">
+            <div class="bg-transparent md:bg-white p-6 sm:p-10 rounded-none md:rounded-lg border-0 md:border md:border-slate-200 text-center space-y-2">
                 <i class="fa-regular fa-bell text-2xl text-slate-400 mb-1"></i>
                 <p class="text-sm font-bold text-navy-900">No announcements are currently available.</p>
                 <p class="text-xs text-slate-500">Check back soon for new dispatches, community workshops, and research releases.</p>
             </div>
         <?php else: ?>
             <?php foreach ($newsItems as $item): ?>
-                <article id="news-<?= (int)$item['id'] ?>" class="bg-white rounded-lg p-6 sm:p-8 border border-slate-200 shadow-xs space-y-4 hover:border-lwblue transition">
+                <article id="news-<?= (int)$item['id'] ?>" class="bg-transparent md:bg-white rounded-none md:rounded-lg p-0 py-6 md:p-8 border-0 md:border md:border-slate-200 shadow-none md:shadow-xs border-b md:border-b-0 border-slate-200 first:pt-0 space-y-4 hover:border-lwblue transition">
                     <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
-                        <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-lwblue-ice text-lwblue">
+                        <span class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-lwblue-ice text-lwblue">
                             <?= e($item['badge_type']) ?>
                         </span>
                         <span class="text-slate-400 font-medium">
@@ -70,11 +70,11 @@ require_once dirname(__DIR__) . '/includes/header.php';
                         </span>
                     </div>
 
-                    <h2 class="text-xl font-bold text-navy-900 leading-snug">
+                    <h2 class="text-lg sm:text-xl font-bold text-navy-900 leading-snug">
                         <?= e($item['title']) ?>
                     </h2>
 
-                    <p class="text-sm font-medium text-slate-700 leading-relaxed bg-surface p-4 rounded-xl border border-slate-100">
+                    <p class="text-sm font-medium text-slate-700 leading-relaxed bg-transparent sm:bg-surface p-0 sm:p-4 rounded-none sm:rounded-xl border-l-2 sm:border border-lwblue sm:border-slate-100 pl-3 sm:pl-4">
                         <?= e($item['summary']) ?>
                     </p>
 

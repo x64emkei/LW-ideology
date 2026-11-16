@@ -231,8 +231,8 @@ require_once dirname(__DIR__) . '/includes/header.php';
                     </div>
                 <?php endif; ?>
 
-                <!-- Excerpt Lead Box -->
-                <div class="p-4 sm:p-5 bg-blue-50/70 border-l-4 border-lwblue rounded-r-lg sm:rounded-r-xl text-sm font-medium text-slate-800 leading-relaxed">
+                <!-- Excerpt Lead Box (Cardless on Mobile / Callout Box on Desktop) -->
+                <div class="py-2.5 pl-4 sm:p-5 border-l-2 sm:border-l-4 border-lwblue bg-transparent sm:bg-blue-50/70 rounded-none sm:rounded-r-xl text-sm font-medium text-slate-800 leading-relaxed italic sm:not-italic">
                     <?= e($article['excerpt']) ?>
                 </div>
 
@@ -241,14 +241,14 @@ require_once dirname(__DIR__) . '/includes/header.php';
                     <?= render_article_content($article['content']) ?>
                 </div>
 
-                <!-- References & Sources Section -->
+                <!-- References & Sources Section (Cardless on Mobile) -->
                 <?php if (!empty($article['references_sources'])): ?>
-                    <div class="mt-12 pt-6 border-t border-slate-200 space-y-3">
-                        <h3 class="text-sm font-bold text-navy-900 uppercase tracking-wider flex items-center gap-2">
+                    <div class="mt-10 sm:mt-12 pt-6 border-t border-slate-200 space-y-3">
+                        <h3 class="text-xs sm:text-sm font-bold text-navy-900 uppercase tracking-wider flex items-center gap-2">
                             <i class="fa-solid fa-book-bookmark text-lwblue"></i>
                             <span>References &amp; Cited Academic Sources</span>
                         </h3>
-                        <div class="p-4 bg-surface rounded-xl border border-slate-200 text-xs text-slate-700 whitespace-pre-line leading-relaxed font-mono">
+                        <div class="p-0 sm:p-4 bg-transparent sm:bg-surface rounded-none sm:rounded-xl border-0 sm:border border-slate-200 text-xs text-slate-700 whitespace-pre-line leading-relaxed font-mono">
                             <?= e($article['references_sources']) ?>
                         </div>
                     </div>
@@ -277,15 +277,15 @@ require_once dirname(__DIR__) . '/includes/header.php';
                         <span class="text-xs text-slate-400">Moderated civic discourse</span>
                     </div>
 
-                    <!-- Existing Comments -->
+                    <!-- Existing Comments (Cardless on Mobile) -->
                     <?php if (empty($comments)): ?>
-                        <div class="p-6 rounded-md bg-surface border border-slate-200 text-center text-xs text-slate-500">
+                        <div class="p-4 sm:p-6 rounded-none sm:rounded-md bg-transparent sm:bg-surface border-0 sm:border border-slate-200 text-center text-xs text-slate-500">
                             <p>No comments posted yet. Be the first to offer an informed inquiry or constructive perspective.</p>
                         </div>
                     <?php else: ?>
-                        <div class="space-y-4">
+                        <div class="space-y-4 divide-y sm:divide-y-0 divide-slate-100">
                             <?php foreach ($comments as $comment): ?>
-                                <div class="bg-surface p-4 rounded-md border border-slate-200 text-xs space-y-2">
+                                <div class="bg-transparent sm:bg-surface p-0 py-3.5 sm:p-4 rounded-none sm:rounded-md border-0 sm:border border-slate-200 text-xs space-y-2 first:pt-0">
                                     <div class="flex items-center justify-between text-[11px]">
                                         <div class="flex items-center gap-2 font-bold text-navy-900">
                                             <img src="<?= asset($comment['user_avatar'] ?? 'assets/images/default-avatar.svg') ?>" alt="User" class="w-6 h-6 rounded-full object-cover">
@@ -301,8 +301,8 @@ require_once dirname(__DIR__) . '/includes/header.php';
                         </div>
                     <?php endif; ?>
 
-                    <!-- Add Comment Form -->
-                    <div class="p-6 rounded-md bg-surface border border-slate-200 space-y-4">
+                    <!-- Add Comment Form (Cardless on Mobile) -->
+                    <div class="p-0 pt-4 sm:p-6 rounded-none sm:rounded-md bg-transparent sm:bg-surface border-0 sm:border border-slate-200 space-y-4">
                         <h4 class="text-sm font-bold text-navy-900">Participate in the Discussion</h4>
                         
                         <form action="<?= url('actions/comment-action.php') ?>" method="POST" class="space-y-4">
@@ -315,16 +315,16 @@ require_once dirname(__DIR__) . '/includes/header.php';
                                     <div>
                                         <label class="block text-xs font-semibold text-slate-700 mb-1">Your Full Name *</label>
                                         <input type="text" name="author_name" required placeholder="e.g. Maria Clara" 
-                                               class="w-full text-xs p-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-lwblue">
+                                               class="w-full text-xs p-3 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-lwblue">
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold text-slate-700 mb-1">Your Email Address *</label>
                                         <input type="email" name="author_email" required placeholder="name@domain.com" 
-                                               class="w-full text-xs p-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-lwblue">
+                                               class="w-full text-xs p-3 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-lwblue">
                                     </div>
                                 </div>
                             <?php else: ?>
-                                <div class="p-3 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 flex items-center gap-2">
+                                <div class="p-3 bg-white border border-slate-200 rounded-lg text-xs text-slate-700 flex items-center gap-2">
                                     <i class="fa-solid fa-user-check text-lwblue"></i>
                                     <span>Commenting as <strong><?= e($currentUser['name']) ?></strong></span>
                                 </div>
@@ -333,12 +333,12 @@ require_once dirname(__DIR__) . '/includes/header.php';
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 mb-1">Your Perspective *</label>
                                 <textarea name="content" rows="4" required placeholder="Share your insights or constructive argument adhering to our Editorial Charter..."
-                                          class="w-full text-xs p-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-lwblue leading-relaxed"></textarea>
+                                          class="w-full text-xs p-3 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-lwblue leading-relaxed"></textarea>
                             </div>
 
                             <div class="flex items-center justify-between pt-1">
                                 <span class="text-[11px] text-slate-400">Respectful, civil debates only.</span>
-                                <button type="submit" class="px-5 py-2.5 bg-lwblue hover:bg-lwblue-hover text-white text-xs font-bold rounded-xl transition shadow">
+                                <button type="submit" class="px-5 py-2.5 bg-lwblue hover:bg-lwblue-hover text-white text-xs font-bold rounded-lg transition shadow">
                                     Submit Comment
                                 </button>
                             </div>
@@ -349,12 +349,12 @@ require_once dirname(__DIR__) . '/includes/header.php';
 
             </div>
 
-            <!-- Secondary Sidebar Area (Mobile: Clean Natural Flow / Desktop: Sticky Elevated Cards ~34% / 4 cols) -->
+            <!-- Secondary Sidebar Area (Cardless on Mobile / Sticky Elevated Cards on Desktop) -->
             <div class="lg:col-span-4 px-4 sm:px-6 lg:px-0 space-y-6 pt-8 pb-12 lg:py-0 border-t border-slate-200 lg:border-t-0">
                 
                 <!-- Reader Actions & Utility Card -->
-                <div class="bg-slate-50/70 lg:bg-white p-5 sm:p-6 rounded-xl lg:rounded-lg border border-slate-200/80 lg:border-slate-200 shadow-none lg:shadow-xs space-y-4">
-                    <h3 class="text-xs font-bold text-navy-900 uppercase tracking-wider pb-2 border-b border-slate-200/70 lg:border-slate-100 flex items-center justify-between">
+                <div class="bg-transparent lg:bg-white p-0 pb-6 lg:p-6 rounded-none lg:rounded-lg border-0 lg:border border-b lg:border-b-0 border-slate-200 shadow-none lg:shadow-xs space-y-4">
+                    <h3 class="text-xs font-bold text-navy-900 uppercase tracking-wider pb-2 border-b border-slate-100 flex items-center justify-between">
                         <span>Reader Actions</span>
                         <i class="fa-solid fa-bookmark text-lwblue"></i>
                     </h3>
@@ -369,7 +369,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                         </button>
 
                         <!-- Social Share -->
-                        <div class="pt-3 border-t border-slate-200/70 lg:border-slate-100">
+                        <div class="pt-3 border-t border-slate-100">
                             <span class="block text-xs font-semibold text-slate-600 mb-2">Share this Insight:</span>
                             <div class="flex items-center gap-2">
                                 <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode($canonicalUrl) ?>" 
@@ -405,7 +405,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 </div>
 
                 <!-- Author Profile Card -->
-                <div class="bg-slate-50/70 lg:bg-white p-5 sm:p-6 rounded-xl lg:rounded-lg border border-slate-200/80 lg:border-slate-200 shadow-none lg:shadow-xs space-y-4">
+                <div class="bg-transparent lg:bg-white p-0 pb-6 lg:p-6 rounded-none lg:rounded-lg border-0 lg:border border-b lg:border-b-0 border-slate-200 shadow-none lg:shadow-xs space-y-4">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-lwblue">Author Attribution</span>
                     
                     <div class="flex items-center gap-3.5">
@@ -425,20 +425,20 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 </div>
 
                 <!-- Academic Citation & Attribution Box -->
-                <div class="bg-slate-50/70 lg:bg-white p-5 sm:p-6 rounded-xl lg:rounded-lg border border-slate-200/80 lg:border-slate-200 shadow-none lg:shadow-xs space-y-2 text-xs text-slate-600">
+                <div class="bg-transparent lg:bg-white p-0 pb-6 lg:p-6 rounded-none lg:rounded-lg border-0 lg:border border-b lg:border-b-0 border-slate-200 shadow-none lg:shadow-xs space-y-2 text-xs text-slate-600">
                     <h4 class="font-bold text-navy-900 flex items-center gap-2">
                         <i class="fa-solid fa-feather text-lwblue"></i>
                         <span>Citation &amp; Attribution</span>
                     </h4>
-                    <p class="text-[11px] text-slate-500 leading-relaxed bg-white p-3 rounded-md border border-slate-200/80 font-mono break-all">
+                    <p class="text-[11px] text-slate-500 leading-relaxed bg-surface lg:bg-white p-3 rounded-md border border-slate-200 font-mono break-all">
                         LagunaWISE Ideology Division. (<?= date('Y', strtotime($article['published_at'] ?? 'now')) ?>). <em><?= e($article['title']) ?></em>. Retrieved from <?= e($canonicalUrl) ?>
                     </p>
                 </div>
 
                 <!-- Related Published Articles -->
                 <?php if (!empty($relatedArticles)): ?>
-                    <div class="bg-slate-50/70 lg:bg-white p-5 sm:p-6 rounded-xl lg:rounded-lg border border-slate-200/80 lg:border-slate-200 shadow-none lg:shadow-xs space-y-4">
-                        <h4 class="text-xs font-bold text-navy-900 uppercase tracking-wider pb-2 border-b border-slate-200/70 lg:border-slate-100">
+                    <div class="bg-transparent lg:bg-white p-0 pb-6 lg:p-6 rounded-none lg:rounded-lg border-0 lg:border border-b lg:border-b-0 border-slate-200 shadow-none lg:shadow-xs space-y-4">
+                        <h4 class="text-xs font-bold text-navy-900 uppercase tracking-wider pb-2 border-b border-slate-100">
                             Related Insights
                         </h4>
                         <div class="space-y-3">

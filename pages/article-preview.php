@@ -218,7 +218,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 <?php endif; ?>
 
                 <!-- Excerpt Lead Box -->
-                <div class="p-4 sm:p-5 bg-blue-50/70 border-l-4 border-lwblue rounded-r-lg sm:rounded-r-xl text-sm font-medium text-slate-800 leading-relaxed">
+                <div class="py-2.5 pl-4 sm:p-5 border-l-2 sm:border-l-4 border-lwblue rounded-r-lg sm:rounded-r-xl bg-transparent sm:bg-blue-50/70 text-sm font-medium text-slate-800 leading-relaxed">
                     <?= e($article['excerpt']) ?>
                 </div>
 
@@ -234,7 +234,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                             <i class="fa-solid fa-book-bookmark text-lwblue"></i>
                             <span>References &amp; Cited Sources</span>
                         </h3>
-                        <div class="p-4 bg-surface rounded-xl border border-slate-200 text-xs text-slate-700 whitespace-pre-line leading-relaxed font-mono">
+                        <div class="p-0 sm:p-4 bg-transparent sm:bg-surface rounded-none sm:rounded-xl border-0 sm:border border-slate-200 text-xs text-slate-700 whitespace-pre-line leading-relaxed font-mono">
                             <?= e($article['references_sources']) ?>
                         </div>
                     </div>
@@ -258,7 +258,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
             <div class="lg:col-span-4 px-4 sm:px-6 lg:px-0 space-y-6 pt-8 pb-12 lg:py-0 border-t border-slate-200 lg:border-t-0">
                 
                 <!-- Publishing & Workflow Card -->
-                <div class="bg-slate-50/70 lg:bg-white p-5 sm:p-6 rounded-xl lg:rounded-lg border border-slate-200/80 lg:border-slate-200 shadow-none lg:shadow-xs space-y-4">
+                <div class="bg-transparent lg:bg-white p-0 pb-6 lg:p-6 rounded-none lg:rounded-lg border-0 lg:border border-b lg:border-b-0 border-slate-200 shadow-none lg:shadow-xs space-y-4">
                     <h3 class="text-xs font-bold text-navy-900 uppercase tracking-wider pb-2 border-b border-slate-200/70 lg:border-slate-100">
                         Manuscript Controls
                     </h3>
@@ -310,7 +310,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 </div>
 
                 <!-- Author Bio Card -->
-                <div class="bg-slate-50/70 lg:bg-white p-5 sm:p-6 rounded-xl lg:rounded-lg border border-slate-200/80 lg:border-slate-200 shadow-none lg:shadow-xs space-y-3">
+                <div class="bg-transparent lg:bg-white p-0 pb-6 lg:p-6 rounded-none lg:rounded-lg border-0 lg:border border-b lg:border-b-0 border-slate-200 shadow-none lg:shadow-xs space-y-3">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-lwblue">Author Attribution</span>
                     <div class="flex items-center gap-3">
                         <img src="<?= asset($article['author_avatar'] ?? 'assets/images/default-avatar.svg') ?>" 
@@ -327,7 +327,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 </div>
 
                 <!-- Citation Preview Box -->
-                <div class="bg-slate-50/70 lg:bg-white p-5 sm:p-6 rounded-xl lg:rounded-lg border border-slate-200/80 lg:border-slate-200 shadow-none lg:shadow-xs space-y-2 text-xs text-slate-600">
+                <div class="bg-transparent lg:bg-white p-0 pb-6 lg:p-6 rounded-none lg:rounded-lg border-0 lg:border border-b lg:border-b-0 border-slate-200 shadow-none lg:shadow-xs space-y-2 text-xs text-slate-600">
                     <h4 class="font-bold text-navy-900 flex items-center gap-2">
                         <i class="fa-solid fa-quote-left text-lwblue"></i>
                         <span>Citation Preview</span>

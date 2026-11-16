@@ -183,8 +183,8 @@ require_once dirname(__DIR__) . '/includes/header.php';
     </div>
 </section>
 
-<!-- Articles Catalog Section -->
-<section class="py-12 sm:py-16 bg-surface">
+<!-- Articles Catalog Section (Cardless on Mobile / Multi-Column Grid on Desktop) -->
+<section class="py-6 sm:py-12 lg:py-16 bg-white md:bg-surface">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
 
         <?php if (empty($articles)): ?>
@@ -209,12 +209,12 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 </div>
             </div>
         <?php else: ?>
-            <!-- Articles Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Articles Grid (Cardless on Mobile / 3-Column Grid on Desktop) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 md:gap-8 divide-y md:divide-y-0 divide-slate-200">
                 <?php foreach ($articles as $article): ?>
-                    <article class="bg-white rounded-md border border-slate-200 overflow-hidden shadow-xs hover:shadow-md hover:-translate-y-0.5 transition duration-200 flex flex-col group">
+                    <article class="bg-transparent md:bg-white rounded-none md:rounded-md border-0 md:border md:border-slate-200 overflow-hidden shadow-none md:shadow-xs py-6 md:p-0 first:pt-0 flex flex-col group">
                         
-                        <div class="relative aspect-video overflow-hidden bg-slate-900">
+                        <div class="relative aspect-video overflow-hidden rounded-md md:rounded-none bg-slate-900">
                             <img src="<?= asset($article['cover_image'] ?? 'assets/images/article-medialiteracy.svg') ?>" 
                                  alt="<?= e($article['title']) ?>" 
                                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -225,7 +225,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                             <?php endif; ?>
                         </div>
 
-                        <div class="p-6 flex-1 flex flex-col justify-between">
+                        <div class="p-0 pt-4 md:p-6 flex-1 flex flex-col justify-between">
                             <div class="space-y-3">
                                 <div class="flex items-center justify-between text-[11px] text-editorial-muted">
                                     <span class="font-medium"><?= e(format_date($article['published_at'])) ?></span>

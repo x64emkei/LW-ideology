@@ -58,14 +58,14 @@ require_once dirname(__DIR__) . '/includes/header.php';
     </div>
 </nav>
 
-<!-- Main About Content with Two-Column Desktop Distribution (66% Main / 34% Sidebar) -->
-<section class="py-14 bg-surface">
+<!-- Main About Content with Two-Column Desktop Distribution (Cardless on Mobile / 66% Main & 34% Sidebar on Desktop) -->
+<section class="py-6 sm:py-14 bg-white lg:bg-surface">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
         
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            <!-- Main Content Column (Desktop ~66% / 8 cols) -->
-            <div class="lg:col-span-8 bg-white p-6 sm:p-10 rounded-lg border border-slate-200 shadow-xs space-y-10">
+            <!-- Main Content Column (Cardless on Mobile, Elevated Container on Desktop) -->
+            <div class="lg:col-span-8 bg-white p-0 sm:p-10 rounded-none lg:rounded-lg border-0 lg:border lg:border-slate-200 shadow-none lg:shadow-xs space-y-8 sm:space-y-10">
                 
                 <!-- Purpose & Genesis -->
                 <div id="purpose" class="space-y-4 scroll-mt-28">
@@ -126,8 +126,8 @@ require_once dirname(__DIR__) . '/includes/header.php';
                         Editorial Governance Structure
                     </h2>
                     
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <div class="p-5 bg-surface rounded-lg border border-slate-200 space-y-2">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                        <div class="p-0 pb-4 sm:p-5 bg-transparent sm:bg-surface rounded-none sm:rounded-lg border-0 sm:border border-b sm:border-b border-slate-200 space-y-2">
                             <h4 class="text-sm font-bold text-navy-900 flex items-center gap-2 font-heading">
                                 <i class="fa-solid fa-users text-lwblue"></i>
                                 <span>Editorial Board &amp; Review Council</span>
@@ -137,7 +137,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                             </p>
                         </div>
 
-                        <div class="p-5 bg-surface rounded-lg border border-slate-200 space-y-2">
+                        <div class="p-0 pb-4 sm:p-5 bg-transparent sm:bg-surface rounded-none sm:rounded-lg border-0 sm:border border-b sm:border-b-0 border-slate-200 space-y-2">
                             <h4 class="text-sm font-bold text-navy-900 flex items-center gap-2 font-heading">
                                 <i class="fa-solid fa-feather text-lwblue"></i>
                                 <span>Contributing Inquirers &amp; Fellows</span>
@@ -156,7 +156,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                         Editorial Charter &amp; Publication Ethics
                     </h2>
                     
-                    <div class="bg-surface p-6 rounded-lg border border-slate-200 space-y-4 text-xs text-slate-700 leading-relaxed">
+                    <div class="bg-transparent sm:bg-surface p-0 sm:p-6 rounded-none sm:rounded-lg border-0 sm:border border-slate-200 space-y-4 text-xs text-slate-700 leading-relaxed">
                         <div class="space-y-1">
                             <h4 class="font-bold text-navy-900 text-sm font-heading">1. Sourcing &amp; Verifiable Attribution</h4>
                             <p class="text-slate-600">All published monographs must attribute empirical claims to verifiable sources, scholarly literature, or primary archives. Anonymous assertions and ungrounded rumors are systematically rejected.</p>
@@ -191,9 +191,9 @@ require_once dirname(__DIR__) . '/includes/header.php';
                         </a>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                         <!-- Tech Stack Pillar -->
-                        <div class="p-5 bg-surface rounded-lg border border-slate-200 space-y-3">
+                        <div class="p-0 pb-4 sm:p-5 bg-transparent sm:bg-surface rounded-none sm:rounded-lg border-0 sm:border border-b sm:border-b-0 border-slate-200 space-y-3">
                             <div class="flex items-center gap-2.5">
                                 <span class="w-8 h-8 rounded-md bg-lwblue text-white flex items-center justify-center text-xs">
                                     <i class="fa-solid fa-layer-group"></i>
@@ -224,7 +224,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                         </div>
 
                         <!-- Role of AI Pillar -->
-                        <div class="p-5 bg-surface rounded-lg border border-slate-200 space-y-3">
+                        <div class="p-0 pb-4 sm:p-5 bg-transparent sm:bg-surface rounded-none sm:rounded-lg border-0 sm:border border-b sm:border-b-0 border-slate-200 space-y-3">
                             <div class="flex items-center gap-2.5">
                                 <span class="w-8 h-8 rounded-md bg-navy-900 text-white flex items-center justify-center text-xs" style="background-color: #061638;">
                                     <i class="fa-solid fa-microchip"></i>
@@ -316,7 +316,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 </div>
 
                 <!-- Advocacy Callout Card -->
-                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-xs space-y-4">
+                <div class="bg-transparent lg:bg-white p-0 pb-6 lg:p-6 rounded-none lg:rounded-lg border-0 lg:border border-b lg:border-b-0 border-slate-200 shadow-none lg:shadow-xs space-y-4">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-lwblue">Call for Writers</span>
                     <h3 class="text-base font-bold text-navy-900 font-heading">Become a Contributor</h3>
                     <p class="text-xs text-editorial-muted leading-relaxed">
@@ -330,7 +330,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 </div>
 
                 <!-- Division Motto Card -->
-                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-xs space-y-3">
+                <div class="bg-transparent lg:bg-white p-0 pb-6 lg:p-6 rounded-none lg:rounded-lg border-0 lg:border border-b lg:border-b-0 border-slate-200 shadow-none lg:shadow-xs space-y-3">
                     <h4 class="text-xs font-bold text-navy-900 uppercase tracking-wider">Division Motto</h4>
                     <blockquote class="text-sm font-bold text-navy-900 border-l-2 border-lwblue pl-3 py-1 font-heading">
                         “Understanding Ideas. Challenging Perspectives. Empowering Minds.”
