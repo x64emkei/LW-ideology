@@ -1,7 +1,7 @@
     </main>
 
     <!-- GLOBAL PROTOTYPE ADVISORY BANNER (VISIBLE ACROSS ALL PAGES) -->
-    <aside class="bg-amber-400 text-navy-950 border-t-2 border-b-2 border-amber-500 py-3.5 px-4 shadow-sm" aria-label="Prototype Notice">
+    <aside class="bg-amber-400 text-navy-950 border-t-2 border-b-2 border-amber-500 py-3.5 px-4 shadow-sm w-full max-w-full overflow-hidden" aria-label="Prototype Notice">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
             <div class="flex items-center gap-2.5">
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-navy-950 text-amber-300 font-extrabold uppercase text-[10px] tracking-wider shrink-0 shadow-xs">
@@ -247,19 +247,42 @@
                 }, 250);
             }
 
-            // Mobile Menu Toggle
-            const mobileMenuBtn = document.getElementById('mobileMenuToggle');
+            // Mobile Menu Toggle (supports both header toggle and sticky navbar toggle)
+            const mobileMenuToggles = document.querySelectorAll('#mobileMenuToggle, .mobileMenuToggleBtn');
             const mobileMenu = document.getElementById('mobileMenu');
-            const mobileMenuIcon = document.getElementById('mobileMenuIcon');
+            const mobileMenuIcons = document.querySelectorAll('#mobileMenuIcon, .mobileMenuIcon');
 
-            if (mobileMenuBtn && mobileMenu) {
-                mobileMenuBtn.addEventListener('click', function() {
-                    const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
-                    mobileMenuBtn.setAttribute('aria-expanded', !isExpanded);
-                    mobileMenu.classList.toggle('hidden');
-                    if (mobileMenuIcon) {
-                        mobileMenuIcon.classList.toggle('fa-bars');
-                        mobileMenuIcon.classList.toggle('fa-xmark');
+            if (mobileMenuToggles.length > 0 && mobileMenu) {
+                mobileMenuToggles.forEach(function(btn) {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+                        const nextState = !isExpanded;
+                        
+                        mobileMenuToggles.forEach(b => b.setAttribute('aria-expanded', nextState ? 'true' : 'false'));
+                        mobileMenu.classList.toggle('hidden', !nextState);
+                        mobileMenuIcons.forEach(icon => {
+                            icon.classList.toggle('fa-bars', !nextState);
+                            icon.classList.toggle('fa-xmark', nextState);
+                        });
+                    });
+                });
+
+                // Close mobile menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!mobileMenu.classList.contains('hidden') && !mobileMenu.contains(e.target)) {
+                        let clickedToggle = false;
+                        mobileMenuToggles.forEach(b => {
+                            if (b.contains(e.target)) clickedToggle = true;
+                        });
+                        if (!clickedToggle) {
+                            mobileMenu.classList.add('hidden');
+                            mobileMenuToggles.forEach(b => b.setAttribute('aria-expanded', 'false'));
+                            mobileMenuIcons.forEach(icon => {
+                                icon.classList.add('fa-bars');
+                                icon.classList.remove('fa-xmark');
+                            });
+                        }
                     }
                 });
             }

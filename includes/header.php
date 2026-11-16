@@ -100,13 +100,13 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
         html {
             overflow-x: hidden;
             width: 100%;
-            max-width: 100vw;
+            max-width: 100%;
         }
 
         body {
             overflow-x: hidden;
             width: 100%;
-            max-width: 100vw;
+            max-width: 100%;
             position: relative;
             font-family: 'Inter', sans-serif;
             color: var(--color-body-text);
@@ -305,9 +305,10 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
         /* Floating Mobile Reader Bar Animations */
         #mobileReaderBar {
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            box-sizing: border-box;
         }
         #mobileReaderBar.hide-bar {
-            transform: translateY(130%);
+            transform: translate(-50%, 150%) !important;
             opacity: 0;
             pointer-events: none;
         }
@@ -377,7 +378,7 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-lwblue-ice selection:text-navy-900">
+<body class="min-h-screen flex flex-col antialiased selection:bg-lwblue-ice selection:text-navy-900 overflow-x-hidden w-full max-w-full">
     <div id="top-loading-bar"></div>
 
     <!-- =========================================================================
@@ -385,38 +386,36 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
          ========================================================================= -->
     <header class="bg-navy-900 text-white border-b border-navy-800 relative z-30" style="background-color: #061638;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
-            <div class="flex justify-between items-center py-3 sm:py-3.5">
+            <div class="flex justify-between items-center py-2.5 sm:py-3.5 gap-2">
                 
                 <!-- Left: Official LagunaWISE Emblem & Wordmark -->
-                <a href="<?= url() ?>" class="flex items-center gap-3.5 group focus:outline-hidden focus-visible:ring-2 focus-visible:ring-lwblue-light" aria-label="LagunaWISE Ideology Division Home">
+                <a href="<?= url() ?>" class="flex items-center gap-2 sm:gap-3.5 group focus:outline-hidden focus-visible:ring-2 focus-visible:ring-lwblue-light min-w-0" aria-label="LagunaWISE Ideology Division Home">
                     <img src="<?= asset('assets/images/lagunawise-map-logo.png') ?>" 
                          alt="LagunaWISE Emblem" 
-                         width="44" 
-                         height="44" 
-                         style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; max-width: 44px; max-height: 44px;" 
-                         class="w-11 h-11 shrink-0 object-contain rounded-full shadow-xs group-hover:scale-105 transition-transform duration-200 border border-white/20 bg-white/5 p-0.5">
+                         width="40" 
+                         height="40" 
+                         class="w-9 h-9 sm:w-11 sm:h-11 shrink-0 object-contain rounded-full shadow-xs group-hover:scale-105 transition-transform duration-200 border border-white/20 bg-white/5 p-0.5">
                     
-                    <div class="flex flex-col">
-                        <div class="flex items-center gap-2 flex-wrap">
+                    <div class="flex flex-col min-w-0">
+                        <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                             <!-- Official LagunaWISE Cropped Wordmark Graphic -->
                             <img src="<?= asset('assets/images/lagunawise-wordmark-text.png') ?>" 
                                  alt="LAGUNAWISE" 
-                                 height="24" 
-                                 style="height: 24px; width: auto; max-height: 26px;" 
-                                 class="h-5 sm:h-6 w-auto object-contain brightness-110">
+                                 height="20" 
+                                 class="h-4 sm:h-6 w-auto object-contain brightness-110 shrink-0">
                             
-                            <span class="text-[9px] font-black uppercase tracking-widest text-lwblue-ice bg-lwblue/60 border border-lwblue-light/30 px-2 py-0.5 rounded-xs">
+                            <span class="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-lwblue-ice bg-lwblue/60 border border-lwblue-light/30 px-1.5 sm:px-2 py-0.5 rounded-xs shrink-0">
                                 IDEOLOGY DIVISION
                             </span>
                         </div>
-                        <span class="text-[10px] text-slate-300 font-medium tracking-wide hidden sm:block mt-0.5">
+                        <span class="text-[10px] text-slate-300 font-medium tracking-wide hidden md:block mt-0.5">
                             Critical Thinking • Media Literacy • Responsible Digital Citizenship
                         </span>
                     </div>
                 </a>
 
                 <!-- Right: Editorial Metadata & Connect Channels -->
-                <div class="flex items-center gap-4 sm:gap-6">
+                <div class="flex items-center gap-3 sm:gap-6 shrink-0">
                     <!-- Date & Regional Secretariat Info -->
                     <div class="hidden lg:flex flex-col items-end text-right text-xs space-y-0.5">
                         <span class="text-white font-semibold flex items-center gap-1.5">
@@ -445,13 +444,13 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
                         </a>
                     </div>
 
-                    <!-- Mobile Hamburger Button -->
+                    <!-- Mobile Hamburger Button (Header) -->
                     <button type="button" 
                             id="mobileMenuToggle" 
                             aria-label="Toggle Navigation Menu"
                             aria-expanded="false" 
-                            class="lg:hidden p-2 text-white hover:bg-white/10 rounded-md transition focus:outline-hidden">
-                        <i class="fa-solid fa-bars text-lg" id="mobileMenuIcon"></i>
+                            class="mobileMenuToggleBtn lg:hidden p-2 text-white hover:bg-white/10 rounded-md transition focus:outline-hidden">
+                        <i class="fa-solid fa-bars text-lg mobileMenuIcon"></i>
                     </button>
                 </div>
 
@@ -464,9 +463,9 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
          ========================================================================= -->
     <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs" aria-label="Primary Editorial Desks Navigation">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
-            <div class="flex justify-between items-center h-12 sm:h-13">
+            <div class="flex justify-between items-center h-12 sm:h-13 gap-2">
                 
-                <!-- Left: Core Editorial Navigation Links -->
+                <!-- Left: Core Editorial Navigation Links (Desktop) -->
                 <div class="hidden lg:flex items-center space-x-1 sm:space-x-2 text-xs font-bold tracking-wider uppercase text-slate-700">
                     <a href="<?= url() ?>" 
                        class="px-3 py-2 rounded-md transition <?= ($_SERVER['SCRIPT_NAME'] == APP_BASE_URL . '/index.php' || $_SERVER['SCRIPT_NAME'] == APP_BASE_URL . '/') ? 'text-lwblue bg-lwblue-ice/70 font-black' : 'hover:text-navy-900 hover:bg-slate-100' ?>">
@@ -495,22 +494,28 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
                 </div>
 
                 <!-- Mobile Compact Indicator (When in Mobile View) -->
-                <div class="lg:hidden flex items-center text-xs font-bold text-navy-900 uppercase tracking-wider">
-                    <span class="text-lwblue mr-1">Desk:</span>
-                    <span>
-                        <?php 
-                        if (str_contains($_SERVER['SCRIPT_NAME'], 'about.php')) echo 'About';
-                        elseif (str_contains($_SERVER['SCRIPT_NAME'], 'articles.php') || str_contains($_SERVER['SCRIPT_NAME'], 'article.php')) echo 'Articles';
-                        elseif (str_contains($_SERVER['SCRIPT_NAME'], 'topics.php') || str_contains($_SERVER['SCRIPT_NAME'], 'topic.php')) echo 'Topics';
-                        elseif (str_contains($_SERVER['SCRIPT_NAME'], 'news.php')) echo 'News';
-                        elseif (str_contains($_SERVER['SCRIPT_NAME'], 'contact.php')) echo 'Contact';
-                        else echo 'Frontpage';
-                        ?>
+                <?php 
+                $currentDeskLabel = 'Frontpage';
+                if (str_contains($_SERVER['SCRIPT_NAME'], 'about.php')) $currentDeskLabel = 'About';
+                elseif (str_contains($_SERVER['SCRIPT_NAME'], 'articles.php') || str_contains($_SERVER['SCRIPT_NAME'], 'article.php')) $currentDeskLabel = 'Articles';
+                elseif (str_contains($_SERVER['SCRIPT_NAME'], 'topics.php') || str_contains($_SERVER['SCRIPT_NAME'], 'topic.php')) $currentDeskLabel = 'Topics';
+                elseif (str_contains($_SERVER['SCRIPT_NAME'], 'news.php')) $currentDeskLabel = 'News';
+                elseif (str_contains($_SERVER['SCRIPT_NAME'], 'contact.php')) $currentDeskLabel = 'Contact';
+                elseif (str_contains($_SERVER['SCRIPT_NAME'], 'dashboard.php')) $currentDeskLabel = 'Dashboard';
+                ?>
+                <div class="lg:hidden flex items-center gap-1.5 shrink-0 min-w-0">
+                    <a href="<?= url() ?>" class="flex items-center gap-1.5 group shrink-0" aria-label="LagunaWISE Frontpage">
+                        <img src="<?= asset('assets/images/lagunawise-map-logo.png') ?>" alt="Logo" class="w-6 h-6 object-contain rounded-full border border-navy-700 bg-navy-900 p-0.5">
+                        <span class="font-extrabold text-xs text-navy-900 tracking-tight">Laguna<span class="text-lwblue">WISE</span></span>
+                    </a>
+                    <span class="text-slate-300 font-light text-xs">/</span>
+                    <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-lwblue-ice text-lwblue truncate max-w-[110px]">
+                        <?= e($currentDeskLabel) ?>
                     </span>
                 </div>
 
-                <!-- Right: Search & Account Actions (Login & Join the Community) -->
-                <div class="flex items-center space-x-2 sm:space-x-3">
+                <!-- Right: Search, Account & Mobile Menu Trigger -->
+                <div class="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
                     <!-- Search Trigger Button -->
                     <button type="button" 
                             id="searchModalBtn"
@@ -526,14 +531,14 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
                                     id="userMenuButton"
                                     aria-expanded="false" 
                                     aria-haspopup="true"
-                                    class="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-md border border-slate-200 hover:border-slate-300 bg-white transition focus:outline-hidden focus:ring-2 focus:ring-lwblue">
+                                    class="flex items-center gap-1.5 sm:gap-2 p-1 sm:pl-2 sm:pr-3 sm:py-1.5 rounded-md border border-slate-200 hover:border-slate-300 bg-white transition focus:outline-hidden focus:ring-2 focus:ring-lwblue">
                                 <img src="<?= asset($currentUser['avatar'] ?? 'assets/images/default-avatar.svg') ?>" 
                                      alt="<?= e($currentUser['name']) ?>" 
                                      class="w-6 h-6 rounded-full object-cover border border-slate-200">
                                 <span class="text-xs font-semibold text-slate-800 hidden sm:inline max-w-[120px] truncate">
                                     <?= e($currentUser['name']) ?>
                                 </span>
-                                <i class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
+                                <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 hidden sm:inline"></i>
                             </button>
 
                             <!-- Dropdown Menu -->
@@ -575,8 +580,8 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
                             </div>
                         </div>
                     <?php else: ?>
-                        <!-- Guest Actions: Log In and Join the Community in the Lower Half -->
-                        <div class="flex items-center space-x-2">
+                        <!-- Desktop Guest Links: Log In and Join the Community -->
+                        <div class="hidden lg:flex items-center space-x-2">
                             <a href="<?= url('auth/login.php') ?>" class="text-xs font-bold px-3 py-1.5 text-slate-700 hover:text-lwblue transition uppercase tracking-wider">
                                 Log In
                             </a>
@@ -584,14 +589,73 @@ $ogImage = isset($ogImage) ? $ogImage : asset('assets/images/lagunawise-map-logo
                                 Join the Community
                             </a>
                         </div>
+                        <!-- Mobile Compact Log In Link -->
+                        <a href="<?= url('auth/login.php') ?>" class="lg:hidden text-xs font-bold px-2 py-1 text-slate-700 hover:text-lwblue transition uppercase tracking-wider">
+                            Log In
+                        </a>
                     <?php endif; ?>
+
+                    <!-- Sticky Mobile Menu Toggle Button (Always visible on mobile) -->
+                    <button type="button" 
+                            class="mobileMenuToggleBtn lg:hidden p-2 text-navy-900 hover:text-lwblue hover:bg-slate-100 rounded-md transition focus:outline-hidden"
+                            aria-label="Toggle Navigation Menu"
+                            aria-expanded="false">
+                        <i class="fa-solid fa-bars text-base mobileMenuIcon"></i>
+                    </button>
                 </div>
 
             </div>
         </div>
 
-        <!-- Mobile Drawer Navigation -->
+        <!-- Mobile Drawer Navigation (Expandable under sticky navbar) -->
         <div id="mobileMenu" class="hidden lg:hidden border-t border-slate-100 bg-white px-4 pt-3 pb-6 space-y-3 shadow-lg">
+            <nav class="flex flex-col space-y-1 text-sm font-semibold text-slate-700">
+                <a href="<?= url() ?>" class="px-3 py-2 rounded-md hover:bg-slate-50 hover:text-lwblue <?= ($_SERVER['SCRIPT_NAME'] == APP_BASE_URL . '/index.php' || $_SERVER['SCRIPT_NAME'] == APP_BASE_URL . '/') ? 'text-lwblue bg-slate-50 font-bold' : '' ?>">Home</a>
+                <a href="<?= url('pages/about.php') ?>" class="px-3 py-2 rounded-md hover:bg-slate-50 hover:text-lwblue <?= str_contains($_SERVER['SCRIPT_NAME'], 'about.php') ? 'text-lwblue bg-slate-50 font-bold' : '' ?>">About the Division</a>
+                <a href="<?= url('pages/articles.php') ?>" class="px-3 py-2 rounded-md hover:bg-slate-50 hover:text-lwblue <?= str_contains($_SERVER['SCRIPT_NAME'], 'articles.php') || str_contains($_SERVER['SCRIPT_NAME'], 'article.php') ? 'text-lwblue bg-slate-50 font-bold' : '' ?>">Articles &amp; Insights</a>
+                <a href="<?= url('pages/topics.php') ?>" class="px-3 py-2 rounded-md hover:bg-slate-50 hover:text-lwblue <?= str_contains($_SERVER['SCRIPT_NAME'], 'topics.php') || str_contains($_SERVER['SCRIPT_NAME'], 'topic.php') ? 'text-lwblue bg-slate-50 font-bold' : '' ?>">Featured Topics</a>
+                <a href="<?= url('pages/news.php') ?>" class="px-3 py-2 rounded-md hover:bg-slate-50 hover:text-lwblue <?= str_contains($_SERVER['SCRIPT_NAME'], 'news.php') ? 'text-lwblue bg-slate-50 font-bold' : '' ?>">News &amp; Updates</a>
+                <a href="<?= url('pages/contact.php') ?>" class="px-3 py-2 rounded-md hover:bg-slate-50 hover:text-lwblue <?= str_contains($_SERVER['SCRIPT_NAME'], 'contact.php') ? 'text-lwblue bg-slate-50 font-bold' : '' ?>">Contact</a>
+            </nav>
+
+            <?php if (!$currentUser): ?>
+                <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
+                    <a href="<?= url('auth/register.php') ?>" class="w-full text-center py-2.5 text-xs font-bold text-white bg-lwblue rounded-md hover:bg-lwblue-hover uppercase tracking-wider shadow-xs">
+                        Join the Community
+                    </a>
+                    <a href="<?= url('auth/login.php') ?>" class="w-full text-center py-2.5 text-xs font-bold text-slate-700 bg-slate-100 rounded-md hover:bg-slate-200 uppercase tracking-wider">
+                        Log In
+                    </a>
+                </div>
+            <?php else: ?>
+                <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
+                    <div class="px-3 py-2 bg-surface rounded-md flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-navy-900"><?= e($currentUser['name']) ?></p>
+                            <p class="text-[10px] text-slate-400 capitalize"><?= e(str_replace('_', ' ', $currentUser['primary_role'])) ?></p>
+                        </div>
+                        <a href="<?= url('auth/logout.php') ?>" class="text-[11px] font-bold text-rose-600 hover:underline">Log Out</a>
+                    </div>
+                    <a href="<?= url('pages/dashboard.php') ?>" class="w-full text-center py-2.5 text-xs font-bold text-slate-700 bg-slate-100 rounded-md hover:bg-slate-200 flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-gauge-high text-xs"></i>
+                        <span>My Dashboard</span>
+                    </a>
+                    <?php if (user_has_any_role(['administrator', 'super_admin', 'admin', 'editor', 'contributor', 'writer'])): ?>
+                        <a href="<?= url('admin/article-create.php') ?>" class="w-full text-center py-2.5 text-xs font-bold text-white bg-lwblue rounded-md hover:bg-lwblue-hover flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-pen-nib text-xs"></i>
+                            <span>Create Article</span>
+                        </a>
+                    <?php endif; ?>
+                    <?php if (user_has_any_role(['administrator', 'super_admin', 'admin', 'editor'])): ?>
+                        <a href="<?= url('admin/index.php') ?>" class="w-full text-center py-2.5 text-xs font-bold text-slate-700 border border-slate-200 rounded-md hover:bg-slate-50 flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-shield-halved text-xs text-lwblue"></i>
+                            <span>CMS Administration</span>
+                        </a>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    </nav>
             <nav class="flex flex-col space-y-1.5 text-sm font-semibold text-slate-700">
                 <a href="<?= url() ?>" class="px-3 py-2 rounded-md hover:bg-slate-50 hover:text-lwblue <?= ($_SERVER['SCRIPT_NAME'] == APP_BASE_URL . '/index.php' || $_SERVER['SCRIPT_NAME'] == APP_BASE_URL . '/') ? 'text-lwblue bg-slate-50 font-bold' : '' ?>">Home</a>
                 <a href="<?= url('pages/about.php') ?>" class="px-3 py-2 rounded-md hover:bg-slate-50 hover:text-lwblue <?= str_contains($_SERVER['SCRIPT_NAME'], 'about.php') ? 'text-lwblue bg-slate-50 font-bold' : '' ?>">About the Division</a>

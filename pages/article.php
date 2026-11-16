@@ -462,34 +462,35 @@ require_once dirname(__DIR__) . '/includes/header.php';
 </article>
 
 <!-- Top Reading Progress Indicator -->
-<div id="readingProgressContainer" class="fixed top-0 left-0 right-0 h-1 z-50 bg-transparent pointer-events-none">
+<div id="readingProgressContainer" class="fixed top-0 left-0 right-0 h-1 z-50 bg-transparent pointer-events-none" style="max-width: 100vw; overflow: hidden;">
     <div id="readingProgressBar" class="h-full bg-gradient-to-r from-lwblue via-sky-400 to-lwblue-light w-0 transition-all duration-75"></div>
 </div>
 
-<!-- Unique Floating Mobile Reader Bar (Mobile Only) -->
+<!-- Unique Floating Mobile Reader Bar (Mobile Only - Strictly Bounded to Viewport) -->
 <aside id="mobileReaderBar" 
-       class="fixed bottom-3 inset-x-3 sm:inset-x-6 z-40 lg:hidden bg-navy-950/95 backdrop-blur-md text-white border border-slate-700/80 rounded-full shadow-2xl px-4 py-2.5 flex items-center justify-between gap-3 text-xs"
+       class="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 lg:hidden bg-navy-950/95 backdrop-blur-md text-white border border-slate-700/80 rounded-full shadow-2xl px-3 sm:px-4 py-2 flex items-center justify-between gap-2 text-xs"
+       style="width: min(calc(100% - 1.5rem), 380px); max-width: calc(100vw - 1.5rem); box-sizing: border-box;"
        aria-label="Mobile Reader Controls">
     
     <!-- Left: Reading Progress & Remaining Time -->
-    <div class="flex items-center gap-2 border-r border-slate-700/80 pr-3 shrink-0">
+    <div class="flex items-center gap-1.5 border-r border-slate-700/80 pr-2 shrink-0">
         <span id="mobileProgressPercent" class="font-mono text-[11px] font-bold text-sky-400">0%</span>
-        <span class="text-[10px] text-slate-400 hidden xs:inline">• <?= (int)$article['reading_time'] ?>m read</span>
+        <span class="text-[10px] text-slate-400 hidden xs:inline">• <?= (int)$article['reading_time'] ?>m</span>
     </div>
 
     <!-- Center/Right: Core Reader Actions -->
-    <div class="flex items-center gap-2 sm:gap-3">
-        <!-- Font Size Toggle (Comfortable 17px vs Large 20px) -->
+    <div class="flex items-center gap-1.5 shrink-0">
+        <!-- Font Size Toggle (A A+) -->
         <button type="button" 
                 id="toggleFontSizeBtn" 
-                class="px-2 py-1 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 text-xs font-bold transition flex items-center gap-0.5"
+                class="px-2 py-1 rounded-full bg-white/10 hover:bg-white/20 active:bg-white/30 text-slate-200 text-xs font-bold transition flex items-center gap-0.5 shrink-0"
                 title="Adjust Text Size">
             <span class="text-[9px]">A</span><span class="text-xs font-black">A+</span>
         </button>
 
         <!-- Quick Bookmark -->
         <button type="button" 
-                class="bookmark-toggle-btn px-2.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition flex items-center gap-1.5 text-xs font-semibold <?= $isBookmarked ? 'text-amber-400' : 'text-slate-300' ?>"
+                class="bookmark-toggle-btn p-1.5 sm:px-2 rounded-full bg-white/10 hover:bg-white/20 active:bg-white/30 transition flex items-center gap-1 text-xs shrink-0 <?= $isBookmarked ? 'text-amber-400' : 'text-slate-300' ?>"
                 data-article-id="<?= (int)$article['id'] ?>"
                 title="Bookmark article">
             <i class="<?= $isBookmarked ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark' ?> text-xs"></i>
@@ -498,16 +499,16 @@ require_once dirname(__DIR__) . '/includes/header.php';
 
         <!-- Comments Jump -->
         <a href="#comments" 
-           class="px-2.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition flex items-center gap-1.5 text-xs font-semibold"
+           class="p-1.5 sm:px-2 rounded-full bg-white/10 hover:bg-white/20 active:bg-white/30 text-slate-300 hover:text-white transition flex items-center gap-1 text-xs shrink-0"
            title="Jump to Discussion">
             <i class="fa-regular fa-comments text-xs"></i>
-            <span class="px-1.5 py-0.2 rounded-full bg-lwblue text-[10px] font-bold"><?= count($comments) ?></span>
+            <span class="px-1 py-0.2 rounded-full bg-lwblue text-[9px] font-bold leading-none"><?= count($comments) ?></span>
         </a>
 
         <!-- Native Share Sheet -->
         <button type="button" 
                 id="mobileShareBtn" 
-                class="w-8 h-8 rounded-full bg-lwblue hover:bg-lwblue-hover text-white flex items-center justify-center transition shadow shrink-0"
+                class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-lwblue hover:bg-lwblue-hover active:bg-blue-700 text-white flex items-center justify-center transition shadow shrink-0"
                 title="Share Article">
             <i class="fa-solid fa-arrow-up-from-bracket text-xs"></i>
         </button>
@@ -515,7 +516,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
 </aside>
 
 <!-- Floating Toast Notification -->
-<div id="editorialToast" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 hidden bg-navy-900 text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-xl border border-navy-700 items-center gap-2 transition-all duration-300">
+<div id="editorialToast" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 hidden bg-navy-900 text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-xl border border-navy-700 items-center gap-2 transition-all duration-300 max-w-[90vw]">
     <i class="fa-solid fa-check text-emerald-400 text-xs" id="toastIcon"></i>
     <span id="toastMsg">Action completed</span>
 </div>
